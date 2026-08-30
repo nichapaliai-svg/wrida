@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบฐานข้อมูลกลางบาลีอัจฉริยะ - หน้าดัชนีหลัก</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- โค้ดผู้ช่วยข้ามหน้าโลโก้อัตโนมัติ (ทำงานเฉพาะตอนกดปุ่มรีเซ็ตสีแดง) -->
+<script>
+    window.addEventListener('load', function() {
+        if (sessionStorage.getItem('skipLogo') === 'true') {
+            sessionStorage.removeItem('skipLogo');
+            setTimeout(function() {
+                const loginBtn = Array.from(document.querySelectorAll('button, div, a, span'))
+                                      .find(el => {
+                                          const text = el.textContent || el.innerText || '';
+                                          return text.includes('เข้าสู่ระบบ') || text.includes('ระบบฐานข้อมูล');
+                                      });
+                if (loginBtn) {
+                    loginBtn.click();
+                }
+            }, 200);
+        }
+    });
+</script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+        /* ซ่อน Scrollbar ของเมนูย่อย แต่ยังเลื่อนได้ */
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+    /* คลาสสลับสำหรับสั่งให้กรอบภายนอกขยายใหญ่เต็มเบราว์เซอร์ */
+.pdf-maximize {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important; /* ดันขึ้นมาเหนือนำหน้าทุกเมนู */
+  background: white;
+  padding: 12px;
+}  
+  /* เพิ่มโค้ดนี้เพื่อรองรับการซ่อนแถบซ้ายมือ และขยายแถบขวา */
+.sidebar.hidden {
+    display: none !important;
+}
+.main-content.fullscreen {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+
+/* ตกแต่งปุ่ม ธรรมนาวา วัง ให้อยู่ในแถวเดียวกันอย่างสวยงาม */
+.btn-dhammanava {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #b39642; /* สีทองธีมหลักของธรรมนาวา */
+    color: white !important;
+    padding: 6px 16px;
+    border-radius: 20px;       /* ทำขอบมนให้โค้งกลมเข้ากับปุ่มโกรกกราก */
+    text-decoration: none !important;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-right: 10px;        /* เว้นระยะห่างจากปุ่มวัดโกรกกรากนิดหน่อย */
+}
+
+.btn-dhammanava:hover {
+    background-color: #947a32; /* สีทองเข้มขึ้นเวลาเอาเมาส์ชี้ */
+    transform: translateY(-1px);
+}
+    </style>
+</head>
+<body class="bg-slate-100 h-screen flex flex-col overflow-hidden">
+<!-- ========================================================================== -->
+<!-- SYSTEM: PALI SPLASH SCREEN ➡️ WELCOME MODAL ➡️ TOUR GUIDE (COMPLETE FLOW) -->
+<!-- ========================================================================== -->
+
+<!-- STEP 1: หน้าแรกต้อนรับสีน้ำเงินแบบเต็มหน้า (แสดงผลอันดับแรกสุด) -->
+<div id="app-splash-screen" class="fixed inset-0 flex flex-col items-center justify-center text-center p-6 bg-[#1a1c38] z-[99999] transition-all duration-500">
+ <!-- กรอบนอกเป็นวงกลมดิกแบบร้อยเปอร์เซ็นต์ (w-56 h-56 aspect-square rounded-full) -->
+    <!-- เพิ่ม p-6 (Padding) เพื่อบีบให้รูปภาพหดกลับมาอยู่ตรงกลางวงกลมอย่างปลอดภัย ไม่ชนขอบทอง -->
+    <div class="w-66 h-66 aspect-square bg-white rounded-full border-[3px] border-amber-500/80 flex items-center justify-center p-0 shadow-[0_0_35px_rgba(245,158,11,0.35)] mb-6 cursor-pointer hover:scale-105 active:scale-95 transition-transform overflow-hidden" 
+         onclick="proceedToWelcomeModal()">
+        
+        <!-- ใช้ object-contain เพื่อย่อรูปภาพทั้งหมดให้อยู่ในวงกลมสีขาว ตัวอักษร WRD PALI จะลอยสวยเด่นชัดเจน -->
+        <img src="WRD PALI LOGO.jfif" alt="Logo" class="w-full h-full object-contain">
+    </div>
+    <h2 class="text-2xl font-bold text-white tracking-wide">ระบบฐานข้อมูลกลางบาลีอัจฉริยะวัดโมลี</h2>
+    <p class="text-xs text-slate-400 mt-2 tracking-widest">Smart Pali Central Database System</p>
+    <div class="w-12 h-1 bg-amber-500 rounded-full mt-6"></div>
+    
+    <!-- ส่วนปุ่มกดเข้าสู่ระบบ -->
+    <button onclick="proceedToWelcomeModal()" 
+            class="mt-8 px-6 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 active:scale-95 text-slate-950 text-xs font-bold rounded-lg transition-all shadow-md">
+        เข้าสู่ระบบฐานข้อมูล
+    </button>
+</div>
+
+
+<!-- STEP 2: หน้าต่างต้อนรับเลือกทางเดินสีขาว (ซ่อนไว้ก่อน เริ่มทำงานหลังจากกดหน้าสีน้ำเงิน) -->
+<div id="pali-welcome-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] transition-opacity duration-300">
+    <div class="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl text-center transform scale-100 transition-transform duration-300 relative">
+        
+        <!-- Icon & Header -->
+        <div class="text-indigo-600 text-5xl mb-4 flex justify-center">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 tracking-wide">ยินดีต้อนรับเข้าสู่ระบบเรียนรู้บาลี</h2>
+        <p class="text-sm text-slate-500 mt-1">กรุณาเลือกช่องทางที่เหมาะสมกับความต้องการของคุณเพื่อเริ่มต้นใช้งาน</p>
+
+        <!-- Selection Cards (2 Columns) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <!-- การ์ด 1: แนะนำการใช้งานมือใหม่ -->
+            <div onclick="startPaliTour()" class="border-2 border-amber-200 bg-amber-50/30 rounded-2xl p-6 text-center cursor-pointer hover:border-amber-400 hover:bg-amber-50/60 transition-all group active:scale-95">
+                <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl shadow-md group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h3 class="text-lg font-bold text-amber-800">แนะนำการใช้งานมือใหม่</h3>
+                <p class="text-xs text-amber-700/80 mt-2 leading-relaxed">สอนสเต็ปการใช้งาน หน้าต่าง ปุ่มต่าง ๆ แบบเข้าใจง่ายมากที่สุด เหมาะสำหรับคนที่ไม่เคยใช้งานมาก่อน</p>
+            </div>
+
+            <!-- การ์ด 2: เข้าหน้าเรียนหลัก -->
+            <div onclick="closePaliWelcome()" class="border-2 border-indigo-100 bg-indigo-50/30 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/60 transition-all group active:scale-95">
+                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl shadow-md group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+                <h3 class="text-lg font-bold text-indigo-900">เข้าหน้าเรียนหลัก / ค้นหาข้ามเล่ม</h3>
+                <p class="text-xs text-indigo-700/80 mt-2 leading-relaxed">เข้าสู่ระบบดัชนีคลังข้อมูล และระบบวิเคราะห์ค้นหาข้อมูลบาลีอัจฉริยะข้ามหมวดหมู่สำหรับผู้ใช้งานทั่วไป</p>
+            </div>
+        </div>
+
+        <p class="text-xs text-slate-400 mt-8 tracking-wide">สามารถเปลี่ยนโหมดหรือดูวิธีใช้งานซ้ำได้ตลอดเวลาภายในแอปพลิเคชัน</p>
+    </div>
+</div>
+
+
+<!-- STEP 3: หน้าต่างไกด์แนะนำการใช้งาน 3 ขั้นตอน (Tour Guide) -->
+<!-- STEP 3: หน้าต่างไกด์แนะนำการใช้งาน (Tour Guide Modals 1-10) -->
+<div id="pali-tour-wrapper" class="hidden fixed inset-0 bg-slate-900/40 z-[9999] pointer-events-none">
+    <div class="w-full h-full relative">
+
+        <!-- ขั้นตอนที่ 1/10 -->
+        <div id="pali-tour-step-1" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 24%; top: 15%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 1/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3 flex items-center gap-2">📂 1. ระบบฐานข้อมูลกลางบาลีอัจฉริยะ</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">สามารถซ่อน/แสดงเมนูด้านซ้าย และมีปุ่มกดเพื่อนำไปที่กลุ่มตามต้องการ</p>
+            <div class="flex justify-end mt-5">
+                <button onclick="changePaliTourStep(2)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">เข้าใจแล้ว, ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 2/10 -->
+        <div id="pali-tour-step-2" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 24%; top: 25%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 2/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3 flex items-center gap-2">⚡ 2. แถบสารบัญข้อมูลด้านซ้าย กลุ่มไวยากรณ์</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">หน้านี้คือคลังรวบรวมตำราทั้งหมดครับ คุณสามารถคลิกเลือกตามหมวดหมู่เพื่อดูเนื้อหาย่อยในหมวดต่างๆได้</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(1)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(3)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 3/10 -->
+        <div id="pali-tour-step-3" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 45%; top: 25%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 3/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3 flex items-center gap-2">📝 3. หน้าดัชนีวัดโกรกกราก</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">เนื้อหาไวยากรณ์สรุปย่อติวก่อนสอบ</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(2)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(4)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 4/10 -->
+        <div id="pali-tour-step-4" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 40%; top: 45%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 4/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">🔍 4. แถบปุ่มด่วนลัดฟังก์ชัน 9 ปุ่ม</h3>
+            <p class="text-xs text-slate-600 mt-2">มี9ปุ่มที่สำคัญ</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(3)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 5/10 -->
+        <div id="pali-tour-step-5" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 40%; top: 45%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 5/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">🎯 5. คลังข้อสอบบาลี7ข้อด้านล่าง</h3>
+            <p class="text-xs text-slate-600 mt-2">คลังข้อสอบบาลีย้อนหลัง30ปี</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(4)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(6)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 6/10 -->
+        <div id="pali-tour-step-6" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 60%; top: 40%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 6/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">📊 6. นักธรรม</h3>
+            <p class="text-xs text-slate-600 mt-2">คู่มือเตรียมสอบ/ข้อสอบเก่าแบบช้อยส์และเติมคำ ทั้งพระ เณร และฆราวาส ชั้นตรี โท เอก แยกประถม มัธยม อุดมศึกษา</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(5)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(7)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 7/10 -->
+        <div id="pali-tour-step-7" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 62%; top: 40%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 7/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">💡 7. เกมบาลี</h3>
+            <p class="text-xs text-slate-600 mt-2">มีเกมบาลีให้ลองฝึกทำแบบสนุก จำง่าย ไม่น่าเบื่อและได้ความรู้ </p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(6)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(8)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 8/10 -->
+        <div id="pali-tour-step-8" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 40%; top: 15%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 8/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">🎮 8. กลุ่มแปลและสัมพันธ์</h3>
+            <p class="text-xs text-slate-600 mt-2">มีหลักการแปลและสัมพันธ์ที่น่าสนใจ</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(7)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(9)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 9/10 (ขั้นตอนสุดท้าย เปลี่ยนปุ่มเป็นสีส้มเริ่มใช้งาน) -->
+        <div id="pali-tour-step-9" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 45%; top: 15%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 9/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">🚀 9. กลุ่มพจนานุกรม</h3>
+            <p class="text-xs text-slate-600 mt-2">มีพจนานุกรม บาลี-ไทย ไทย-บาลี บาลี-ไทย-อังกฤษ</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(8)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="changePaliTourStep(10)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-4 py-2 rounded-lg shadow">ถัดไป ➡️</button>
+            </div>
+        </div>
+        <!-- ขั้นตอนที่ 10/10 (ขั้นตอนสุดท้าย เปลี่ยนปุ่มเป็นสีส้มเริ่มใช้งาน) -->
+        <div id="pali-tour-step-10" class="hidden absolute bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full border border-slate-100 pointer-events-auto" style="left: 50%; top: 15%;">
+            <button onclick="closePaliTour()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">ขั้นตอนที่ 10/10</span>
+            <h3 class="text-lg font-bold text-slate-800 mt-3">🚀 10. กลุ่มเทคนิค สรุป และตาราง</h3>
+            <p class="text-xs text-slate-600 mt-2">มีเทคนิดต่างๆ สรุปที่ต้องจำและน่าสนใจ และตารางที่ต้องรู้</p>
+            <div class="flex justify-between items-center mt-5">
+                <button onclick="changePaliTourStep(9)" class="text-slate-500 hover:text-slate-700 text-xs font-bold">ย้อนกลับ</button>
+                <button onclick="closePaliTour()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow">🎉 เริ่มต้นใช้งานแอปเลย</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ส่วนควบคุมลอจิกสลับหน้าจอ (JavaScript) -->
+<script>
+    // 1. กดจากหน้าแรกสีน้ำเงิน เพื่อส่งต่อไปยังป๊อปอัปขาวเลือกทางเดิน
+    function proceedToWelcomeModal() {
+        const splash = document.getElementById('app-splash-screen');
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.remove(); // ลบหน้าแรกทิ้ง
+                
+                // สั่งเปิดป๊อปอัปขาวขึ้นมาทำงานต่อทันที
+                const welcomeModal = document.getElementById('pali-welcome-modal');
+                if (welcomeModal) {
+                    welcomeModal.classList.remove('hidden');
+                }
+            }, 500);
+        }
+    }
+
+    // 2. ปิดป๊อปอัปขาวเข้าหน้าหลักเลย
+    function closePaliWelcome() {
+        const modal = document.getElementById('pali-welcome-modal');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 300);
+        }
+    }
+
+    // 3. เริ่มสเต็ปแนะนำการใช้งาน (Tour)
+    function startPaliTour() {
+        closePaliWelcome();
+        const tourWrapper = document.getElementById('pali-tour-wrapper');
+        if (tourWrapper) {
+            tourWrapper.classList.remove('hidden');
+            changePaliTourStep(1);
+        }
+    }
+
+function changePaliTourStep(stepNum) {
+        // วนลูปซ่อนกล่องทัวร์ให้ครบทั้ง 10 สเต็ปก่อน เพื่อเคลียร์หน้าจอ
+        for (let i = 1; i <= 10; i++) {
+            const stepBox = document.getElementById(`pali-tour-step-${i}`);
+            if (stepBox) {
+                stepBox.classList.add('hidden');
+            }
+        }
+        
+        // ค่อยสั่งเปิดแสดงเฉพาะสเต็ปปัจจุบันที่ระบุส่งค่าเข้ามา
+        const activeStep = document.getElementById(`pali-tour-step-${stepNum}`);
+        if (activeStep) { 
+            activeStep.classList.remove('hidden'); 
+        }
+    }
+    function closePaliTour() {
+        const tourWrapper = document.getElementById('pali-tour-wrapper');
+        if (tourWrapper) { tourWrapper.remove(); }
+    }
+</script>
+    <header class="bg-[#1e293b] text-white px-6 py-4 flex items-center justify-between shadow-md z-6">
+        <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-book-bible text-2xl text-amber-400"></i>
+            <h1 class="text-xl font-bold tracking-wide">ระบบฐานข้อมูลกลางบาลีอัจฉริยะ วัดโมลี</h1>
+        </div>
+<button class="btn btn-danger btn-sm" onclick="(function(){ const sidebar = document.querySelector('div.w-72') || document.querySelector('aside'); if(sidebar) { if(sidebar.style.display === 'none') { sidebar.style.display = 'flex'; } else { sidebar.style.display = 'none'; } } })()" style="font-size: 16px; font-weight: bold; background-color: #ff1455; border: none; border-radius: 4px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+    <i class="fas fa-bars"></i> ซ่อน/แสดงเมนู ด้านซ้าย
+</button>    
+
+        <div class="inline-flex gap-2 ml-4">
+            <button onclick="scrollToMenu('grammar-group')" class="px-3 py-1 text-xs bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors cursor-pointer">
+                <i class="fa-solid fa-graduation-cap mr-1"></i> ไวยากรณ์
+            </button>
+            <button onclick="scrollToMenu('translation-group')" class="px-3 py-1 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors cursor-pointer">
+                <i class="fa-solid fa-language mr-1"></i> แปล
+            </button>
+            <button onclick="scrollToMenu('dict-group')" class="px-3 py-1 text-xs bg-sky-600 hover:bg-sky-700 text-white rounded transition-colors cursor-pointer">
+                <i class="fa-solid fa-book-atlas mr-1"></i> พจนานุกรม
+            </button>
+            <button onclick="scrollToMenu('tech-group')" class="px-3 py-1 text-xs bg-teal-600 hover:bg-teal-700 text-white rounded transition-colors cursor-pointer">
+                <i class="fa-solid fa-book-open mr-1"></i> เทคนิค/ตาราง
+            </button>
+        </div>
+        <div class="flex items-center space-x-4 text-sm">
+            <div class="bg-indigo-950 px-3 py-1.5 rounded-lg border border-indigo-500 text-xs flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-amber-400"></i> โฟกัสคำหลักปัจจุบัน: 
+                <span id="current-global-focus" class="text-amber-300 font-bold text-sm">ยังไม่ได้เลือก</span>
+            </div>
+            <span class="bg-emerald-600 px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <span class="w-2 h-2 bg-white rounded-full animate-ping"></span> เชื่อมต่อฐานข้อมูลแล้ว
+            </span>
+            <div class="text-slate-300">พิกัดล่าสุด: <span id="current-location-text" class="text-amber-300 font-medium">ธรรมบท เล่ม 1 เรื่องที่ 1</span></div>
+        </div>
+
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <aside class="w-80 bg-white border-r border-slate-200 flex flex-col sidebar-scroll overflow-y-auto">
+            <div class="p-4 space-y-6">
+                
+                <div id="grammar-group">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-indigo-500"></i> กลุ่มไวยากรณ์
+                    </h3>
+                    <div class="space-y-1">
+                        
+                        <details class="group hidden" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-amber-500">
+                                <span class="font-semibold text-amber-800"><i class="fa-solid fa-gavel mr-1 text-amber-600"></i> สำนักงานแม่กลองบาลีสนามหลวง</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <div class="pl-3 mt-1 space-y-2 border-l-2 border-amber-200 ml-2 py-1">
+                                <div>
+                                    <span class="block text-[11px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">หนังสือการเรียน-การสอน วิชาบาลีไวยากรณ์ เล่ม ๑ นามศัพท์-อัพยยศัพท์</span>
+                                    <div class="pl-2 mt-0.5 space-y-0.5 text-xs">
+<a href="https://drive.google.com/file/d/1xjMOWY-1NWVyKQ8VMSSO0U5umZUAtwZh/view?usp=drive_link" target="_blank" onclick="sendCommandToMainTool('เล่ม ๑')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• เล่ม ๑</a>
+                                        <a href="#" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('อัพยยศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• อัพยยศัพท์</a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="block text-[11px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">หนังสือการเรียน-การสอน วิชาบาลีไวยากรณ์ เล่ม ๒ อาขยาต-กิตก์</span>
+                                    <div class="pl-2 mt-0.5 space-y-0.5 text-xs">
+<a href="https://drive.google.com/file/d/1iOhU0Z_3ABUD_6YK8-gxJlK4Uiq-MJWo/view?usp=drive_link" target="_blank" onclick="sendCommandToMainTool('เล่ม ๒')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• เล่ม ๒</a>
+                                        <a href="#" onclick="sendCommandToMainTool('อาขยาต')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• อาขยาต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('กิตก์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• กิตก์</a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="block text-[11px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">หนังสือการเรียน-การสอน วิชาบาลีไวยากรณ์ เล่ม ๓ สมาส-ตัทธิต / สมัญญาฯ-สนธิ</span>
+                                    <div class="pl-2 mt-0.5 space-y-0.5 text-xs">
+<a href="https://drive.google.com/file/d/1IhYUHKVIVg31OUrYoB0rAxIgOIQa5eDl/view?usp=drive_link" target="_blank" onclick="sendCommandToMainTool('เล่ม ๓')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• เล่ม ๓</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สมาส')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• สมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ตัทธิต')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ตัทธิต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สมัญญาภิธาน')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• สมัญญาภิธาน</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สนธิ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• สนธิ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+              
+                        <details class="group hidden" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-amber-500">
+                                <span class="font-semibold text-amber-800"><i class="fa-solid fa-gavel mr-1 text-amber-600"></i> ตำราเรียนฉบับพิ้นฐาน </span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>1. สมัญญาภิธานและสนธิ</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>                           
+                                <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
+                                    <a href="#" onclick="sendCommandToMainTool('บาลีไวยากรณ์')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลีไวยากรณ์</a>
+                                    <a href="#" onclick="sendCommandToMainTool('สมัญญาภิธาน')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• สมัญญาภิธาน</a>
+                                    <a href="#" onclick="sendCommandToMainTool('สระ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— สระ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('พยัญชนะ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— พยัญชนะ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('ฐานกรณ์ของอักขระ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— ฐานกรณ์ของอักขระ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('เสียงอักขระ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— เสียงอักขระ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('พยัญชนะสังโยค')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— พยัญชนะสังโยค</a>
+                                    
+                                    <a href="#" onclick="sendCommandToMainTool('สนธิ')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded mt-1 font-medium">• สนธิ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('สนธิกิริโยปกรณ์')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— สนธิกิริโยปกรณ์</a>
+                                    <a href="#" onclick="sendCommandToMainTool('สระสนธิ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— สระสนธิ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('พยัญชนะสนธิ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— พยัญชนะสนธิ</a>
+                                    <a href="#" onclick="sendCommandToMainTool('นิคคหิตสนธิ')" class="block p-1.5 text-xs text-slate-500 hover:text-indigo-600 pl-4">— นิคคหิตสนธิ</a>
+                                </div>
+                            </details>
+                            
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>2. นามศัพท์ และ อัพยศัพท์</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+                                <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
+                                    <a href="#" onclick="sendCommandToMainTool('นาม')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 font-medium">• หมวดนามศัพท์</a>
+                                    <div class="pl-2 grid grid-cols-2 gap-1 bg-slate-50 p-1.5 rounded text-[11px]">
+                                        <a href="#" onclick="sendCommandToMainTool('ลิงค์')" class="text-slate-500 hover:text-indigo-600">ลิงค์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('วจนะ')" class="text-slate-500 hover:text-indigo-600">วจนะ</a>
+                                        <a href="#" onclick="sendCommandToMainTool('วิภัตตินาม')" class="text-slate-500 hover:text-indigo-600">วิภัตตินาม</a>
+                                        <a href="#" onclick="sendCommandToMainTool('อายตนิบาต')" class="text-slate-500 hover:text-indigo-600">อายตนิบาต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('การันต์')" class="text-slate-500 hover:text-indigo-600">การันต์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('วิธีแจกการันต์ใน')" class="text-slate-500 hover:text-indigo-600">วิธีแจกการันต์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ปุลิงค์')" class="text-slate-500 hover:text-indigo-600">ปุลิงค์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('อิตถีลิงค์')" class="text-slate-500 hover:text-indigo-600">อิตถีลิงค์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('นปุงสกลิงค์')" class="text-slate-500 hover:text-indigo-600">นปุงสกลิงค์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('กติปยศัพท์')" class="text-slate-500 hover:text-indigo-600">กติปยศัพท์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('มโนคณะศัพท์')" class="text-slate-500 hover:text-indigo-600">มโนคณะศัพท์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สังขยาคุณนาม')" class="text-slate-500 hover:text-indigo-600">สังขยาคุณนาม</a>
+                                    </div>
+                                    <a href="#" onclick="sendCommandToMainTool('สรรพนาม')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 pl-2">• สรรพนาม</a>
+                                    
+                                    <a href="#" onclick="sendCommandToMainTool('อัพยยศัพท์')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 font-medium mt-1">• หมวดอัพยยศัพท์</a>
+                                    <div class="pl-4 space-y-0.5 text-[11px]">
+                                        <a href="#" onclick="sendCommandToMainTool('อุปสัค')" class="block text-slate-500 hover:text-indigo-600">— อุปสัค</a>
+                                        <a href="#" onclick="sendCommandToMainTool('นิบาต')" class="block text-slate-500 hover:text-indigo-600">— นิบาต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ปัจจัย อัพยยศัพท์')" class="block text-slate-500 hover:text-indigo-600">— ปัจจัย อัพยยศัพท์</a>
+                                    </div>
+                                </div>
+                            </details>
+                            
+                            <details class="group hidden" open>
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>3. อาขยาต สมาส และกิตก์</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+                                <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
+                                    <a href="#" onclick="sendCommandToMainTool('อาขยาต')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 font-medium">• อาขยาต</a>
+                                    <div class="pl-2 grid grid-cols-2 gap-1 bg-slate-50 p-1.5 rounded text-[11px]">
+                                        <a href="#" onclick="sendCommandToMainTool('วิภัตติอาขยาต')" class="text-slate-500 hover:text-indigo-600">วิภัตติอาขยาต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('กาล')" class="text-slate-500 hover:text-indigo-600">กาล</a>
+                                        <a href="#" onclick="sendCommandToMainTool('บท')" class="text-slate-500 hover:text-indigo-600">บท</a>
+                                        <a href="#" onclick="sendCommandToMainTool('วจนะ')" class="text-slate-500 hover:text-indigo-600">วจนะ</a>
+                                        <a href="#" onclick="sendCommandToMainTool('บุรุษ')" class="text-slate-500 hover:text-indigo-600">บุรุษ</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ธาตุ')" class="text-slate-500 hover:text-indigo-600">ธาตุ</a>
+                                        <a href="#" onclick="sendCommandToMainTool('วาจกอาขยาต')" class="text-slate-500 hover:text-indigo-600">วาจกอาขยาต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ปัจจัยอาขยาต')" class="text-slate-500 hover:text-indigo-600">ปัจจัยอาขยาต</a>
+                                    </div>
+
+                                    <a href="#" onclick="sendCommandToMainTool('สมาส')" class="block p-1.5 text-xs text-indigo-600 bg-indigo-50 rounded font-bold mt-1 flex justify-between items-center">
+                                        <span>• สมาสศัพท์ (Sync ปุ่มหลัก)</span>
+                                        <span class="text-[9px] bg-indigo-600 text-white px-1.5 py-0.5 rounded-full">Link</span>
+                                    </a>
+                                    <div class="pl-2 grid grid-cols-1 gap-0.5 bg-slate-50/50 p-1.5 rounded text-[11px] border border-slate-100">
+                                        <a href="#" onclick="sendCommandToMainTool('กัมมธารยสมาส')" class="text-slate-500 hover:text-indigo-600">• กัมมธารยสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ทิคุสมาส')" class="text-slate-500 hover:text-indigo-600">• ทิคุสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ตัปปุริสสมาส')" class="text-slate-500 hover:text-indigo-600">• ตัปปุริสสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ทวันทวสมาส')" class="text-slate-500 hover:text-indigo-600">• ทวันทวสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('อัพยยีภาวสมาส')" class="text-slate-500 hover:text-indigo-600">• อัพยยีภาวสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('พหุพพินิสมาส')" class="text-slate-500 hover:text-indigo-600">• พหุพพินิสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('นบุพพบทพหุพพินิสมาส')" class="text-slate-500 hover:text-indigo-600">• นบุพพบทพหุพพินิสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ภินนาธิกรณพหุพพินิสมาส')" class="text-slate-500 hover:text-indigo-600">• ภินนาธิกรณพหุพพินิสมาส</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สมาสท้อง')" class="text-slate-500 hover:text-indigo-600">• สมาสท้อง</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สหบุพพบทพหุพพินิสมาส')" class="text-slate-500 hover:text-indigo-600">• สหบุพพบทพหุพพินิสมาส</a>
+                                    </div>
+
+                                    <a href="#" onclick="sendCommandToMainTool('กิตก์')" class="block p-1.5 text-xs text-slate-600 hover:text-indigo-600 font-medium mt-1">• กิตก์ และ ตัทธิต</a>
+                                    <div class="pl-3 space-y-0.5 text-[11px]">
+                                        <a href="#" onclick="sendCommandToMainTool('นามกิตก์')" class="block text-slate-500 hover:text-indigo-600">- นามกิตก์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สาธนะ')" class="block text-slate-500 hover:text-indigo-600">- สาธนะ</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ปัจจัยแห่งนามกิตก์')" class="block text-slate-500 hover:text-indigo-600">- ปัจจัยแห่งนามกิตก์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('วิเคราะห์แห่งนามกิตก์')" class="block text-slate-500 hover:text-indigo-600">- วิเคราะห์แห่งนามกิตก์</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ตัทธิต')" class="block text-slate-600 font-medium hover:text-indigo-600 pt-1">• หมวดตัทธิต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('สามัญญตัทธิต')" class="block text-slate-500 hover:text-indigo-600 pl-2">— สามัญญตัทธิต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('ภาวัตติต')" class="block text-slate-500 hover:text-indigo-600 pl-2">— ภาวัตติต</a>
+                                        <a href="#" onclick="sendCommandToMainTool('อัพยยตัทธิต')" class="block text-slate-500 hover:text-indigo-600 pl-2">— อัพยยตัทธิต</a>
+                                    </div>
+                                </div>
+                            </details>
+                        </details>
+                        
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-amber-500">
+                                <span class="font-semibold text-amber-800"><i class="fa-solid fa-gavel mr-1 text-amber-600"></i>ตำราเรียนฉบับวัดโมลี</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+    <a href="https://drive.google.com/file/d/1SYr5EjJZxekhquJYst-BcNRk5uTDCeMC/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('หลักสูตรบาลีไวยากรณ์และหลักสัมพันธ์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• หลักสูตรบาลีไวยากรณ์และหลักสัมพันธ์</a>
+
+                        </details>
+                      
+                        <details class="group hidden" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-amber-500">
+                                <span class="font-semibold text-amber-800"><i class="fa-solid fa-gavel mr-1 text-amber-600"></i>ตำราเรียนฉบับย่อวัดธาตุทอง มีลิขสิทธิ</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+                        
+                        </details>
+                        
+                        <details class="group hidden" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-amber-500">
+                                <span class="font-semibold text-amber-800"><i class="fa-solid fa-gavel mr-1 text-amber-600"></i>ตำราเรียนฉบับพระมหาสาย มีลิขสิทธิ</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>1. สนธิเพื่อการแปล</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                            </details>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>2 เรียนและสอนอาขยาตให้แปลได้</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                            </details>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>3. กริยากิตก์เพื่อการแปล</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                            </details>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>4. ตัทธิตเพื่อการแปล</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                            </details>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>5. สมาสเพื่อการแปล</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                            </details>
+                            <details class="group">
+                                <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                    <span>6. นามกิตก์เพื่อการแปล</span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                                </summary>                                                                              
+    <a href="วางลิงก์ Google Drive ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                            </details> 
+                        </details> 
+
+                    </div>
+                </div>
+
+                <div id="translation-group">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-language text-emerald-500"></i> กลุ่มแปล
+                    </h3>
+                    <div class="space-y-1">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                <span>การสัมพันธ์ประโยค</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+    <a href="https://drive.google.com/file/d/1VYgBYBXqmgALXDr56-bn77M6e_JkdhVl/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('การสัมพันธ์ประโยค')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• การสัมพันธ์ประโยค</a>                            
+                            <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
+                                <a href="#" class="block p-2 text-xs text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded">1.1 โครงสร้างพื้นฐาน</a>
+                                <a href="#" class="block p-2 text-xs text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded">1.2 ประโยคแทรก/ถอน</a>
+                            </div>
+                    <div class="space-y-1">
+                        <details class="group">                            
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                <span>แปลโดยพยัญชนะ 2ภาษา บาลี-ไทย</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>                            
+    <a href="https://drive.google.com/file/d/1n9RxfMijRwPUdllX_moIWM5iinDyLNHA/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-1-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-1-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/1VMpKpl8lj8VOF81Bc4s1Vb3_cZoiUTJY/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-2-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-2-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/1vjltqj4SR26H7r5hjlTn7eBSZwY-JQ3x/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-3-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-3-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/108n9uNAuGMHLrwPdLKwGqOOz6RR02Qnj/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-4-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-4-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/16EkgEqC_-KvmCGh_Q-GilqmgMpMMfFJp/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-5-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-5-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/1sjoK6YAPulEd3vkPMH8oWwxGLkfXW6mo/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-6-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-6-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/19OobAqmbBg7QXwp1ZgJlrOKxDUvHz21B/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-7-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-7-แปลโดยพยัญชนะ 2ภาษา</a>
+    <a href="https://drive.google.com/file/d/1Zr_zqjFHZulZzSpxXtcv2UwIdS_Suq4W/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ภาคที่-8-แปลโดยพยัญชนะ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ภาคที่-8-แปลโดยพยัญชนะ 2ภาษา</a>
+
+                        </details>
+                    </div>
+                </div>
+
+                <div id="dict-group">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-book text-amber-500"></i> กลุ่มพจนานุกรม
+                    </h3>
+                    <div class="space-y-2">
+                        
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                <span>1. พจนานุกรม บาลี-ไทย</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <div class="pl-4 mt-1 space-y-2 border-l-2 border-amber-200 ml-2">
+                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
+                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
+                                
+                                <div class="pt-1 space-y-1.5">
+                                    <span class="text-[10px] font-bold text-amber-700 block px-1"><i class="fa-solid fa-layer-group"></i> เลือกเล่มตรวจคำหลัก:</span>
+                                    
+                                    <a href="#" onclick="selectDictionaryBook(1, 'ฉบับภูมิพโลภิกขุ')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-amber-600 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/b45309/ffffff?text=Book+1" alt="เล่ม 1" class="w-full h-full object-cover onError-hide" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 1</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับภูมิพโลภิกขุ</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม บาลี-ไทย</div>
+                                        </div>
+                                    </a>
+<a href="https://drive.google.com/file/d/17lAwvbTl3pkMMmyAhXdI7igu6TkL_tal/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ฉบับภูมิพโลภิกขุ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ฉบับภูมิพโลภิกขุ</a>
+
+                                    <a href="#" onclick="selectDictionaryBook(2, 'ฉบับหลวง')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-indigo-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/4338ca/ffffff?text=Book+2" alt="เล่ม 2" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 2</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับหลวงสนามหลวง</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม บาลี-ไทย</div>
+                                        </div>
+                                    </a>
+<a href="วางลิงก์ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                                    <a href="#" onclick="selectDictionaryBook(3, 'ฉบับ อ.เปลื้อง ณ นคร')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-emerald-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/047857/ffffff?text=Book+3" alt="เล่ม 3" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 3</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับ อ.เปลื้อง ณ นคร</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม บาลี-ไทย</div>
+                                        </div>
+                                    </a>
+<a href="วางลิงก์ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                <span>2. พจนานุกรม ไทย-บาลี </span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <div class="pl-4 mt-1 space-y-2 border-l-2 border-amber-200 ml-2">
+                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
+                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
+                                
+                                <div class="pt-1 space-y-1.5">
+                                    <span class="text-[10px] font-bold text-amber-700 block px-1"><i class="fa-solid fa-layer-group"></i> เลือกเล่มตรวจคำหลัก:</span>
+                                    
+                                    <a href="#" onclick="selectDictionaryBook(1, 'ฉบับภูมิพโลภิกขุ')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-amber-600 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/b45309/ffffff?text=Book+1" alt="เล่ม 1" class="w-full h-full object-cover onError-hide" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 1</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">พระมหาโพธิวงศาจารย์ (ทองดี สุรเตโช ป.ธ.๙, ราชบัณฑิต)</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม ไทย-บาลี</div>
+                                        </div>
+                                    </a>
+
+                                    <a href="#" onclick="selectDictionaryBook(2, 'ฉบับหลวง')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-indigo-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/4338ca/ffffff?text=Book+2" alt="เล่ม 2" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 2</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับพระมหาประเสริฐ</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม ไทย-บาลี</div>
+                                        </div>
+                                    </a>
+
+                                    <a href="#" onclick="selectDictionaryBook(3, 'ฉบับ อ.เปลื้อง ณ นคร')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-emerald-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/047857/ffffff?text=Book+3" alt="เล่ม 3" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 3</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับ วัดสวนดอก</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม ไทย-บาลี</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                            </div>
+                        </details>
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                <span>3. พจนานุกรม บาลี-ไทย-อังกฤษ </span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <div class="pl-4 mt-1 space-y-2 border-l-2 border-amber-200 ml-2">
+                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
+                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
+                                
+                                <div class="pt-1 space-y-1.5">
+                                    <span class="text-[10px] font-bold text-amber-700 block px-1"><i class="fa-solid fa-layer-group"></i> เลือกเล่มตรวจคำหลัก:</span>
+                                    
+                                    <a href="#" onclick="selectDictionaryBook(1, 'ฉบับภูมิพโลภิกขุ')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                        <div class="w-8 h-10 bg-amber-600 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
+                                            <img src="https://placehold.co/32x40/b45309/ffffff?text=Book+1" alt="เล่ม 1" class="w-full h-full object-cover onError-hide" onerror="this.style.display='none'">
+                                            <span class="absolute group-hover:scale-110 transition-transform">เล่ม 1</span>
+                                        </div>
+                                        <div class="leading-tight">
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับภูมิพโลภิกขุ</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม บาลี-ไทย-อังกฤษ</div>
+                                        </div>
+                                    </a>
+<a href="https://drive.google.com/file/d/1LohyfeKoqlEdyxqoUGzS8S8l9dhFDEG8/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-1')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-1</a>
+<a href="https://drive.google.com/file/d/1pFqqUWX3IcH6QYqsh9x-Ggcahp3W1qJn/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-2')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-2</a>
+<a href="https://drive.google.com/file/d/1Gx7RBLzHmc4LaAe1Q_AfV8i__F3LbrX0/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-3')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-3</a>
+<a href="https://drive.google.com/file/d/1uteFbMKSjIsrMP2-zuo_fnqN_b0MkX1u/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-4')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-4</a>
+<a href="https://drive.google.com/file/d/12NbwZXMyl04LCc4MQbsn145AvpGSoxdJ/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-5')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-5</a>
+<a href="https://drive.google.com/file/d/1vjNUgQrC04fZs7LGpDjun2AMzmtvkbJ0/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-6')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-6</a>
+<a href="https://drive.google.com/file/d/1ic_2D_CXxm5VTxWGDVFUpCvsUoSP77HL/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-7')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-7</a>
+<a href="https://drive.google.com/file/d/1FzkBstWp-SIOFWB9tJfqOnGtkTIl7i9B/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('บาลี-ไทย-อังกฤษ-8')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• บาลี-ไทย-อังกฤษ-8</a>
+                                </div>
+                            </div>
+                        </details>                        
+
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded cursor-pointer list-none">
+                                <span>4. ระบบวิเคราะห์ความถี่คำ</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
+                                <a href="#" class="block p-1.5 text-xs text-slate-600 hover:text-amber-600 rounded">• กลุ่มคำใช้บ่อย (อิติ, จ, เต)</a>
+                                <a href="#" class="block p-1.5 text-xs text-slate-600 hover:text-amber-600 rounded">• กลุ่มคำใช้น้อย</a>
+                            </div>
+                        </details>
+
+                    </div>
+                </div>
+
+                <div id="tech-group">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-teal-500"></i> กลุ่มเทคนิคและตารางหลัก
+                    </h3>
+                    <div class="space-y-1">
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-teal-500">
+                                <span>1. สรุปทางไวยากรณ์เร่งรัด</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
+                            </summary>
+                            <div class="pl-4 mt-1 space-y-1 border-l-2 border-teal-200 ml-2">
+<a href="#" onclick="loadPdfToMainView('ผัง ภาพรวมบาลีไวยากรณ', 'ผัง ภาพรวมบาลีไวยากรณPaliGrmrOverview.pdf')" class="block p-1.5 text-xs text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded">
+    • ผัง ภาพรวมบาลีไวยากรณ
+</a>
+<a href="#" onclick="loadPdfToMainView('ผังกิริยากิตก์', 'ผังกิริยากิตก์Verb_Kitaka.pdf')" class="block p-1.5 text-xs text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded">
+    • ผังกิริยากิตก์
+</a>                      </details>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+
+        <main class="flex-1 flex flex-col overflow-hidden bg-slate-50 p-6">
+            
+<section class="mb-4">
+    <div class="flex flex-wrap items-center justify-between gap-4 w-full mb-4">
+        
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-0">
+            <i class="fa-solid fa-bolt text-amber-500"></i> กลุ่มปุ่มด่วน 9 ฟังก์ชันการทำงาน (ดึงข้อมูลข้ามหมวดทันที)
+        </h2>
+
+        <div class="flex items-center gap-3 flex-grow justify-end min-w-[280px] max-w-full md:max-w-2xl">
+<a href="Dhamma Nava Wang 26กค69 v8.5 แปลเลือกเองหลายภาษา อ่านออกเสียงได้ ปุ่ม3Dแถบเลื่อน.html" class="btn-dhammanava">
+       ⛵ เปิดระบบ ธรรมนาวา วัง
+    </a>   
+            <a href="3indextest.html" target="_blank" class="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:border-amber-500 transition shadow-sm group whitespace-nowrap">
+                <img src="3.jpg" alt="หลวงปู่" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" class="group-hover:scale-110 transition-transform">
+                <span class="text-[11px] font-semibold text-slate-600 group-hover:text-amber-600">ดัชนีวัดโกรกกราก</span>
+            </a>
+
+            <div class="relative flex-grow max-w-md">
+                <input 
+                    type="text" 
+                    id="quick-search"
+                    placeholder="พิมพ์คำศัพท์ ไวยากรณ์ หรือข้อความที่ต้องการ..." 
+                    class="w-full px-4 py-2 pl-11 text-xs border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder-gray-400"
+                />
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <svg class="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3 w-full">
+        
+<!-- วิธีสำรองที่ได้ผลแน่นอน 100% กับระบบไฟล์เดี่ยว -->
+<button type="button" onclick="event.preventDefault(); if(typeof goToDashboard === 'function') { goToDashboard(); } if(document.getElementById('welcome-message')) { document.getElementById('welcome-message').classList.remove('hidden'); document.getElementById('welcome-message').style.display = 'block'; } const qBox = Array.from(document.querySelectorAll('div')).find(el => el.className.includes('bg-slate-900')); if(qBox) { qBox.classList.add('hidden'); } const frames = document.querySelectorAll('#view-wrapper iframe, #main-content-view iframe'); frames.forEach(f => f.classList.add('hidden'));" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-cyan-500 hover:text-cyan-600 transition shadow-sm group w-full">
+    <i class="fa-solid fa-house text-lg text-cyan-500 mb-1 group-hover:scale-110 transition-transform"></i>
+    <span class="text-[11px] font-medium">1. หน้าจอหลัก</span>
+</button>
+
+        <button onclick="quickAction(2, 'textbook')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-cyan-500 hover:text-cyan-600 transition shadow-sm group">
+            <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[11px] font-medium">2. ตำราเรียนย่อย</span>
+        </button>
+
+        <button onclick="quickAction(3, 'translation')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition shadow-sm group">
+            <i class="fa-solid fa-language text-lg text-emerald-500 mb-1 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[11px] font-medium">3. ค้นหมวดแปล</span>
+        </button>
+
+        <button onclick="quickAction(4, 'dictionary')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-amber-500 hover:text-amber-600 transition shadow-sm group">
+            <i class="fa-solid fa-layer-group text-lg text-amber-500 mb-1 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[11px] font-medium">4. เทียบพจนานุกรม</span>
+        </button>
+
+        <button onclick="quickAction(5, 'log')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-rose-500 hover:text-rose-600 transition shadow-sm group">
+            <i class="fa-solid fa-cloud-arrow-up text-lg text-rose-500 mb-1 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[11px] font-medium">5. บันทึก Supabase</span>
+        </button>
+
+        <button onclick="quickAction(6, 'history')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-slate-500 hover:text-slate-800 transition shadow-sm group">
+            <i class="fa-solid fa-clock-rotate-left text-lg text-slate-500 mb-1 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[11px] font-medium">6. ประวัติใช้งาน</span>
+        </button>
+
+        <button onclick="quickAction(7, 'freq')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-teal-500 hover:text-teal-600 transition shadow-sm group">
+            <i class="fa-solid fa-chart-line text-lg text-teal-500 mb-1 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[11px] font-medium">7. วิเคราะห์ศัพท์บ่อย</span>
+        </button>
+
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="naktham-index3.html" target="_blank" onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('นักธรรม', 'naktham-index3.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }" class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-graduation-cap text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">8. นักธรรม</span>
+    </a>
+</div>
+
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="game-index v1.html" target="_blank" onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('ศูนย์รวมเกม', 'game-index v1.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }" class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-gamepad text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">9. เมนูเกมบาลี</span>
+    </a>
+</div>
+
+    </div>
+</section>
+
+            <div class="flex-1 bg-white rounded-t-2xl border-t border-x border-slate-200 shadow-inner overflow-hidden relative flex flex-col">
+                
+                <div id="smart-dashboard-panel" class="hidden bg-slate-50 border-b border-slate-200 p-2.5 flex gap-2 text-xs">
+                    <button onclick="switchContextView('textbook')" class="px-3 py-1.5 bg-cyan-600 text-white font-medium rounded shadow-sm"><i class="fa-solid fa-book"></i> เปิดดูคลังตำรา</button>
+                    <button onclick="switchContextView('translation')" class="px-3 py-1.5 bg-emerald-600 text-white font-medium rounded shadow-sm"><i class="fa-solid fa-language"></i> ค้นหาในหมวดแปล</button>
+                    <button onclick="switchContextView('dictionary')" class="px-3 py-1.5 bg-amber-600 text-white font-medium rounded shadow-sm"><i class="fa-solid fa-book-open"></i> ตรวจเทียบพจนานุกรม</button>
+                    <button onclick="switchContextView('tech-summary')" class="px-3 py-1.5 bg-teal-600 text-white font-medium rounded shadow-sm"><i class="fa-solid fa-layer-group"></i> สรุปเทคนิค/ตาราง</button>
+                </div>
+
+                <div class="flex-1 relative overflow-y-auto p-4" id="view-wrapper">
+                    <div id="welcome-message" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-slate-50 z-0">
+                        <i class="fa-solid fa-wand-magic-sparkles text-5xl text-indigo-400 mb-3 animate-bounce"></i>
+                        <h3 class="text-base font-semibold text-slate-700">ยินดีต้อนรับสู่ระบบดัชนีคลังข้อมูลบาลีอัจฉริยะ</h3>
+                        <p class="text-xs text-slate-400 mt-1 max-w-md">ทดลองกดคำว่า <strong class="text-indigo-600 font-bold">"สมาส"</strong> ที่เมนูด้านซ้ายเพื่อกระจายข้อมูลข้ามเล่ม หรือคลิกทำข้อสอบไวยากรณ์บาลี ประโยค 1-2 ด้านล่างได้ทันทีครับ</p>
+                        <button onclick="loadPage('main-tool')" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition shadow">
+                            เปิดหน้าสแกนและจัดเรียงประโยคปัจจุบัน
+                        </button>
+                    </div>
+                    <div id="dynamic-context-content" class="hidden space-y-4"></div>
+
+                    <div class="relative w-full h-full" id="pdfWrapper">
+                        
+                        <button onclick="togglePdfSize()" class="absolute top-2 right-2 z-50 bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg shadow-md text-xs font-semibold flex items-center gap-1 cursor-pointer">
+                            ↕️ ขยาย / ย่อหน้าจอ
+                        </button>
+
+                        <iframe id="main-view-frame" src="about:blank" class="w-full h-full border-none hidden relative z-10"></iframe>
+                    
+                    </div>
+
+                </div>
+            </div>
+<!-- ========================================== -->
+<!-- 1. ส่วนโครงสร้างหน้าจอคลังข้อสอบ (HTML) ชุดใหม่ -->
+<!-- ========================================== -->
+ 
+<section class="bg-slate-900 text-slate-100 p-4 rounded-b-2xl border-b border-x border-slate-800 shadow-md">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-2">
+        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2 mb-2 md:mb-0">
+            <i class="fa-solid fa-file-signature text-amber-400"></i> คลังข้อสอบบาลีไวยากรณ์ ประโยค 1-2 (ระบบดึงข้อมูล Excel อัจฉริยะในหน้าเดียว)
+        </h2>
+        <div class="flex flex-wrap items-center gap-2">
+            <!-- ช่องเลือกไฟล์ Excel -->
+            <label class="text-[11px] bg-indigo-950 border border-indigo-700 px-2 py-1 rounded cursor-pointer hover:bg-indigo-900 transition text-slate-300">
+                <i class="fa-solid fa-file-excel text-emerald-400 mr-1"></i> <span id="excel-file-name">คลิกเพื่อโหลดไฟล์ข้อสอบ (.xlsx)</span>
+                <input type="file" id="excel-input-integrated" accept=".xlsx, .xls" class="hidden">
+            </label>
+            
+            <button onclick="toggleStatsIntegrated()" class="text-xs bg-emerald-800 border border-emerald-600 px-2.5 py-1 rounded hover:bg-emerald-700 text-white transition flex items-center gap-1">
+                <i class="fa-solid fa-chart-simple"></i> สถิติแยกคน/หมวด
+            </button>
+            <!-- ปุ่มขยายเต็มหน้าจอ / ย่อขนาด (Fullscreen Toggle) -->
+<button id="toggle-fullscreen-btn" onclick="toggleQuizFullscreen()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+    <i id="fullscreen-icon" class="fa-solid fa-expand"></i>
+    <span id="fullscreen-text">ขยายเต็มจอ</span>
+</button>
+            <button onclick="toggleQuizButtons()" id="toggle-quiz-btn" class="text-xs bg-slate-800 border border-slate-600 px-2.5 py-1 rounded hover:bg-slate-700 text-slate-300 transition flex items-center gap-1">
+                <i id="toggle-quiz-icon" class="fa-solid fa-eye-slash"></i> <span id="toggle-quiz-text">ซ่อนแถบข้อสอบ</span>
+            </button>
+            <span id="quiz-status" class="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">สถานะ: รอโหลดไฟล์ Excel</span>
+        </div>
+    </div>
+ <!-- ค้นหาปุ่มสีแดงเดิม แล้วปรับแก้ส่วน onclick="..." ให้เป็นตามนี้ครับ -->
+<button type="button" 
+        onclick="event.preventDefault(); const homeBtn = document.getElementById('btn-home-main'); if(homeBtn) { homeBtn.click(); } else { window.location.reload(); }" 
+        class="flex items-center gap-1 px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-medium transition shadow-sm">
+    <i class="fa-solid fa-rotate-left"></i>
+    <span>รีเซ็ตค้าง / กลับหน้าหลัก</span>
+</button>
+
+    <!-- แถบปุ่มกด 7 ข้อ -->
+     
+    <div id="quiz-buttons-container" class="grid grid-cols-4 md:grid-cols-7 gap-2.5 transition-all duration-300 mb-4">
+        <button onclick="filterByTopicIntegrated(1)" id="quiz-int-btn-1" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">1</span>
+            <span>ข้อที่ 1 สมัญญาฯ</span>
+        </button>
+        <button onclick="filterByTopicIntegrated(2)" id="quiz-int-btn-2" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">2</span>
+            <span>ข้อที่ 2 สนธิ</span>
+        </button>
+        <button onclick="filterByTopicIntegrated(3)" id="quiz-int-btn-3" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">3</span>
+            <span>ข้อที่ 3 นาม/อัพยฯ</span>
+        </button>
+        <button onclick="filterByTopicIntegrated(4)" id="quiz-int-btn-4" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">4</span>
+            <span>ข้อที่ 4 สมาส</span>
+        </button>
+        <button onclick="filterByTopicIntegrated(5)" id="quiz-int-btn-5" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">5</span>
+            <span>ข้อที่ 5 ตัทธิต</span>
+        </button>
+        <button onclick="filterByTopicIntegrated(6)" id="quiz-int-btn-6" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">6</span>
+            <span>ข้อที่ 6 อาขยาต</span>
+        </button>
+        <button onclick="filterByTopicIntegrated(7)" id="quiz-int-btn-7" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">7</span>
+            <span>ข้อที่ 7 กิตก์</span>
+        </button>
+    </div>
+
+    <!-- แถบตัวกรองข้อย่อยแบบเดียวกับแอปที่ 2 (จะแสดงเมื่อโหลดไฟล์เสร็จ) -->
+    <div id="filter-zone-integrated" class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-4 hidden text-xs flex flex-wrap gap-2 items-center justify-between">
+        <div class="flex flex-wrap gap-2 items-center">
+            <span class="text-slate-400">👤 ผู้ทำ: <input type="text" id="user-name-int" class="bg-slate-900 border border-slate-600 rounded px-1.5 py-0.5 text-slate-200 w-24" value="ผู้ทั่วไป"></span>
+            <select id="main-topic-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="updateSubDropdownInt(); applyFiltersInt();"></select>
+            <select id="sub-topic-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="updateSub1DropdownInt(); applyFiltersInt();"></select>
+            <select id="sub1-topic-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="applyFiltersInt();"></select>
+            <select id="year-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="applyFiltersInt();"></select>
+            <input type="number" id="back-year-input-int" placeholder="ย้อนหลังปี" oninput="applyFiltersInt()" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1 w-16">
+        </div>
+        <div id="timer-display-int" class="font-mono text-amber-400 bg-slate-900 px-2 py-1 rounded border border-slate-700 text-sm">เวลา: 00:00</div>
+    </div>
+
+    <!-- พื้นที่แสดงคำถามและตัวข้อสอบที่แปลงมาจากแอปที่ 2 -->
+    <div id="quiz-workspace-integrated" class="bg-slate-950 rounded-xl border border-slate-800 p-4 min-h-[200px] hidden flex flex-col items-center">
+        <div id="q-image-container-int" class="text-center mb-3 max-w-full"></div>
+        
+        <!-- ส่วนกระดานข้อสอบ -->
+        <div id="quiz-ui-int" class="text-slate-200 w-full overflow-x-auto text-sm bg-slate-900/50 p-3 rounded-lg border border-slate-800 min-h-[100px]"></div>
+        
+        <!-- ส่วนตัวเลือกคำศัพท์ (โหมดลากวาง) -->
+        <div id="options-ui-int" class="w-full mt-4 p-3 bg-slate-900/80 rounded-lg border-2 border-dashed border-slate-700 flex flex-wrap gap-2 justify-center min-h-[60px]" ondragover="event.preventDefault(); this.classList.add('border-indigo-500');" ondragleave="this.classList.remove('border-indigo-500');" ondrop="dropToBottomInt(event)"></div>
+        
+        <!-- แถบควบคุมข้อสอบ ล้าง/ตรวจ/เลื่อนข้อ -->
+        <div class="w-full mt-4 flex justify-between items-center bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+            <button onclick="moveInt(-1)" class="bg-slate-800 border border-slate-600 hover:bg-slate-700 px-3 py-1 rounded text-xs transition">ก่อนหน้า</button>
+            <span id="current-mode-badge-int" class="px-3 py-1 bg-slate-700 rounded-full font-bold text-[11px] text-white">โหมด: ลากวางศัพท์</span>
+            <div class="flex gap-2">
+                <button onclick="resetQuizInt()" class="bg-rose-950 border border-rose-800 text-rose-300 hover:bg-rose-900 px-3 py-1 rounded text-xs transition">ล้างคำตอบ</button>
+                <button onclick="checkAnswersInt()" class="bg-amber-500 border border-amber-600 text-slate-950 font-bold hover:bg-amber-400 px-4 py-1 rounded text-xs transition shadow-md">ตรวจคำตอบ</button>
+            </div>
+            <button onclick="moveInt(1)" class="bg-slate-800 border border-slate-600 hover:bg-slate-700 px-3 py-1 rounded text-xs transition">ถัดไป</button>
+        </div>
+    </div>
+</section>
+
+<!-- โมดอล ป๊อปอัพรายงานสถิติแยกต่างหาก -->
+<div id="stats-panel-int" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl bg-slate-900 border border-slate-700 text-slate-100 rounded-xl p-4 shadow-2xl z-[1000] hidden">
+    <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-3">
+        <h3 class="font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-chart-line"></i> รายงานสถิติการเรียนรู้</h3>
+        <div class="flex items-center gap-2">
+            <select id="stats-user-filter-int" onchange="renderGroupedStatsInt()" class="bg-slate-800 border border-slate-600 rounded text-xs p-1"></select>
+            <button onclick="toggleStatsIntegrated()" class="text-slate-400 hover:text-white text-lg">&times;</button>
+        </div>
+    </div>
+    <div id="stats-content-int" class="max-height-[350px] overflow-y-auto text-xs"></div>
+    <button onclick="clearAllStatsInt()" class="w-full mt-3 p-2 bg-slate-800 hover:bg-slate-700 rounded text-center text-[11px] font-semibold text-rose-400 transition border border-slate-700">ล้างประวัติการทดสอบทั้งหมด</button>
+</div>
+
+<!-- หน้าต่างเปิดดูคู่มือ PDF แบบเดิมของแอปที่ 2 -->
+<div id="pdf-overlay-int" class="fixed inset-0 bg-black/70 z-[998] hidden" onclick="closeAllModalsInt()"></div>
+<div id="pdf-modal-int" class="fixed top-[5%] left-[5%] w-[90%] h-[90%] bg-slate-950 text-white z-[999] rounded-xl border border-slate-700 overflow-hidden hidden">
+    <div class="bg-slate-900 p-2.5 flex justify-between items-center border-b border-slate-800">
+        <span class="text-xs font-bold text-amber-400"><i class="fa-solid fa-book-open"></i> คำอธิบายไวยากรณ์ (เปิดตามหน้าหนังสือเฉลยอัตโนมัติ)</span>
+        <button onclick="closeAllModalsInt()" class="bg-rose-900 border border-rose-700 hover:bg-rose-800 px-2 py-0.5 rounded text-xs transition">ปิด X</button>
+    </div>
+    <iframe id="pdf-frame-int" src="" class="w-full h-full border-none bg-white"></iframe>
+</div>
+
+        </main>
+    </div>
+
+    <script>
+        // 📦 คลังข้อมูลกลาง (Global Data Repository)
+        const globalPaliRepository = {
+            "สมาส": {
+                textbooks: [
+                    { book: "บาลีไวยากรณ์สมเด็จพระมหาสมณเจ้าฯ", chapter: "กัณฑ์ที่ 4: สมาสศัพท์", content: "สมาส คือ การย่อศัพท์ตั้งแต่สองศัพท์ขึ้นไปให้เป็นศัพท์เดียวกัน เพื่อให้กระชับและสละสลวย แบ่งเป็น 6 ประเภทใหญ่ เช่น อัพยยีภาวะ, ตัปปุริสะ เป็นต้น" },
+                    { book: "คู่มือเรียนบาลีไวยากรณ์ ประโยค 1-2-3", chapter: "เรื่องสมาสโดยละเอียด", content: "ข้อสังเกตในการจำแนกรูปวิเคราะห์ และการลบหรือคงรูปวิภัตติตัวหน้า (ลุตตสมาส และ อลุตตสมาส)" }
+                ],
+                translations: [
+                    { reference: "คัมภีร์ธรรมบท ภาค 1 (เรื่อง จักษุปาลเถระ)", count: "พบ 45 จุดศัพท์สมาส", example: "เช่น 'มหาสุวณฺโณ' (กัมมธารยะ) , 'จกฺขุปาลตฺเถรสฺส' (ฉัฏฐีตัปปุริสะ)" },
+                    { reference: "คัมภีร์ธรรมบท ภาค 2 (เรื่อง มัฏฐกุณฑลี)", count: "พบ 28 จุดศัพท์สมาส", example: "เช่น 'อมตทสฺสาวิโน' (อุปปทตัปปุริสสมาส ภายในพหุพพิกิหิ)" }
+                ],
+                dictionaries: [
+                    { dictionary: "พจนานุกรม บาลี-ไทย ฉบับภูมิพโลภิกขุ", definition: "สมาส (น.) วิธีประกอบศัพท์ตั้งแต่สองคำขึ้นไปเข้าเป็นคำเดียวกัน โดยลบวิภัตติตัวหน้า" },
+                    { dictionary: "พจนานุกรม บาลี-ไทย ฉบับหลวง", definition: "การรวมคำนามกับนาม หรือนามกับอัพยศัพท์ เพื่อทำหน้าที่เป็นคำเดียวกันในประโยค" },
+                    { dictionary: "พจนานุกรม ศัพท์บาลี อ.เปลื้อง ณ นคร", definition: "คำประสมเชิงไวยากรณ์มคธ มีนามสมาส และกิริยาสมาสเป็นประธาน" }
+                ],
+                // เพิ่มโครงสร้าง Object รองรับ Tab 7 ย่อยในคำว่าสมาส
+                techSummaries: [
+                    { title: "ตารางสรุปหลักไวยากรณ์เร่งรัด (สมาส)", details: "ตารางเปรียบเทียบสมาสทั้ง 6 ประเภท โครงสร้างการจัดตำแหน่งคำ และหลักการพิจารณาบทประธาน-บทขยายในการแปลบาลีสนามหลวง" },
+                    { title: "สูตรและเทคนิคการจำวิภัตติตัวย่อ (สมาส)", details: "เทคนิคการเดารูปวิเคราะห์ของตัปปุริสสมาส 2-7 และจุดสังเกตประธานต่างลิงค์ในพหุพพินิสมาสสำหรับทำข้อสอบเร่งรัด" }
+                ]
+            },
+            "ตารางสรุปหลักไวยากรณ์เร่งรัด": {
+                textbooks: [], translations: [], dictionaries: [],
+                techSummaries: [{ title: "ตารางสรุปหลักไวยากรณ์เร่งรัด (ภาพรวม)", details: "คลังรวบรวมตารางสรุปย่อกฎเหล็กไวยากรณ์บาลี โครงสร้างการจัดตำแหน่งคำ และคู่มือสรุปความสัมพันธ์ของประโยคบาลีสนามหลวง" }]
+            },
+            "สูตรและเทคนิคการจำวิภัตติย่อ": {
+                textbooks: [], translations: [], dictionaries: [],
+                techSummaries: [{ title: "สูตรและเทคนิคการจำวิภัตติย่อ (ภาพรวม)", details: "ระบบจัดเก็บบันทึกช่วยจำ สูตรคำนวณการเปลี่ยนแปลงคำ เทคนิคเดาโครงสร้างคำศัพท์สมาส-ตัทธิต-อาขยาต สำหรับผู้เรียนบาลีทุกระดับชั้น" }]
+            }
+        };
+
+        // 📝 ฐานข้อมูลข้อสอบจำลองภายในหน้าเว็บ
+        const quizDatabase = {
+            1: { title: "ข้อที่ 1 สมัญญาภิธาน", filename: "quiz_samanya.html", question: "สระในบาลีไวยากรณ์มีเท่าไร อะไรบ้าง? และสระที่เป็นทีฆะมีลักษณอย่างไร?", answer: "มี 8 ตัว คือ อ อา อิ อี อุ อู เอ โอ. สระมีเสียงยาวเรียกว่า ทีฆะ ได้แก่ อา อี อู เอ โอ" },
+            2: { title: "ข้อที่ 2 สนธิ", filename: "quiz_sondhi.html", question: "สนธิกิริโยปกรณ์ คืออะไร? มีกี่อย่าง อะไรบ้าง?", answer: "คือ วิธีทำสนธิหรือเครื่องมือสำหรับต่อศัพท์ให้สละสลวย มี 8 อย่าง คือ โลโป อาเทโส อาคโม วิกาโร ปกติ ทีโฆ รัสสัง สัญโญโค" },
+            3: { title: "ข้อที่ 3 นามศัพท์ และอัพยศัพท์", filename: "quiz_nama.html", question: "ลิงค์ ในนามศัพท์คืออะไร มีกี่อย่าง? และอัพยศัพท์แบ่งเป็นอะไรบ้าง?", answer: "ลิงค์ คือเพศของศัพท์ มี 3 อย่างคือ ปุลิงค์ อิตถีลิงค์ นปุงสกลิงค์ ส่วนอัพยศัพท์แบ่งเป็น อุปสัค นิบาต และปัจจัย" },
+            4: { title: "ข้อที่ 4 สมาส", filename: "quiz_samasa.html", question: "สมาส ว่าโดยกิจมีเท่าไร อะไรบ้าง? จงอธิบายความแตกต่าง", answer: "ว่าโดยกิจมี 2 คือ ลุตตสมาส (ลบวิภัตติตัวหน้า) และอลุตตสมาส (ไม่ลบวิภัตติตัวหน้า)" },
+            5: { title: "ข้อที่ 5 ตัทธิต", filename: "quiz_taddhita.html", question: "ตัทธิต คืออะไร แบ่งเป็นกี่หมวดใหญ่?", answer: "คือปัจจัยชุดหนึ่งที่ใช้แทนศัพท์นาม เพื่อย่อคำให้สั้นลง แบ่งเป็น 3 หมวดคือ สามัญญตัทธิต ภาวัตติต และสviewตัทธิต" },
+            6: { title: "ข้อที่ 6 อาขยาต", filename: "quiz_akhyata.html", question: "วิภัตติอาขยาต มีประโยชน์อย่างไร? และแบ่งออกเป็นกี่กาล?", answer: "มีประโยชน์สำหรับบอก กาล บท วจนะ บุรุษ เพื่อประกอบรูปกิริยา แบ่งเป็น 3 กาลหลักคือ ปัจจุบันกาล อดีตกาล และอนาคตกาล" },
+            7: { title: "ข้อที่ 7 กิตก์", filename: "quiz_kitaka.html", question: "กิตก์ คืออะไร? กิริยากิตก์ กับ นามกิตก์ ต่างกันอย่างไร?", answer: "คือศัพท์ที่ประกอบด้วยปัจจัยเพื่อเป็นเครื่องหมายเนื้อความ นามกิตก์ใช้เป็นนามศัพท์ ส่วนกิริยากิตก์ใช้เป็นกิริยาในประโยคบอกอาการ" }
+        };
+
+        // ฟังก์ชันระบบเพิ่มเข้าไปใหม่: เปิด-ปิดการแสดงผลของชุดกล่องปุ่มทั้ง 7 ข้อ
+        function toggleQuizButtons() {
+            const container = document.getElementById('quiz-buttons-container');
+            const icon = document.getElementById('toggle-quiz-icon');
+            const text = document.getElementById('toggle-quiz-text');
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                icon.className = "fa-solid fa-eye-slash";
+                text.innerText = "ซ่อนแถบข้อสอบ";
+            } else {
+                container.classList.add('hidden');
+                icon.className = "fa-solid fa-eye";
+                text.innerText = "แสดงแถบข้อสอบ";
+            }
+        }
+
+        // ฟังก์ชันเมื่อคลิกจากลิงก์เมนูย่อยฝั่งซ้าย
+        function sendCommandToMainTool(keyword) {
+            updateLocation('หมวดไวยากรณ์ -> ' + keyword);
+            syncGlobalFocus(keyword, 'คลังเมนูหลัก');
+        }
+
+        // 1. ฟังก์ชันซิงค์ข้อมูลตำแหน่ง/คำศัพท์ปัจจุบัน (Global Cross-Reference)
+        function syncGlobalFocus(keyword, categoryName) {
+            document.getElementById('current-global-focus').innerText = keyword;
+            localStorage.setItem('active_pali_keyword', keyword);
+            
+            const currentData = globalPaliRepository[keyword];
+            const dynamicContainer = document.getElementById('dynamic-context-content');
+            const welcomeMsg = document.getElementById('welcome-message');
+            const iframe = document.getElementById('main-view-frame');
+            const dashboardPanel = document.getElementById('smart-dashboard-panel');
+
+            if (currentData) {
+                iframe.classList.add('hidden');
+                welcomeMsg.classList.add('hidden');
+                dynamicContainer.classList.remove('hidden');
+                dashboardPanel.classList.remove('hidden');
+                
+                // ถ้ายิงมาจากปุ่มกลุ่มที่ 7 ให้แสดงแท็บสรุปเทคนิคเป็นค่าเริ่มต้น
+                if (keyword.includes('เทคนิค') || keyword.includes('ตารางสรุป')) {
+                    switchContextView('tech-summary');
+                } else {
+                    switchContextView('textbook'); 
+                }
+            } else {
+                dashboardPanel.classList.add('hidden');
+                dynamicContainer.classList.add('hidden');
+                welcomeMsg.classList.remove('hidden');
+                welcomeMsg.innerHTML = `
+                    <i class="fa-solid fa-circle-nodes text-4xl text-amber-500 mb-2"></i>
+                    <h4 class="text-sm font-bold text-slate-700">กำลังสืบค้นระบบข้ามหมวดหมู่สำหรับ "${keyword}"...</h4>
+                    <p class="text-xs text-slate-400 mt-1">ระบบพร้อมเรียกดูความหมาย ข้อสอบ และข้อมูลอ้างอิงทุกจุดอัจฉริยะ</p>
+                `;
+                sendKeywordToIframe(keyword);
+            }
+        }
+
+        // 2. ฟังก์ชันสลับดูข้อมูล Pre-loaded
+        function switchContextView(subType) {
+            const keyword = localStorage.getItem('active_pali_keyword') || "สมาส";
+            const data = globalPaliRepository[keyword];
+            const container = document.getElementById('dynamic-context-content');
+            if (!data) return;
+
+            let html = "";
+            if (subType === 'textbook') {
+                html = `<h4 class="text-sm font-bold text-cyan-700"><i class="fa-solid fa-book"></i> คลังตำราเรียนที่เตรียมเนื้อหา "${keyword}" ไว้พร้อมกันทุกเล่ม</h4><div class="grid grid-cols-1 gap-2">`;
+                if(data.textbooks && data.textbooks.length > 0) {
+                    data.textbooks.forEach(t => {
+                        html += `<div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-xs">
+                            <span class="font-bold text-cyan-600">${t.book}</span> — <span class="text-slate-500">${t.chapter}</span>
+                            <p class="text-slate-600 mt-1 font-mono bg-slate-50 p-2 rounded">${t.content}</p>
+                        </div>`;
+                    });
+                } else { html += `<p class="text-xs text-slate-400 p-2">ไม่มีข้อมูลในหมวดนี้</p>`; }
+            } else if (subType === 'translation') {
+                html = `<h4 class="text-sm font-bold text-emerald-700"><i class="fa-solid fa-language"></i> ตำแหน่งและประโยคแปลที่พบคำว่า "${keyword}" ในทุกคัมภีร์</h4><div class="grid grid-cols-1 gap-2">`;
+                if(data.translations && data.translations.length > 0) {
+                    data.translations.forEach(tr => {
+                        html += `<div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-xs">
+                            <div class="flex justify-between font-bold text-slate-700"><span>${tr.reference}</span> <span class="text-emerald-600">${tr.count}</span></div>
+                            <p class="text-slate-500 mt-1 bg-emerald-50 p-2 rounded border border-dashed border-emerald-200">${tr.example}</p>
+                        </div>`;
+                    });
+                } else { html += `<p class="text-xs text-slate-400 p-2">ไม่มีข้อมูลในหมวดนี้</p>`; }
+            } else if (subType === 'dictionary') {
+                html = `<h4 class="text-sm font-bold text-amber-700"><i class="fa-solid fa-book-open"></i> ผลตรวจเทียบความหมายจากพจนานุกรมทุกเล่มพร้อมกัน</h4><div class="grid grid-cols-1 md:grid-cols-3 gap-3">`;
+                if(data.dictionaries && data.dictionaries.length > 0) {
+                    data.dictionaries.forEach(d => {
+                        html += `<div class="bg-amber-50/40 p-3 rounded-lg border border-amber-200 text-xs flex flex-col justify-between">
+                            <p class="text-slate-700 font-medium">"${d.definition}"</p>
+                            <span class="text-[10px] text-amber-800 font-bold block mt-2 border-t border-amber-200 pt-1"><i class="fa-solid fa-scroll"></i> ${d.dictionary}</span>
+                        </div>`;
+                    });
+                } else { html += `<p class="text-xs text-slate-400 p-2">ไม่มีข้อมูลในหมวดนี้</p>`; }
+            } else if (subType === 'tech-summary') {
+                // ส่วนแสดงผล Render สำหรับประเภทเมนูย่อยข้อที่ 7 ใหม่
+                html = `<h4 class="text-sm font-bold text-teal-700"><i class="fa-solid fa-book-open"></i> ระบบสรุปเทคนิคและตารางหลักเกณฑ์ย่ออัจฉริยะสำหรับ "${keyword}"</h4><div class="grid grid-cols-1 gap-2">`;
+                const techList = data.techSummaries || [
+                    { title: "ตารางสรุปหลักไวยากรณ์เร่งรัด", details: "คลังรวบรวมตารางสรุปย่อกฎเหล็กไวยากรณ์บาลี โครงสร้างการจัดตำแหน่งคำ และคู่มือสรุปความสัมพันธ์ของประโยคบาลีสนามหลวง" },
+                    { title: "สูตรและเทคนิคการจำวิภัตติย่อ", details: "ระบบจัดเก็บบันทึกช่วยจำ สูตรคำนวณการเปลี่ยนแปลงคำ เทคนิคเดาโครงสร้างคำศัพท์สมาส-ตัทธิต-อาขยาต สำหรับผู้เรียนบาลีทุกระดับชั้น" }
+                ];
+                techList.forEach(tech => {
+                    html += `<div class="bg-teal-50/30 p-4 rounded-lg border border-teal-200 text-xs shadow-sm">
+                        <span class="font-bold text-teal-800 text-sm block mb-1"><i class="fa-solid fa-star text-amber-500 mr-1"></i> ${tech.title}</span>
+                        <p class="text-slate-600 leading-relaxed font-sans">${tech.details}</p>
+                    </div>`;
+                });
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // 3. ฟังก์ชันควบคุมการส่งข้อมูลเข้า iframe
+        function sendKeywordToIframe(keyword) {
+            const iframe = document.getElementById('main-view-frame');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ action: 'syncPaliWord', word: keyword }, '*');
+            }
+        }
+
+        // 4. ฟังก์ชันเปิดหน้าเมนู/เครื่องมือหลัก
+        function loadPage(pageKey) {
+            const iframe = document.getElementById('main-view-frame');
+            const welcome = document.getElementById('welcome-message');
+            const dynamicContainer = document.getElementById('dynamic-context-content');
+            const dashboardPanel = document.getElementById('smart-dashboard-panel');
+            
+            dashboardPanel.classList.add('hidden');
+            dynamicContainer.classList.add('hidden');
+
+            if (pageKey === 'main-tool') {
+                iframe.src = 'dict_pali_tool.html'; 
+                iframe.classList.remove('hidden');
+                welcome.classList.add('hidden');
+            } else {
+                iframe.classList.add('hidden');
+                welcome.classList.remove('hidden');
+            }
+        }
+
+        // 5. ฟังก์ชันสำหรับปุ่มกด 7 ปุ่มด้านล่าง: ลิงก์ข้ามไฟล์เปิดข้อสอบบาลีไวยากรณ์ ป.1-2
+        function loadQuizPage(quizNumber) {
+            const iframe = document.getElementById('main-view-frame');
+            const welcome = document.getElementById('welcome-message');
+            const dynamicContainer = document.getElementById('dynamic-context-content');
+            const dashboardPanel = document.getElementById('smart-dashboard-panel');
+            const statusEl = document.getElementById('quiz-status');
+            
+            const quiz = quizDatabase[quizNumber];
+            if (!quiz) return;
+
+            statusEl.innerText = `แสดงผล: ${quiz.title}`;
+            statusEl.className = "text-[11px] text-amber-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-500 animate-pulse";
+
+            dashboardPanel.classList.add('hidden');
+            dynamicContainer.classList.add('hidden');
+            welcome.classList.add('hidden');
+            
+            iframe.classList.add('hidden');
+            dynamicContainer.classList.remove('hidden');
+            dynamicContainer.innerHTML = `
+                <div class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white p-5 rounded-xl shadow-md border border-indigo-500/30">
+                    <div class="flex items-center justify-between border-b border-indigo-400/20 pb-3 mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-indigo-600/50 px-2 py-1 rounded text-amber-300 border border-indigo-400/30">
+                            <i class="fa-solid fa-file-pen"></i> ข้อสอบบาลีไวยากรณ์ ประโยค 1-2
+                        </span>
+                        <span class="text-xs text-slate-300 font-mono">ไฟล์อ้างอิง: ${quiz.filename}</span>
+                    </div>
+                    <h3 class="text-base font-bold text-amber-400 mb-2">${quiz.title}</h3>
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 text-sm font-medium mb-4">
+                        <span class="text-rose-400 font-bold">โจทย์:</span> ${quiz.question}
+                    </div>
+                    <div class="bg-emerald-950/40 p-4 rounded-lg border border-emerald-800/30 text-sm">
+                        <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> แนวคำตอบอ้างอิงสนามหลวง:</span>
+                        <p class="text-slate-200 mt-1 font-sans leading-relaxed">${quiz.answer}</p>
+                    </div>
+                </div>
+            `;
+
+            document.querySelectorAll('.quiz-btn').forEach((btn, idx) => {
+                if (idx === (quizNumber - 1)) {
+                    btn.className = "quiz-btn flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-900 border border-indigo-500 rounded-lg text-xs font-bold text-amber-300 transition shadow-md";
+                } else {
+                    btn.className = "quiz-btn flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group";
+                }
+            });
+        }
+
+        // 6. ฟังก์ชันเมื่อกดกลุ่มปุ่มด่วน 9 ปุ่มด้านบน
+        function quickAction(buttonNumber, typeKey) {
+            const currentActiveWord = localStorage.getItem('active_pali_keyword') || "ยังไม่ได้เลือกคำหลัก";
+            if(typeKey === 'main-tool') {
+                loadPage('main-tool');
+                document.getElementById('quiz-status').innerText = "สถานะ: หน้าทำงานหลัก";
+            } else if(['textbook', 'translation', 'dictionary'].includes(typeKey)) {
+                if(currentActiveWord === "ยังไม่ได้เลือกคำหลัก") {
+                    alert("กรุณาเลือกศัพท์หรือคลิกคำว่า 'สมาส' ที่เมนูซ้ายมือเพื่อดึงข้อมูลข้ามหมวดหมู่มาก่อนครับ");
+                    return;
+                }
+                syncGlobalFocus(currentActiveWord, 'ปุ่มกดด่วน');
+                switchContextView(typeKey);
+            } else {
+                alert(`[ปุ่มด่วนที่ ${buttonNumber}] กำลังประมวลผลหมวดระบบย่อย: ${typeKey}`);
+            }
+        }
+
+        function updateLocation(newLoc) {
+            document.getElementById('current-location-text').innerText = newLoc;
+        }
+
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'active_pali_keyword' && event.newValue) {
+                document.getElementById('current-global-focus').innerText = event.newValue;
+            }
+        });
+
+        // ฟังก์ชันจำลองเปิดพจนานุกรมเล่มที่เลือก
+        function selectDictionaryBook(bookNum, bookName) {
+            updateLocation('พจนานุกรม -> ' + bookName);
+            const currentActiveWord = localStorage.getItem('active_pali_keyword') || "สมาส";
+            syncGlobalFocus(currentActiveWord, 'พจนานุกรมเล่มที่ ' + bookNum);
+            switchContextView('dictionary');
+        }
+
+        function scrollToMenu(targetId) {
+            const element = document.getElementById(targetId);
+            if (element) {
+                const sidebar = element.closest('aside') || element.parentElement;
+                if (sidebar) {
+                    const targetPosition = element.offsetTop - sidebar.offsetTop;
+                    sidebar.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            } else {
+                console.log("ไม่พบ id: " + targetId);
+            }
+        }
+        // ฟังก์ชันสำหรับเปิดไฟล์ PDF เข้าสู่กล่องแสดงผลหลักกลางหน้าจอ
+function loadPdfToMainView(keyword, pdfUrl) {
+    document.getElementById('current-location-text').innerText = 'หมวดเทคนิค -> ' + keyword;
+    document.getElementById('current-global-focus').innerText = keyword;
+    localStorage.setItem('active_pali_keyword', keyword);
+
+    const iframe = document.getElementById('main-view-frame');
+    const welcome = document.getElementById('welcome-message');
+    const dynamicContainer = document.getElementById('dynamic-context-content');
+    const dashboardPanel = document.getElementById('smart-dashboard-panel');
+    
+    if (welcome) welcome.classList.add('hidden');
+    if (dynamicContainer) dynamicContainer.classList.add('hidden');
+    if (dashboardPanel) dashboardPanel.classList.add('hidden'); 
+
+    if (iframe) {
+        iframe.src = pdfUrl; 
+        iframe.classList.remove('hidden');
+    }
+}
+// ==========================================
+// ฟังก์ชันเปิดแสดงผลไฟล์ PDF ในกล่องแสดงผลกลางหน้าจอ
+// ==========================================
+function loadPdfToMainView(keyword, pdfUrl) {
+    // 1. อัปเดตพิกัดบนแถบด้านบน (Header)
+    if (document.getElementById('current-location-text')) {
+        document.getElementById('current-location-text').innerText = 'หมวดเทคนิค -> ' + keyword;
+    }
+    
+    // 2. อัปเดตสถานะโฟกัสคำหลักปัจจุบันของระบบ
+    if (document.getElementById('current-global-focus')) {
+        document.getElementById('current-global-focus').innerText = keyword;
+    }
+    localStorage.setItem('active_pali_keyword', keyword);
+
+    // 3. ดึงกล่อง Element สำคัญ ๆ ของหน้าจอมาควบคุม
+    const iframe = document.getElementById('main-view-frame');
+    const welcome = document.getElementById('welcome-message');
+    const dynamicContainer = document.getElementById('dynamic-context-content');
+    const dashboardPanel = document.getElementById('smart-dashboard-panel');
+    
+    // 4. สั่งซ่อนข้อความต้อนรับ และกล่องข้อมูล Text เดิมออกไปก่อน
+    if (welcome) welcome.classList.add('hidden');
+    if (dynamicContainer) dynamicContainer.classList.add('hidden');
+    if (dashboardPanel) dashboardPanel.classList.add('hidden'); 
+
+    // 5. สั่งให้กล่อง Iframe โหลดไฟล์ PDF และเปิดแสดงผลออกมาทันที
+    if (iframe) {
+        iframe.src = pdfUrl; 
+        iframe.classList.remove('hidden');
+    }
+
+    // 6. ถ้าคุณมีฟังก์ชันแสดงเนื้อหาในกล่องฝั่งขวา (Right Sidebar) ให้ทำงานไปด้วย
+    if (typeof renderRightSidebarContent === 'function') {
+        renderRightSidebarContent();
+    }
+}
+// ฟังก์ชันสลับขนาดหน้าจอเมื่อกดปุ่ม
+function togglePdfSize() {
+  const wrapper = document.getElementById('pdfWrapper');
+  // ถ้ากรอบไม่มีคลาส pdf-maximize จะใส่ให้ (ขยาย) / ถ้ามีอยู่แล้วจะถอดออก (ย่อกลับ)
+  wrapper.classList.toggle('pdf-maximize'); 
+}
+
+document.getElementById('quick-search').addEventListener('input', function(e) {
+    let keyword = this.value.trim();
+    
+    // ระบบจะทำงานทุกครั้งที่พิมพ์หรือลบตัวอักษร
+    console.log("ข้อความปัจจุบัน:", keyword);
+    
+    // 📍 นำตัวแปร keyword ไปฟิลเตอร์กรองข้อมูลในตาราง หรือส่งไปคิวรี่ต่อได้เลยครับ
+});
+function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var mainContent = document.getElementById('mainContent');
+    
+    if (sidebar && mainContent) {
+        // จัดการซ่อน/แสดงแถบเมนู
+        if (sidebar.style.display === 'none') {
+            sidebar.style.display = 'block';
+            mainContent.className = 'main-content col-md-10 p-0'; // กลับมาขนาดเดิม
+        } else {
+            sidebar.style.display = 'none';
+            mainContent.className = 'main-content col-md-12 p-0'; // ขยายเต็มหน้าจอ (col-md-12)
+        }
+    }
+}
+</script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script>
+let rawDataInt = []; let currentListInt = []; let indexInt = 0; let selectedTopicNumInt = 'all'; let userAnswersInt = {};
+const topicsInt = ["สมัญญาภิธาน", "สนธิ", "นาม", "อาขยาต", "กิตก์", "สมาส", "ตัทธิต"];
+let timerIntervalInt; let secondsInt = 0; let isTimerRunningInt = false;
+let selectedWordToMatchInt = null; let currentShuffledOptionsInt = []; let lastRenderedQuestionIdInt = null; let currentFixedChoicesInt = [];
+
+function isImageInt(str) {
+    if (typeof str !== 'string') return false;
+    const cleanStr = str.trim();
+    return cleanStr.startsWith('http://') || cleanStr.startsWith('https://') || /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(cleanStr);
+}
+function renderContentInt(str) {
+    if (isImageInt(str)) return `<img src="${str.trim()}" class="max-h-12 max-w-[120px] inline-block object-contain bg-white rounded p-0.5">`;
+    return str;
+}
+function shuffleArrayInt(array) {
+    let cur = array.length, rand;
+    while (cur !== 0) {
+        rand = Math.floor(Math.random() * cur); cur--;
+        [array[cur], array[rand]] = [array[rand], array[cur]];
+    }
+    return array;
+}
+
+document.getElementById('excel-input-integrated').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if(!file) return;
+    document.getElementById('excel-file-name').innerText = file.name;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const workbook = XLSX.read(new Uint8Array(evt.target.result), {type: 'array'});
+            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            rawDataInt = json.map(row => {
+                let ansObj = {};
+                for(let i=1; i<=40; i++) { 
+                    if(row[`ans${i}`] !== undefined && row[`ans${i}`] !== null) {
+                        ansObj[`{${i}}`] = row[`ans${i}`].toString().trim(); 
+                    } 
+                }
+                let quizType = row.type ? row.type.toString().trim().toLowerCase() : "drag";
+                if(quizType !== "choice") quizType = "drag";
+
+                return {
+                    id: row.id, topic: row.topic?.toString().trim(), main_topic: row.main_topic || "ทั่วไป", 
+                    sub: row.sub || "ทั่วไป", sub1: row.sub1 || "ทั่วไป", year: row.year ? row.year.toString() : "ไม่ระบุ", 
+                    q: row.q || "", img_q: row.img_q || "", answers: ansObj, page_q: row.page_q, page_ans: row.page_ans,
+                    distractors: row.distractors ? row.distractors.toString().split(',').map(s => s.trim()).filter(s => s !== "") : [],
+                    ans_choice: row.ans_choice ? parseInt(row.ans_choice) : 1, type: quizType
+                };
+            });
+            
+            document.getElementById('quiz-status').innerText = "สถานะ: โหลดข้อมูลสำเร็จแล้ว";
+            document.getElementById('filter-zone-integrated').classList.remove('hidden');
+            document.getElementById('quiz-workspace-integrated').classList.remove('hidden');
+            
+            const years = [...new Set(rawDataInt.map(d => d.year))].sort().reverse();
+            document.getElementById('year-select-int').innerHTML = '<option value="all">ทุกปี</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+            
+            filterByTopicIntegrated(1);
+        } catch(err) {
+            alert("ประมวลผลไฟล์ Excel ผิดพลาด กรุณาตรวจเช็คโครงสร้างคอลัมน์");
+        }
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+function filterByTopicIntegrated(n) {
+    if(rawDataInt.length === 0) {
+        alert("กรุณาอัปโหลดไฟล์ข้อสอบ Excel ที่ปุ่มแฟ้มสีเขียวก่อนใช้งานระบบทดสอบครับ");
+        return;
+    }
+    selectedTopicNumInt = n;
+    document.querySelectorAll('.quiz-btn-int').forEach(b => b.classList.remove('bg-indigo-900', 'border-indigo-500'));
+    document.getElementById(`quiz-int-btn-${n}`).classList.add('bg-indigo-900', 'border-indigo-500');
+    
+    const filtered = rawDataInt.filter(i => i.topic == n || i.topic === topicsInt[n-1]);
+    const mains = [...new Set(filtered.map(i => i.main_topic))].sort();
+    document.getElementById('main-topic-select-int').innerHTML = '<option value="all">หัวข้อหลักทั้งหมด</option>' + mains.map(m => `<option value="${m}">${m}</option>`).join('');
+    updateSubDropdownInt();
+}
+
+function updateSubDropdownInt() {
+    const mVal = document.getElementById('main-topic-select-int').value;
+    let filtered = rawDataInt.filter(i => i.topic == selectedTopicNumInt || i.topic === topicsInt[selectedTopicNumInt-1]);
+    if(mVal !== 'all') filtered = filtered.filter(i => i.main_topic === mVal);
+    const subs = [...new Set(filtered.map(i => i.sub))].sort();
+    document.getElementById('sub-topic-select-int').innerHTML = '<option value="all">ข้อย่อยทั้งหมด</option>' + subs.map(s => `<option value="${s}">${s}</option>`).join('');
+    updateSub1DropdownInt();
+}
+
+function updateSub1DropdownInt() {
+    const mVal = document.getElementById('main-topic-select-int').value;
+    const sVal = document.getElementById('sub-topic-select-int').value;
+    let filtered = rawDataInt.filter(i => i.topic == selectedTopicNumInt || i.topic === topicsInt[selectedTopicNumInt-1]);
+    if(mVal !== 'all') filtered = filtered.filter(i => i.main_topic === mVal);
+    if(sVal !== 'all') filtered = filtered.filter(i => i.sub === sVal);
+    const sub1s = [...new Set(filtered.map(i => i.sub1))].sort();
+    document.getElementById('sub1-topic-select-int').innerHTML = '<option value="all">คำศัพท์ย่อย (Sub1)</option>' + sub1s.map(s => `<option value="${s}">${s}</option>`).join('');
+    applyFiltersInt();
+}
+
+function applyFiltersInt() {
+    const yVal = document.getElementById('year-select-int').value;
+    const mVal = document.getElementById('main-topic-select-int').value;
+    const sVal = document.getElementById('sub-topic-select-int').value;
+    const s1Val = document.getElementById('sub1-topic-select-int').value;
+    const backY = parseInt(document.getElementById('back-year-input-int').value) || 0;
+    
+    currentListInt = rawDataInt.filter(item => {
+        const matchT = (selectedTopicNumInt === 'all' || item.topic == selectedTopicNumInt || item.topic === topicsInt[selectedTopicNumInt-1]);
+        const matchM = (mVal === 'all' || item.main_topic === mVal);
+        const matchS = (sVal === 'all' || item.sub === sVal);
+        const matchS1 = (s1Val === 'all' || item.sub1 === s1Val);
+        let matchY = (yVal === 'all' || item.year == yVal);
+        if (backY > 0) matchY = (parseInt(item.year) >= (2569 - backY));
+        return matchT && matchM && matchS && matchS1 && matchY;
+    });
+    indexInt = 0; stopTimerInt(); selectedWordToMatchInt = null; lastRenderedQuestionIdInt = null;
+    document.getElementById('timer-display-int').innerText = "เวลา: 00:00";
+    renderInt();
+}
+
+function renderInt() {
+    const item = currentListInt[indexInt];
+    if(!item) {
+        document.getElementById('quiz-ui-int').innerHTML = "<div class='text-center py-4 text-slate-400'>ไม่พบข้อมูลชุดข้อสอบตามตัวเลือกการกรอง</div>";
+        document.getElementById('q-image-container-int').innerHTML = "";
+        return;
+    }
+    const itemKey = `q_${item.id}`;
+    if(!userAnswersInt[itemKey]) userAnswersInt[itemKey] = {};
+    let displayTopic = topicsInt[parseInt(item.topic)-1] || item.topic;
+    document.getElementById('quiz-status').innerText = `ทำอยู่: ข้อ ${indexInt+1}/${currentListInt.length} [${displayTopic}]`;
+
+    const badge = document.getElementById('current-mode-badge-int');
+    if(item.type === 'choice') {
+        badge.innerText = "โหมด: 5 ตัวเลือก (ช้อยส์)";
+        badge.className = "px-3 py-1 rounded-full font-bold text-[11px] bg-purple-900 text-purple-200 border border-purple-600";
+    } else {
+        badge.innerText = "โหมด: ลากวางคำศัพท์";
+        badge.className = "px-3 py-1 rounded-full font-bold text-[11px] bg-slate-800 text-slate-300 border border-slate-600";
+    }
+
+    const imgContainer = document.getElementById('q-image-container-int');
+    if(item.img_q && item.img_q.trim() !== "") {
+        imgContainer.innerHTML = `<img src="${item.img_q.trim()}" class="max-w-full max-h-[220px] mx-auto rounded-lg shadow border border-slate-700">`;
+    } else { imgContainer.innerHTML = ""; }
+
+    const optionsUi = document.getElementById('options-ui-int');
+
+    if(item.type === 'choice') {
+        optionsUi.classList.add('hidden');
+        let choiceHeader = `<div class="font-bold text-amber-400 mb-3 bg-slate-900 p-2.5 rounded border border-slate-800">[คำถามไวยากรณ์]: ${item.main_topic}</div>`;
+        document.getElementById('quiz-ui-int').innerHTML = choiceHeader;
+
+        if (lastRenderedQuestionIdInt !== item.id) {
+            let correctAnsText = item.answers['{1}'] || Object.values(item.answers)[0] || "";
+            let distractorsArr = [...item.distractors];
+            let fallbackIdx = 0;
+            while(distractorsArr.length < 4 && fallbackIdx < rawDataInt.length) {
+                let randomAns = Object.values(rawDataInt[fallbackIdx].answers)[0];
+                if(randomAns && randomAns !== correctAnsText && !distractorsArr.includes(randomAns)) distractorsArr.push(randomAns);
+                fallbackIdx++;
+            }
+            distractorsArr = distractorsArr.slice(0, 4);
+            let finalChoices = new Array(5).fill("");
+            let targetCorrectIndex = item.ans_choice - 1;
+            if(targetCorrectIndex < 0 || targetCorrectIndex > 4) targetCorrectIndex = 0;
+            finalChoices[targetCorrectIndex] = correctAnsText;
+
+            let distractorPointer = 0;
+            for(let i = 0; i < 5; i++) {
+                if(finalChoices[i] === "") {
+                    finalChoices[i] = distractorsArr[distractorPointer] || "ตัวเลือกเสริม";
+                    distractorPointer++;
+                }
+            }
+            currentFixedChoicesInt = finalChoices;
+            lastRenderedQuestionIdInt = item.id;
+        }
+
+        let choiceHTML = `<div class="grid grid-cols-1 gap-2 mt-2">`;
+        currentFixedChoicesInt.forEach((choiceText, cIdx) => {
+            const isSelected = userAnswersInt[itemKey]['chosen_ans'] === choiceText;
+            const activeClass = isSelected ? 'bg-indigo-900 border-indigo-500 text-white' : 'bg-slate-950 border-slate-800 hover:bg-slate-800 text-slate-300';
+            const label = ["ก.", "ข.", "ค.", "ง.", "จ."][cIdx];
+            choiceHTML += `
+                <button onclick="selectChoiceInt('${choiceText}')" class="w-full text-left p-3 border rounded-lg transition text-xs flex items-center gap-2 font-medium ${activeClass}">
+                    <span class="font-bold text-amber-400 bg-slate-900 border border-slate-700 w-5 h-5 flex items-center justify-center rounded">${label}</span>
+                    <span>${renderContentInt(choiceText)}</span>
+                </button>`;
+        });
+        choiceHTML += `</div>`;
+        document.getElementById('quiz-ui-int').innerHTML += choiceHTML;
+    } else {
+        optionsUi.classList.remove('hidden');
+        let qHTML = item.q;
+        let slots = Object.keys(item.answers).sort((a,b) => {
+            let numA = parseInt(a.replace('{','').replace('}','')) || 0;
+            let numB = parseInt(b.replace('{','').replace('}','')) || 0;
+            return numB - numA;
+        });
+
+        slots.forEach(slot => {
+            const val = userAnswersInt[itemKey][slot] || "......";
+            const innerContent = (val === "......") ? "......" : renderContentInt(val);
+            const dragAttr = (val !== "......") ? `draggable="true" ondragstart="startDragFromSlotInt(event, '${slot}', '${val}')"` : '';
+            
+            let styleClass = "inline-flex items-center justify-center min-w-[70px] min-height-[25px] border-b-2 border-amber-500 bg-slate-950 px-2 py-0.5 mx-1 rounded text-amber-300 font-bold align-middle cursor-pointer text-xs";
+            
+            qHTML = qHTML.replace(new RegExp(slot.replace('{','\\{').replace('}','\\}'), 'g'), 
+                `<span id="slot-int-${slot}" class="${styleClass}" ${dragAttr} ondragover="event.preventDefault()" ondrop="dropInt(event, '${slot}')" onclick="handleZoneClickInt('${slot}', '${val}')">${innerContent}</span>`);
+        });
+        document.getElementById('quiz-ui-int').innerHTML = qHTML;
+
+        if (lastRenderedQuestionIdInt !== item.id) {
+            let allOpts = [...Object.values(item.answers).filter(v => v !== ""), ...item.distractors];
+            currentShuffledOptionsInt = shuffleArrayInt(allOpts);
+            lastRenderedQuestionIdInt = item.id;
+        }
+
+        optionsUi.innerHTML = "";
+        const used = Object.values(userAnswersInt[itemKey]);
+
+        currentShuffledOptionsInt.forEach((word) => {
+            const div = document.createElement('div');
+            div.className = 'bg-indigo-950 border border-indigo-700 hover:bg-indigo-900 text-slate-200 px-3 py-1.5 rounded-md text-xs font-medium cursor-grab select-none shadow transition';
+            if (selectedWordToMatchInt === word) div.classList.add('border-amber-400', 'bg-slate-800', 'text-amber-300');
+            div.draggable = true;
+            div.innerHTML = renderContentInt(word);
+            
+            div.ondragstart = (e) => {
+                startTimerInt();
+                e.dataTransfer.setData("text/plain", word);
+                e.dataTransfer.setData("source-type", "bottom");
+            };
+            div.onclick = (e) => {
+                e.stopPropagation(); startTimerInt();
+                selectedWordToMatchInt = (selectedWordToMatchInt === word) ? null : word;
+                renderInt();
+            };
+            let foundIdx = used.indexOf(word);
+            if(foundIdx !== -1) { div.style.display = 'none'; used.splice(foundIdx, 1); }
+            optionsUi.appendChild(div);
+        });
+    }
+}
+
+function selectChoiceInt(answerText) { startTimerInt(); const item = currentListInt[indexInt]; if(item) userAnswersInt[`q_${item.id}`]['chosen_ans'] = answerText; renderInt(); }
+function startDragFromSlotInt(ev, fromSlot, wordValue) { startTimerInt(); ev.dataTransfer.setData("text/plain", wordValue); ev.dataTransfer.setData("source-type", "slot"); ev.dataTransfer.setData("from-slot", fromSlot); }
+function dropInt(ev, toSlot) { ev.preventDefault(); const item = currentListInt[indexInt]; if(!item) return; const itemKey = `q_${item.id}`; const draggedText = ev.dataTransfer.getData("text/plain"); const sourceType = ev.dataTransfer.getData("source-type"); const fromSlot = ev.dataTransfer.getData("from-slot"); if (sourceType === "slot" && fromSlot !== toSlot) { const existing = userAnswersInt[itemKey][toSlot]; if(existing && existing !== "......") userAnswersInt[itemKey][fromSlot] = existing; else delete userAnswersInt[itemKey][fromSlot]; } userAnswersInt[itemKey][toSlot] = draggedText; selectedWordToMatchInt = null; renderInt(); }
+function dropToBottomInt(ev) { ev.preventDefault(); document.getElementById('options-ui-int').classList.remove('border-indigo-500'); const item = currentListInt[indexInt]; if(!item) return; const fromSlot = ev.dataTransfer.getData("from-slot"); if(ev.dataTransfer.getData("source-type") === "slot" && fromSlot) { delete userAnswersInt[`q_${item.id}`][fromSlot]; selectedWordToMatchInt = null; renderInt(); } }
+
+function handleZoneClickInt(slot, value) {
+    const item = currentListInt[indexInt]; if(!item) return; const itemKey = `q_${item.id}`;
+    if (selectedWordToMatchInt !== null) { userAnswersInt[itemKey][slot] = selectedWordToMatchInt; selectedWordToMatchInt = null; renderInt(); return; }
+    if(value === "......") return;
+    if (value === item.answers[slot]) {
+        const pageAnsList = item.page_ans ? item.page_ans.toString().split(',') : [];
+        let slotNum = parseInt(slot.replace('{','').replace('}','')) || 1;
+        openPDFInt(pageAnsList[slotNum - 1] || 1);
+    } else { delete userAnswersInt[itemKey][slot]; renderInt(); }
+}
+
+function checkAnswersInt() {
+    stopTimerInt(); const item = currentListInt[indexInt]; if(!item) return;
+    const currentUser = document.getElementById('user-name-int').value.trim() || "ผู้ทั่วไป";
+    const itemKey = `q_${item.id}`; let correct = 0; let total = 0;
+
+    if(item.type === 'choice') {
+        total = 1; const correctAns = item.answers['{1}'] || Object.values(item.answers)[0];
+        if (userAnswersInt[itemKey]['chosen_ans'] === correctAns) { correct = 1; alert("ถูกต้องแล้วครับ! 🎉 ตรงตามเล่มเฉลยสนามหลวง"); } 
+        else { const labels = ["ก.","ข.","ค.","ง.","จ."]; alert(`คำตอบยังไม่ถูกนะครับ เฉลยคือข้อ: ${labels[item.ans_choice - 1]}`); }
+    } else {
+        total = Object.keys(item.answers).length;
+        Object.keys(item.answers).forEach(slot => {
+            const el = document.getElementById(`slot-int-${slot}`);
+            if(el) {
+                if(userAnswersInt[itemKey][slot] === item.answers[slot]) {
+                    el.style.backgroundColor = "#064e3b"; el.style.color = "#34d399"; el.style.borderColor = "#059669"; correct++;
+                } else { el.style.backgroundColor = "#4c0519"; el.style.color = "#f43f5e"; el.style.borderColor = "#dc2626"; }
+            }
+        });
+    }
+    const stats = JSON.parse(localStorage.getItem('baliQuizStatsIntegrated')) || [];
+    stats.push({ user: currentUser, date: new Date().toLocaleString('th-TH'), topic: topicsInt[parseInt(item.topic)-1] || item.topic, main: item.main_topic, time: document.getElementById('timer-display-int').innerText.replace('เวลา: ',''), score: `${correct}/${total}` });
+    localStorage.setItem('baliQuizStatsIntegrated', JSON.stringify(stats));
+}
+
+function startTimerInt() { if (!isTimerRunningInt) { isTimerRunningInt = true; secondsInt = 0; timerIntervalInt = setInterval(() => { secondsInt++; let m = Math.floor(secondsInt/60).toString().padStart(2,'0'); let s = (secondsInt%60).toString().padStart(2,'0'); document.getElementById('timer-display-int').innerText = `เวลา: ${m}:${s}`; }, 1000); } }
+function stopTimerInt() { clearInterval(timerIntervalInt); isTimerRunningInt = false; }
+function moveInt(s) { if(indexInt+s >= 0 && indexInt+s < currentListInt.length) { indexInt+=s; stopTimerInt(); selectedWordToMatchInt = null; lastRenderedQuestionIdInt = null; renderInt(); } }
+function resetQuizInt() { if(confirm("ต้องการล้างคำตอบข้อนี้ใหม่หมดใช่ไหมครับ?")) { if(currentListInt[indexInt]) userAnswersInt[`q_${currentListInt[indexInt].id}`] = {}; stopTimerInt(); selectedWordToMatchInt = null; renderInt(); } }
+
+function toggleStatsIntegrated() {
+    const p = document.getElementById('stats-panel-int'); const o = document.getElementById('pdf-overlay-int');
+    const isVisible = p.style.display === 'block'; p.style.display = isVisible ? 'none' : 'block'; o.style.display = isVisible ? 'none' : 'block';
+    if(!isVisible) {
+        const stats = JSON.parse(localStorage.getItem('baliQuizStatsIntegrated')) || [];
+        const users = [...new Set(stats.map(s => s.user || "ผู้ทั่วไป"))];
+        const filter = document.getElementById('stats-user-filter-int'); const cur = filter.value;
+        filter.innerHTML = '<option value="all">ดูของทุกคน</option>' + users.map(u => `<option value="${u}">${u}</option>`).join('');
+        if (users.includes(cur)) filter.value = cur;
+        renderGroupedStatsInt();
+    }
+}
+function renderGroupedStatsInt() {
+    const stats = JSON.parse(localStorage.getItem('baliQuizStatsIntegrated')) || [];
+    const filterUser = document.getElementById('stats-user-filter-int').value;
+    let data = (filterUser === 'all') ? stats : stats.filter(s => (s.user || "ผู้ทั่วไป") === filterUser);
+    if(data.length === 0) { document.getElementById('stats-content-int').innerHTML = "<p class='text-center text-slate-400 py-4'>ไม่พบประวัติการทำข้อสอบ</p>"; return; }
+    const summary = {};
+    data.forEach(s => {
+        if(!summary[s.topic]) summary[s.topic] = { count: 0, correct: 0, slots: 0 };
+        const [c, t] = s.score.split('/').map(Number); summary[s.topic].count++; summary[s.topic].correct += c; summary[s.topic].slots += t;
+    });
+    let html = `<table class="w-full border border-slate-700 text-center text-[11px] mb-3"><tr class="bg-slate-800 text-amber-400"><th>หมวดไวยากรณ์</th><th>จำนวนครั้ง</th><th>คะแนนรวม</th><th>เปอร์เซ็นต์</th></tr>`;
+    for(const t in summary) { const d = summary[t]; html += `<tr class="border-b border-slate-800"><td>${t}</td><td>${d.count}</td><td>${d.correct}/${d.slots}</td><td class="text-emerald-400 font-bold">${Math.round((d.correct/d.slots)*100)}%</td></tr>`; }
+    html += `</table><h4 class="font-bold text-slate-300 mt-2 mb-1">📜 ลำดับประวัติล่าสุด</h4><div class="max-h-48 overflow-y-auto"><table class="w-full border border-slate-800">`;
+    data.slice().reverse().forEach(s => { html += `<tr class="border-b border-slate-800 text-[10px]"><td class="text-slate-500">${s.date}</td><td class="text-indigo-400 font-bold">${s.user}</td><td><b>${s.topic}</b></td><td class="text-amber-400">${s.time}</td><td class="font-bold">${s.score}</td></tr>`; });
+    html += `</table></div>`; document.getElementById('stats-content-int').innerHTML = html;
+}
+function clearAllStatsInt() { if(confirm("ต้องการลบประวัติการเรียนรู้ออกทั้งหมดใช่ไหม?")) { localStorage.removeItem('baliQuizStatsIntegrated'); renderGroupedStatsInt(); } }
+function openPDFInt(p) { document.getElementById('pdf-frame-int').src=`manual.pdf#page=${p}`; document.getElementById('pdf-modal-int').style.display='block'; document.getElementById('pdf-overlay-int').style.display='block'; }
+function closeAllModalsInt() { document.getElementById('pdf-modal-int').style.display='none'; document.getElementById('stats-panel-int').style.display='none'; document.getElementById('pdf-overlay-int').style.display='none'; }
+
+// ฟังก์ชันเปิด/ปิดแสดงแถบข้อสอบแบบเดิมของแอปที่ 1
+function toggleQuizButtons() {
+    const container = document.getElementById('quiz-buttons-container');
+    const icon = document.getElementById('toggle-quiz-icon');
+    const text = document.getElementById('toggle-quiz-text');
+    if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        icon.className = 'fa-solid fa-eye-slash';
+        text.innerText = 'ซ่อนแถบข้อสอบ';
+    } else {
+        container.classList.add('hidden');
+        icon.className = 'fa-solid fa-eye';
+        text.innerText = 'แสดงแถบข้อสอบ';
+    }
+}
+
+document.addEventListener('click', () => { if (selectedWordToMatchInt !== null) { selectedWordToMatchInt = null; renderInt(); } });
+// ฟังก์ชันสลับโหมดขยายเต็มหน้าจอ (เฉพาะส่วนทำข้อสอบ)
+// ฟังก์ชันสลับโหมดขยายเต็มหน้าจอ (แบบบังคับซ่อนทุกส่วนที่ขวางทาง)
+// ฟังก์ชันสลับโหมดขยายเต็มหน้าจอ (สแกนโครงสร้างละเอียดระดับลึก)
+// ฟังก์ชันสลับโหมดขยายเต็มหน้าจอ (แบบสแกนเจาะลึกพิเศษ)
+f// ฟังก์ชันสลับโหมดขยายข้อสอบเต็มหน้าจอ (แบบปลอดภัย ไม่ทำหน้าจอขาว)
+// ฟังก์ชันขยายเต็มจออัจฉริยะ (หาตำแหน่งกล่องข้อสอบเองอัตโนมัติ ไม่ต้องแก้ HTML)
+// ฟังก์ชันจำลองเต็มจอด้วย CSS (ปุ่มอื่นจะยังกดและทำงานได้สมบูรณ์แบบ 100%)
+function toggleQuizFullscreen() {
+    const fullscreenBtn = document.getElementById('toggle-fullscreen-btn');
+    if (!fullscreenBtn) return;
+
+    // ค้นหากล่องข้อสอบสีน้ำเงินเข้มรอบนอกสุด
+    const quizElement = fullscreenBtn.closest('.bg-slate-900') || 
+                        fullscreenBtn.parentElement.parentElement.parentElement;
+
+    if (!quizElement) return;
+
+    const icon = fullscreenBtn.querySelector('i') || document.getElementById('fullscreen-icon');
+    const text = fullscreenBtn.querySelector('span') || document.getElementById('fullscreen-text');
+
+    // ตรวจสอบว่าตอนนี้กล่องข้อสอบขยายเต็มจออยู่หรือไม่ (อิงจาก class พิเศษที่เราจะสร้างขึ้น)
+    const isCurrentlyFullscreen = quizElement.classList.contains('fake-fullscreen-active');
+
+    if (!isCurrentlyFullscreen) {
+        // === [ 1. เข้าสู่โหมดจำลองเต็มจอ ] ===
+        quizElement.classList.add('fake-fullscreen-active');
+
+        // สรรค์สร้าง CSS เพื่อยกกล่องข้อสอบให้ลอยเด่นเต็มขอบจอเบราว์เซอร์ทันที
+        quizElement.style.setProperty('position', 'fixed', 'important');
+        quizElement.style.setProperty('top', '0', 'important');
+        quizElement.style.setProperty('left', '0', 'important');
+        quizElement.style.setProperty('width', '100vw', 'important');
+        quizElement.style.setProperty('height', '100vh', 'important');
+        quizElement.style.setProperty('z-index', '9999', 'important');
+        quizElement.style.setProperty('overflow-y', 'auto', 'important');
+        quizElement.style.setProperty('padding', '30px', 'important');
+        quizElement.style.setProperty('border-radius', '0px', 'important');
+
+        // เปลี่ยนหน้าปุ่มเป็น "ย่อหน้าจอ" สีแดง
+        fullscreenBtn.className = "bg-red-700 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition";
+        if (icon) icon.className = 'fa-solid fa-compress';
+        if (text) text.innerText = 'ย่อหน้าจอ';
+
+    } else {
+        // === [ 2. ย่อขนาดกลับมาเป็นปกติ ] ===
+        quizElement.classList.remove('fake-fullscreen-active');
+
+        // คืนค่าสไตล์ดั้งเดิมให้กับกล่องข้อสอบ
+        quizElement.style.removeProperty('position');
+        quizElement.style.removeProperty('top');
+        quizElement.style.removeProperty('left');
+        quizElement.style.removeProperty('width');
+        quizElement.style.removeProperty('height');
+        quizElement.style.removeProperty('z-index');
+        quizElement.style.removeProperty('overflow-y');
+        quizElement.style.removeProperty('padding');
+        quizElement.style.removeProperty('border-radius');
+
+        // เปลี่ยนหน้าปุ่มกลับเป็น "ขยายเต็มจอ" สีเทาตามเดิม
+        fullscreenBtn.className = "bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition";
+        if (icon) icon.className = 'fa-solid fa-expand';
+        if (text) text.innerText = 'ขยายเต็มจอ';
+    }
+}
+
+  </script>
+</body>
+</html>
