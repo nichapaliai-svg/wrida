@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบบาลีไวยากรณ์ - เวอร์ชันแยกโหมดตาม Excel</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --danger: #e74c3c; --bg: #f8f9fa; --warning: #f1c40f; }
+        body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 10px; height: 100vh; display: flex; flex-direction: column; }
+        
+        .app-container { 
+            max-width: 1200px; margin: auto; background: white; border-radius: 12px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; 
+            display: flex; flex-direction: column; height: 98vh;
+        }
+        
+        .header { background: var(--primary); color: white; padding: 12px; text-align: center; flex-shrink: 0; }
+        
+        .control-bar { 
+            background: #34495e; color: white; padding: 10px 15px; 
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; gap: 10px;
+        }
+
+        .user-section { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 5px; }
+        .user-input { padding: 4px 8px; border-radius: 4px; border: none; font-family: 'Sarabun'; width: 120px; font-size: 0.9em; }
+
+        #timer-display { font-family: monospace; font-size: 1.1em; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 5px; min-width: 80px; text-align: center; }
+        #status-display { background: #fff3cd; color: #856404; padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 0.85em; flex-grow: 1; text-align: center; max-width: 400px; }
+        .stats-btn { background: var(--success); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        .filter-zone { background: #dfe6e9; padding: 8px; border-bottom: 2px solid #bdc3c7; flex-shrink: 0; }
+        .main-nav { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+        .num-btn { min-width: 95px; padding: 5px; border-radius: 5px; border: 1px solid #95a5a6; background: white; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .num-btn.active { background: var(--primary); color: white; }
+        
+        .sub-filters { display: flex; justify-content: center; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 0.85em; }
+        select, input[type="number"] { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-family: 'Sarabun'; }
+
+        .quiz-scroll-area { flex-grow: 1; overflow-y: auto; padding: 15px; background: white; display: flex; flex-direction: column; align-items: center; }
+        .question-row { width: 98%; }
+        
+        .q-image-area { text-align: center; margin-bottom: 15px; }
+        .q-image-area img { max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+        .question-row table { width: 100%; border-collapse: collapse; }
+        .question-row table td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+
+        .drop-zone { display: inline-flex; align-items: center; justify-content: center; min-width: 80px; min-height: 30px; border-bottom: 2px solid var(--secondary); background: #f1f2f6; margin: 2px; padding: 4px 8px; vertical-align: middle; cursor: pointer; font-size: 0.95em; font-weight: bold; border-radius: 4px; transition: background 0.2s; }
+        .drop-zone:hover { background: #dfe4ea; }
+        .drop-zone img { max-height: 45px; max-width: 120px; object-fit: contain; }
+        .correct { background: #d4edda !important; color: #155724 !important; border: 1px solid var(--success); }
+        .wrong { background: #f8d7da !important; color: #721c24 !important; border: 1px solid var(--danger); }
+
+        .options-area { background: #fdfdfd; border-top: 1px solid #eee; padding: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; flex-shrink: 0; min-height: 90px; overflow-y: auto; border: 2px dashed transparent; }
+        .options-area.drag-over { background: #eaeaea; border: 2px dashed var(--secondary); }
+
+        .drag-item { padding: 8px 15px; background: var(--secondary); color: white; border-radius: 6px; cursor: grab; font-size: 0.95em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; transition: all 0.1s; user-select: none; }
+        .drag-item:active { cursor: grabbing; }
+        .drag-item.selected { background: var(--warning) !important; color: #2c3e50 !important; font-weight: bold; box-shadow: 0 0 10px var(--warning); border: 2px solid #d4ac0d; }
+        .drag-item img { max-height: 50px; max-width: 130px; background: white; padding: 2px; border-radius: 4px; }
+
+        .nav-controls { background: #eee; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .nav-btn { padding: 10px 20px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; }
+        .check-btn { padding: 12px 40px; background: var(--warning); border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; box-shadow: 0 3px 0 #d4ac0d; }
+
+        #stats-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 800px; background: white; z-index: 10002; border-radius: 12px; padding: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .stats-table { width: 100%; border-collapse: collapse; font-size: 0.85em; margin-bottom: 20px; }
+        .stats-table th { background: #eee; padding: 8px; border: 1px solid #ddd; }
+        .stats-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .summary-header { background: var(--primary) !important; color: white; }
+
+        #pdf-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; }
+        #pdf-modal { display:none; position:fixed; top:5%; left:5%; width:90%; height:90%; background:white; z-index:10001; border-radius:12px; overflow:hidden; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header"><h2 style="margin:0; font-size: 1.2em;">ระบบทดสอบบาลีไวยากรณ์ (เวอร์ชันคอลัมน์กำหนดรูปแบบข้อสอบ)</h2></div>
+
+    <div class="control-bar">
+        <div class="user-section">
+            <span>👤 ชื่อผู้ทำ:</span>
+            <input type="text" id="user-name" class="user-input" placeholder="ใส่ชื่อของคุณ..." value="ผู้ทั่วไป">
+        </div>
+        <div id="timer-display">เวลา: 00:00</div>
+        <div id="status-display">กรุณาโหลดไฟล์ Excel</div>
+        <input type="file" id="excel-input" accept=".xlsx, .xls" style="font-size: 10px; max-width: 150px;">
+        <button class="stats-btn" onclick="toggleStats()">📊 สถิติแยกคน/หมวด</button>
+    </div>
+
+    <div class="filter-zone">
+        <div class="main-nav" id="topic-nav"></div>
+        <div class="sub-filters">
+            <select id="main-topic-select"></select>
+            <select id="sub-topic-select"></select>
+            <select id="sub1-topic-select" onchange="applyFilters()"></select>
+            <select id="year-select" onchange="applyFilters()"></select>
+            <input type="number" id="back-year-input" placeholder="ย้อนหลังปี" oninput="applyFilters()" style="width: 80px;">
+        </div>
+    </div>
+
+    <div class="quiz-scroll-area">
+        <div id="q-image-container" class="q-image-area"></div>
+        <div id="quiz-ui" class="question-row"></div>
+    </div>
+
+    <div class="options-area" id="options-ui" ondragover="event.preventDefault(); this.classList.add('drag-over');" ondragleave="this.classList.remove('drag-over');" ondrop="dropToBottom(event)"></div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="move(-1)">ก่อนหน้า</button>
+        <div id="current-mode-badge" style="padding: 8px 15px; background: #7f8c8d; color: white; border-radius: 20px; font-weight: bold; font-size: 0.9em;">โหมด: รอโหลดไฟล์</div>
+        <button class="nav-btn" onclick="resetQuiz()" style="background:var(--danger); color:white; border:none;">ล้างคำตอบ</button>
+        <button class="check-btn" onclick="checkAnswers()">ตรวจคำตอบ</button>
+        <button class="nav-btn" onclick="move(1)" style="background:var(--success); color:white; border:none;">ถัดไป</button>
+    </div>
+</div>
+
+<div id="stats-panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+        <h3 style="margin:0;">📊 รายงานสถิติการเรียนรู้</h3>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <label><b>กรองตามชื่อ:</b></label>
+            <select id="stats-user-filter" onchange="renderGroupedStats()" style="padding:5px;"></select>
+            <button onclick="toggleStats()" style="border:none; background:none; cursor:pointer; font-size: 24px;">&times;</button>
+        </div>
+    </div>
+    <div id="stats-content" style="max-height: 450px; overflow-y: auto;"></div>
+    <button onclick="clearAllStats()" style="width:100%; margin-top:15px; padding:10px; background:#f8f9fa; border:1px solid #ccc; border-radius:5px; cursor:pointer;">ล้างประวัติทั้งหมด</button>
+</div>
+
+<div id="pdf-overlay" onclick="closeAllModals()"></div>
+<div id="pdf-modal">
+    <div style="background:var(--primary); color:white; padding:10px; display:flex; justify-content:space-between;">
+        <span>📖 คำอธิบายไวยากรณ์</span>
+        <button onclick="closeAllModals()" style="background:var(--danger); color:white; border:none; cursor:pointer; padding:5px 10px; border-radius:5px;">ปิด X</button>
+    </div>
+    <iframe id="pdf-frame" src="" width="100%" height="100%" frameborder="0"></iframe>
+</div>
+
+<script>
+let rawData = []; let currentList = []; let index = 0; let selectedTopicNum = 'all'; let userAnswers = {};
+const topics = ["สมัญญาภิธาน", "สนธิ", "นาม", "สมาส", "ตัทธิต", "อาขยาต", "กิตก์" ];
+let timerInterval; let seconds = 0; let isTimerRunning = false;
+let selectedWordToMatch = null; 
+let currentShuffledOptions = []; 
+let lastRenderedQuestionId = null; 
+let currentFixedChoices = [];  
+
+function isImage(str) {
+    if (typeof str !== 'string') return false;
+    const cleanStr = str.trim();
+    return cleanStr.startsWith('http://') || cleanStr.startsWith('https://') || /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(cleanStr);
+}
+
+function renderContent(str) {
+    if (isImage(str)) return `<img src="${str.trim()}" alt="option">`;
+    return str;
+}
+
+function shuffleArray(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+document.getElementById('excel-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const workbook = XLSX.read(new Uint8Array(evt.target.result), {type: 'array'});
+            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            rawData = json.map(row => {
+                let ansObj = {};
+                for(let i=1; i<=40; i++) { 
+                    if(row[`ans${i}`] !== undefined && row[`ans${i}`] !== null) {
+                        ansObj[`{${i}}`] = row[`ans${i}`].toString().trim(); 
+                    } 
+                }
+                
+                // อ่านค่าจากคอลัมน์ type ถ้าไม่มีค่า ให้ตั้งค่าเริ่มต้นเป็นแบบลากวาง (drag)
+                let quizType = row.type ? row.type.toString().trim().toLowerCase() : "drag";
+                if(quizType !== "choice") quizType = "drag";
+
+                return {
+                    id: row.id, topic: row.topic?.toString().trim(), main_topic: row.main_topic || "ทั่วไป", 
+                    sub: row.sub || "ทั่วไป", sub1: row.sub1 || "ทั่วไป", year: row.year ? row.year.toString() : "ไม่ระบุ", 
+                    q: row.q || "", img_q: row.img_q || "", answers: ansObj, page_q: row.page_q, page_ans: row.page_ans,
+                    distractors: row.distractors ? row.distractors.toString().split(',').map(s => s.trim()).filter(s => s !== "") : [],
+                    ans_choice: row.ans_choice ? parseInt(row.ans_choice) : 1,
+                    type: quizType
+                };
+            });
+            initUI();
+        } catch(err) {
+            alert("ไฟล์ Excel ไม่ถูกต้อง หรือระบบขัดข้อง");
+        }
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+function initUI() {
+    const nav = document.getElementById('topic-nav');
+    nav.innerHTML = '<button onclick="clearFilters()" class="num-btn">ทั้งหมด</button>';
+    topics.forEach((t, i) => { nav.innerHTML += `<button class="num-btn" id="btn-${i+1}" onclick="filterByTopic(${i+1})">ข้อ ${i+1} ${t}</button>`; });
+    const years = [...new Set(rawData.map(d => d.year))].sort().reverse();
+    document.getElementById('year-select').innerHTML = '<option value="all">ทุกปี</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+    clearFilters();
+}
+
+function toggleStats() {
+    const p = document.getElementById('stats-panel');
+    const o = document.getElementById('pdf-overlay');
+    const isVisible = p.style.display === 'block';
+    p.style.display = isVisible ? 'none' : 'block';
+    o.style.display = isVisible ? 'none' : 'block';
+    if(!isVisible) { updateUserFilter(); renderGroupedStats(); }
+}
+
+function updateUserFilter() {
+    const stats = JSON.parse(localStorage.getItem('baliQuizStats')) || [];
+    const users = [...new Set(stats.map(s => s.user || "ผู้ทั่วไป"))];
+    const filter = document.getElementById('stats-user-filter');
+    const currentVal = filter.value;
+    filter.innerHTML = '<option value="all">ทุกคน</option>' + users.map(u => `<option value="${u}">${u}</option>`).join('');
+    if (users.includes(currentVal)) filter.value = currentVal;
+}
+
+function renderGroupedStats() {
+    const stats = JSON.parse(localStorage.getItem('baliQuizStats')) || [];
+    const filterUser = document.getElementById('stats-user-filter').value;
+    let displayData = (filterUser === 'all') ? stats : stats.filter(s => (s.user || "ผู้ทั่วไป") === filterUser);
+
+    if(displayData.length === 0) {
+        document.getElementById('stats-content').innerHTML = "<p style='text-align:center; padding:20px;'>ไม่พบประวัติของชื่อนี้</p>";
+        return;
+    }
+
+    const summary = {};
+    displayData.forEach(s => {
+        if(!summary[s.topic]) summary[s.topic] = { count: 0, totalCorrect: 0, totalSlots: 0 };
+        const [c, t] = s.score.split('/').map(Number);
+        summary[s.topic].count++;
+        summary[s.topic].totalCorrect += c;
+        summary[s.topic].totalSlots += t;
+    });
+
+    let html = `<table class="stats-table"><tr class="summary-header"><th>หมวด</th><th>ทำไป</th><th>คะแนนรวม</th><th>ความแม่นยำ</th></tr>`;
+    for(const topic in summary) {
+        const d = summary[topic];
+        const pct = Math.round((d.totalCorrect / d.totalSlots) * 100);
+        html += `<tr><td>${topic}</td><td>${d.count}</td><td>${d.totalCorrect}/${d.totalSlots}</td><td>${pct}%</td></tr>`;
+    }
+    html += `</table>`;
+
+    html += `<h4>📜 รายละเอียดประวัติ (${filterUser === 'all' ? 'ทุกคน' : filterUser})</h4>`;
+    html += `<table class="stats-table"><tr><th>วัน/เวลา</th><th>ชื่อคนทำ</th><th>หัวข้อ</th><th>เวลา</th><th>คะแนน</th></tr>`;
+    displayData.slice().reverse().forEach(s => {
+        html += `<tr>
+            <td style="font-size:0.8em">${s.date}</td>
+            <td style="color:var(--secondary); font-weight:bold;">${s.user || "ผู้ทั่วไป"}</td>
+            <td style="text-align:left"><b>${s.topic}</b><br><small>${s.main}</small></td>
+            <td>${s.time}</td>
+            <td style="font-weight:bold">${s.score}</td>
+        </tr>`;
+    });
+    html += `</table>`;
+    document.getElementById('stats-content').innerHTML = html;
+}
+
+function selectChoice(answerText) {
+    startTimer();
+    const item = currentList[index];
+    if(!item) return;
+    const itemKey = `q_${item.id}`;
+    userAnswers[itemKey]['chosen_ans'] = answerText;
+    render();
+}
+
+function checkAnswers() {
+    stopTimer();
+    const item = currentList[index];
+    if(!item) return;
+    const currentUser = document.getElementById('user-name').value.trim() || "ผู้ทั่วไป";
+    const itemKey = `q_${item.id}`;
+    let correct = 0; 
+    let total = 0;
+    
+    if (item.type === 'choice') {
+        total = 1;
+        const correctAnswerText = item.answers['{1}'] || Object.values(item.answers)[0];
+        const userAns = userAnswers[itemKey]['chosen_ans'];
+        
+        if (userAns === correctAnswerText) {
+            correct = 1;
+            alert("ถูกต้องแล้วครับ! 🎉 ตรงตามเฉลยในคู่มือหนังสือเป๊ะ");
+        } else {
+            const labels = ["1 (ก.)", "2 (ข.)", "3 (ค.)", "4 (ง.)", "5 (จ.)"];
+            alert(`ยังไม่ถูกนะคร้าบ เล่มคู่มือเฉลยตอบข้อ: ${labels[item.ans_choice - 1]}`);
+        }
+    } else {
+        total = Object.keys(item.answers).length;
+        Object.keys(item.answers).forEach(slot => {
+            const el = document.getElementById(`slot-${slot}`);
+            if(el) {
+                if(userAnswers[itemKey][slot] === item.answers[slot]) { el.className = "drop-zone correct"; correct++; }
+                else el.className = "drop-zone wrong";
+            }
+        });
+    }
+    
+    const stats = JSON.parse(localStorage.getItem('baliQuizStats')) || [];
+    stats.push({
+        user: currentUser,
+        date: new Date().toLocaleString('th-TH'),
+        topic: topics[parseInt(item.topic)-1] || item.topic,
+        main: item.main_topic,
+        time: document.getElementById('timer-display').innerText.replace('เวลา: ',''),
+        score: `${correct}/${total}`
+    });
+    localStorage.setItem('baliQuizStats', JSON.stringify(stats));
+}
+
+function startTimer() { if (!isTimerRunning) { isTimerRunning = true; seconds = 0; timerInterval = setInterval(() => { seconds++; let m = Math.floor(seconds/60).toString().padStart(2,'0'); let s = (seconds%60).toString().padStart(2,'0'); document.getElementById('timer-display').innerText = `เวลา: ${m}:${s}`; }, 1000); } }
+function stopTimer() { clearInterval(timerInterval); isTimerRunning = false; }
+function clearAllStats() { if(confirm("ลบประวัติทั้งหมด?")) { localStorage.removeItem('baliQuizStats'); renderGroupedStats(); } }
+document.getElementById('main-topic-select').onchange = () => { updateSubDropdown(); applyFilters(); };
+document.getElementById('sub-topic-select').onchange = () => { updateSub1Dropdown(); applyFilters(); };
+function filterByTopic(n) { selectedTopicNum = n; document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active')); if(n !== 'all') document.getElementById(`btn-${n}`).classList.add('active'); updateMainDropdown(); }
+function updateMainDropdown() { const filtered = (selectedTopicNum === 'all') ? rawData : rawData.filter(i => i.topic == selectedTopicNum || i.topic === topics[selectedTopicNum-1]); const mains = [...new Set(filtered.map(i => i.main_topic))].sort(); document.getElementById('main-topic-select').innerHTML = '<option value="all">หัวข้อหลัก</option>' + mains.map(m => `<option value="${m}">${m}</option>`).join(''); updateSubDropdown(); }
+function updateSubDropdown() { const mVal = document.getElementById('main-topic-select').value; let filtered = (selectedTopicNum === 'all') ? rawData : rawData.filter(i => i.topic == selectedTopicNum || i.topic === topics[selectedTopicNum-1]); if(mVal !== 'all') filtered = filtered.filter(i => i.main_topic === mVal); const subs = [...new Set(filtered.map(i => i.sub))].sort(); document.getElementById('sub-topic-select').innerHTML = '<option value="all">ข้อย่อย</option>' + subs.map(s => `<option value="${s}">${s}</option>`).join(''); updateSub1Dropdown(); }
+function updateSub1Dropdown() { const mVal = document.getElementById('main-topic-select').value; const sVal = document.getElementById('sub-topic-select').value; let filtered = (selectedTopicNum === 'all') ? rawData : rawData.filter(i => i.topic == selectedTopicNum || i.topic === topics[selectedTopicNum-1]); if(mVal !== 'all') filtered = filtered.filter(i => i.main_topic === mVal); if(sVal !== 'all') filtered = filtered.filter(i => i.sub === sVal); const sub1s = [...new Set(filtered.map(i => i.sub1))].sort(); document.getElementById('sub1-topic-select').innerHTML = '<option value="all">คำศัพท์ (Sub1)</option>' + sub1s.map(s => `<option value="${s}">${s}</option>`).join(''); applyFilters(); }
+
+function applyFilters() { 
+    const yVal = document.getElementById('year-select').value; 
+    const mVal = document.getElementById('main-topic-select').value; 
+    const sVal = document.getElementById('sub-topic-select').value; 
+    const s1Val = document.getElementById('sub1-topic-select').value; 
+    const backY = parseInt(document.getElementById('back-year-input').value) || 0; 
+    currentList = rawData.filter(item => { 
+        const matchT = (selectedTopicNum === 'all' || item.topic == selectedTopicNum || item.topic === topics[selectedTopicNum-1]); 
+        const matchM = (mVal === 'all' || item.main_topic === mVal); 
+        const matchS = (sVal === 'all' || item.sub === sVal); 
+        const matchS1 = (s1Val === 'all' || item.sub1 === s1Val); 
+        let matchY = (yVal === 'all' || item.year == yVal); 
+        if (backY > 0) matchY = (parseInt(item.year) >= (2569 - backY)); 
+        return matchT && matchM && matchS && matchS1 && matchY; 
+    }); 
+    index = 0; stopTimer(); selectedWordToMatch = null; lastRenderedQuestionId = null; document.getElementById('timer-display').innerText = "เวลา: 00:00"; render(); 
+}
+
+function render() { 
+    const item = currentList[index]; 
+    if(!item) { 
+        document.getElementById('quiz-ui').innerHTML = "<h3>ไม่พบข้อมูล</h3>"; 
+        document.getElementById('q-image-container').innerHTML = "";
+        document.getElementById('current-mode-badge').innerText = "โหมด: ไม่ระบุ";
+        return; 
+    } 
+    const itemKey = `q_${item.id}`; 
+    if(!userAnswers[itemKey]) userAnswers[itemKey] = {}; 
+    let displayTopic = topics[parseInt(item.topic)-1] || item.topic; 
+    document.getElementById('status-display').innerHTML = `ทำอยู่: ${displayTopic} | ข้อ ${index+1}/${currentList.length}`; 
+
+    // อัปเดตป้ายบอกโหมดคำถามด้านล่างเพื่อความชัดเจน
+    const badge = document.getElementById('current-mode-badge');
+    if(item.type === 'choice') {
+        badge.innerText = "โหมด: 5 ตัวเลือก (ช้อยส์)";
+        badge.style.backgroundColor = "#9b59b6";
+    } else {
+        badge.innerText = "โหมด: ลากวางศัพท์";
+        badge.style.backgroundColor = "#34495e";
+    }
+
+    const imgContainer = document.getElementById('q-image-container');
+    if(item.img_q && item.img_q.trim() !== "") {
+        imgContainer.innerHTML = `<img src="${item.img_q.trim()}" alt="Question Image">`;
+    } else {
+        imgContainer.innerHTML = "";
+    }
+
+    const optionsUi = document.getElementById('options-ui');
+
+    // ==========================================
+    // ตรวจสอบเงื่อนไขการทำงานแยกตาม item.type ที่ระบุใน Excel
+    // ==========================================
+    if (item.type === 'choice') {
+        optionsUi.innerHTML = ""; // เคลียร์และซ่อนช่องเก็บคำลากวางด้านล่างออกทั้งหมด
+        
+        // แสดงเฉพาะโจทย์หลักคลีนๆ
+        let cleanQuestion = `<div style="font-size:1.25em; font-weight:bold; color:var(--primary); line-height:1.6; margin-bottom:15px; padding: 10px; background: #f1f2f6; border-left: 5px solid var(--secondary); border-radius: 4px;">[โจทย์]: ${item.main_topic}</div>`;
+        document.getElementById('quiz-ui').innerHTML = cleanQuestion;
+
+        if (lastRenderedQuestionId !== item.id) {
+            let correctAnsText = item.answers['{1}'] || Object.values(item.answers)[0] || "";
+            let distractorsArr = [...item.distractors];
+            
+            let fallbackIdx = 0;
+            while(distractorsArr.length < 4 && fallbackIdx < rawData.length) {
+                let randomAns = Object.values(rawData[fallbackIdx].answers)[0];
+                if(randomAns && randomAns !== correctAnsText && !distractorsArr.includes(randomAns)) {
+                    distractorsArr.push(randomAns);
+                }
+                fallbackIdx++;
+            }
+            distractorsArr = distractorsArr.slice(0, 4);
+
+            let finalChoices = new Array(5).fill("");
+            let targetCorrectIndex = item.ans_choice - 1; 
+            if(targetCorrectIndex < 0 || targetCorrectIndex > 4) targetCorrectIndex = 0;
+
+            finalChoices[targetCorrectIndex] = correctAnsText;
+
+            let distractorPointer = 0;
+            for(let i = 0; i < 5; i++) {
+                if(finalChoices[i] === "") {
+                    finalChoices[i] = distractorsArr[distractorPointer] || "ตัวเลือกเสริม";
+                    distractorPointer++;
+                }
+            }
+
+            currentFixedChoices = finalChoices;
+            lastRenderedQuestionId = item.id;
+        }
+
+        let choiceHTML = `<div style="display:flex; flex-direction:column; gap:10px; width:100%; margin-top:15px;">`;
+        currentFixedChoices.forEach((choiceText, cIdx) => {
+            const isSelected = userAnswers[itemKey]['chosen_ans'] === choiceText;
+            const activeStyle = isSelected ? 'background-color: var(--secondary); color: white; border-color: #2980b9;' : 'background: white; color: #2c3e50;';
+            const choiceLabel = ["1 (ก.)", "2 (ข.)", "3 (ค.)", "4 (ง.)", "5 (จ.)"][cIdx];
+
+            choiceHTML += `
+                <button onclick="selectChoice('${choiceText}')" 
+                        style="padding:14px 18px; text-align:left; border:2px solid #bdc3c7; border-radius:8px; font-family:'Sarabun'; font-size:1.05em; cursor:pointer; transition:all 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); ${activeStyle}">
+                    <span style="display:inline-block; width:60px; font-weight:bold; color: var(--primary);">${choiceLabel}</span> ${renderContent(choiceText)}
+                </button>`;
+        });
+        choiceHTML += `</div>`;
+        document.getElementById('quiz-ui').innerHTML += choiceHTML;
+
+    } else {
+        // โหมดลากวางศัพท์ (drag)
+        let qHTML = item.q; 
+        let slots = Object.keys(item.answers).sort((a,b) => {
+            let numA = parseInt(a.replace('{','').replace('}','')) || 0;
+            let numB = parseInt(b.replace('{','').replace('}','')) || 0;
+            return numB - numA;
+        }); 
+
+        slots.forEach(slot => { 
+            const val = userAnswers[itemKey][slot] || "......"; 
+            const regex = new RegExp(slot.replace('{','\\{').replace('}','\\}'), 'g'); 
+            const innerContent = (val === "......") ? "......" : renderContent(val);
+            const dragAttr = (val !== "......") ? `draggable="true" ondragstart="startDragFromSlot(event, '${slot}', '${val}')"` : '';
+            qHTML = qHTML.replace(regex, `<span id="slot-${slot}" class="drop-zone" ${dragAttr} ondragover="event.preventDefault()" ondrop="drop(event, '${slot}')" onclick="handleZoneClick('${slot}', '${val}')">${innerContent}</span>`); 
+        }); 
+        document.getElementById('quiz-ui').innerHTML = qHTML; 
+
+        if (lastRenderedQuestionId !== item.id) {
+            let allOpts = [...Object.values(item.answers).filter(v => v !== ""), ...item.distractors]; 
+            currentShuffledOptions = shuffleArray(allOpts); 
+            lastRenderedQuestionId = item.id;
+        }
+
+        optionsUi.innerHTML = ""; 
+        const used = Object.values(userAnswers[itemKey]); 
+        
+        currentShuffledOptions.forEach((word) => { 
+            const div = document.createElement('div'); 
+            div.className = 'drag-item'; 
+            if (selectedWordToMatch === word) { div.classList.add('selected'); }
+            div.draggable = true; 
+            div.innerHTML = renderContent(word); 
+            
+            div.ondragstart = (e) => { 
+                startTimer(); 
+                e.dataTransfer.setData("text/plain", word); 
+                e.dataTransfer.setData("source-type", "bottom"); 
+            }; 
+            
+            div.onclick = (e) => {
+                e.stopPropagation();
+                startTimer();
+                if (selectedWordToMatch === word) { selectedWordToMatch = null; } 
+                else { selectedWordToMatch = word; }
+                render(); 
+            };
+
+            let foundIdx = used.indexOf(word);
+            if (foundIdx !== -1) { 
+                div.style.display = 'none'; 
+                used.splice(foundIdx, 1); 
+            } 
+            optionsUi.appendChild(div); 
+        }); 
+    }
+}
+
+function startDragFromSlot(ev, fromSlot, wordValue) {
+    startTimer();
+    ev.dataTransfer.setData("text/plain", wordValue);
+    ev.dataTransfer.setData("source-type", "slot"); 
+    ev.dataTransfer.setData("from-slot", fromSlot); 
+}
+
+function drop(ev, toSlot) { 
+    ev.preventDefault(); 
+    const item = currentList[index];
+    if(!item) return;
+    const itemKey = `q_${item.id}`;
+    
+    const draggedText = ev.dataTransfer.getData("text/plain");
+    const sourceType = ev.dataTransfer.getData("source-type");
+    const fromSlot = ev.dataTransfer.getData("from-slot");
+    
+    const existingTargetValue = userAnswers[itemKey][toSlot]; 
+
+    if (sourceType === "slot") {
+        if (fromSlot !== toSlot) {
+            if (existingTargetValue && existingTargetValue !== "......") {
+                userAnswers[itemKey][fromSlot] = existingTargetValue;
+            } else {
+                delete userAnswers[itemKey][fromSlot];
+            }
+            userAnswers[itemKey][toSlot] = draggedText;
+        }
+    } else {
+        userAnswers[itemKey][toSlot] = draggedText;
+    }
+    
+    selectedWordToMatch = null;
+    render(); 
+}
+
+function dropToBottom(ev) {
+    ev.preventDefault();
+    document.getElementById('options-ui').classList.remove('drag-over');
+    const item = currentList[index];
+    if(!item) return;
+    const itemKey = `q_${item.id}`;
+    const sourceType = ev.dataTransfer.getData("source-type");
+    const fromSlot = ev.dataTransfer.getData("from-slot");
+    
+    if (sourceType === "slot" && fromSlot) {
+        delete userAnswers[itemKey][fromSlot];
+        selectedWordToMatch = null;
+        render();
+    }
+}
+
+function handleZoneClick(slot, value) { 
+    const item = currentList[index];
+    if(!item) return;
+    const itemKey = `q_${item.id}`;
+
+    if (selectedWordToMatch !== null) {
+        userAnswers[itemKey][slot] = selectedWordToMatch;
+        selectedWordToMatch = null; 
+        render();
+        return;
+    }
+
+    if(value === "......") return; 
+    if (value === item.answers[slot]) { 
+        const pageAnsList = item.page_ans ? item.page_ans.toString().split(',') : []; 
+        let slotNum = parseInt(slot.replace('{','').replace('}','')) || 1;
+        const sIdx = slotNum - 1; 
+        openPDF(pageAnsList[sIdx] || 1); 
+    } else { 
+        delete userAnswers[itemKey][slot]; 
+        render(); 
+    } 
+}
+
+function move(s) { if(index+s >= 0 && index+s < currentList.length) { index+=s; stopTimer(); selectedWordToMatch = null; lastRenderedQuestionId = null; render(); } }
+function resetQuiz() { if(confirm("ล้างคำตอบข้อนี้?")) { if(currentList[index]) userAnswers[`q_${currentList[index].id}`] = {}; stopTimer(); selectedWordToMatch = null; render(); } }
+function clearFilters() { document.getElementById('year-select').value='all'; document.getElementById('back-year-input').value=''; filterByTopic('all'); }
+function openPDF(p) { document.getElementById('pdf-frame').src=`manual.pdf#page=${p}`; document.getElementById('pdf-modal').style.display='block'; document.getElementById('pdf-overlay').style.display='block'; }
+function closeAllModals() { document.getElementById('pdf-modal').style.display='none'; document.getElementById('stats-panel').style.display='none'; document.getElementById('pdf-overlay').style.display='none'; }
+
+document.addEventListener('click', () => {
+    if (selectedWordToMatch !== null) {
+        selectedWordToMatch = null;
+        render();
+    }
+});
+</script>
+</body>
+</html>

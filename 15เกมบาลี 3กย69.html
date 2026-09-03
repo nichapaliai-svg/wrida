@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ศูนย์รวม 15 เกมบาลีไวยากรณ์ (75 คำถาม)</title>
+    <style>
+        :root {
+            --primary: #8b4513;
+            --secondary: #d2691e;
+            --bg: #fdf5e6;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --correct: #2e7d32;
+            --wrong: #c62828;
+        }
+
+        body {
+            font-family: 'Sarabun', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .header h1 { margin: 0; font-size: 1.8rem; }
+        .header p { margin: 5px 0 0; color: #666; }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background-color: var(--card-bg);
+            border: 2px solid #e1e1e1;
+            border-top: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .game-desc {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 10px;
+            min-height: 35px;
+        }
+
+        .game-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .q-box {
+            background: #fff8dc;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: var(--primary); }
+        
+        .btn-next {
+            background-color: #4caf50;
+            margin-top: 5px;
+            display: none;
+        }
+        .btn-next:hover { background-color: #388e3c; }
+
+        .feedback {
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .feedback.correct { color: var(--correct); }
+        .feedback.wrong { color: var(--wrong); }
+
+        .score-board {
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>เกมบาลีไวยากรณ์ 15 in 1 (75 คำถาม)</h1>
+        <p>ฝึกฝนบาลีไวยากรณ์ครบทุกหมวด เกมละ 5 ข้อ</p>
+    </div>
+
+    <div class="game-grid" id="main-grid"></div>
+
+    <script>
+        const gamesData = [
+            {
+                id: 1, title: "1. สนธิและอักขรวิธี", desc: "ทดสอบความรู้เรื่องสระ พยัญชนะ และนิคหิต",
+                questions: [
+                    { q: "ตัวอักษรใดต่อไปนี้คือ 'นิคหิต' ( ํ )", options: ["อัง (อํ)", "อา", "อิ", "อู"], ans: 0 },
+                    { q: "สระในภาษาบาลีมีทั้งหมดกี่ตัว", options: ["6 ตัว", "8 ตัว", "10 ตัว", "12 ตัว"], ans: 1 },
+                    { q: "พยัญชนะในภาษาบาลีมีทั้งหมดกี่ตัว", options: ["32 ตัว", "33 ตัว", "34 ตัว", "35 ตัว"], ans: 1 },
+                    { q: "สระ รัสสะ (เสียงสั้น) มีกี่ตัว", options: ["2 ตัว", "3 ตัว", "4 ตัว", "5 ตัว"], ans: 1 },
+                    { q: "พยัญชนะ 'ง' จัดเป็นพยัญชนะอะไร", options: ["พยัญชนะวรรค", "อวรรค", "สระ", "นิคหิต"], ans: 0 }
+                ]
+            },
+            {
+                id: 2, title: "2. วรรคและพยัญชนะ", desc: "การจัดหมวดหมู่พยัญชนะวรรคทั้ง 5",
+                questions: [
+                    { q: "พยัญชนะ 'ช' อยู่ในวรรคใด", options: ["ก วรรค", "จ วรรค", "ฏ วรรค", "ต วรรค"], ans: 1 },
+                    { q: "พยัญชนะวรรค มีทั้งหมดกี่ตัว", options: ["20 ตัว", "25 ตัว", "30 ตัว", "33 ตัว"], ans: 1 },
+                    { q: "พยัญชนะ 'ต ถ ท ธ น' อยู่ในวรรคใด", options: ["จ วรรค", "ฏ วรรค", "ต วรรค", "ป วรรค"], ans: 2 },
+                    { q: "พยัญชนะ 'อวรรค' มีทั้งหมดกี่ตัว", options: ["7 ตัว", "8 ตัว", "9 ตัว", "10 ตัว"], ans: 1 },
+                    { q: "ตัวใดจัดเป็นพยัญชนะที่สุดวรรค (นิคหิต/อนุนาสิก)", options: ["ก", "ช", "ม", "ต"], ans: 2 }
+                ]
+            },
+            {
+                id: 3, title: "3. ฐานกรณุฏฐาน", desc: "กำเนิดของเสียงพยัญชนะและสระ",
+                questions: [
+                    { q: "กัณฐชะ (เสียงเกิดที่คอ) ได้แก่อักขระชุดใด", options: ["อะ อา ก ข ค ง", "อิ อี จ ฉ", "อุ อู ป ผ", "เอ โอ"], ans: 0 },
+                    { q: "อักขระที่เกิดจากริมฝีปาก เรียกว่าอะไร", options: ["กัณฐชะ", "โอฏฐชะ", "มุทธชะ", "ทัณฑชะ"], ans: 1 },
+                    { q: "สระ 'เอ' เกิดจากฐานใดร่วมกัน", options: ["คอ+เพดาน", "คอ+ริมฝีปาก", "ฟัน+ริมฝีปาก", "อก+คอ"], ans: 0 },
+                    { q: "สระ 'โอ' เกิดจากฐานใดร่วมกัน", options: ["คอ+เพดาน", "คอ+ริมฝีปาก", "เพดาน+จมูก", "ฟัน+เพดาน"], ans: 1 },
+                    { q: "พยัญชนะวรรค ฏะ (ฏ ฐ ฑ ฒ ณ) เกิดจากฐานใด", options: ["คอ", "เพดาน", "ศีรษะ/ปุ่มเหงือก (มุทธชะ)", "ฟัน"], ans: 2 }
+                ]
+            },
+            {
+                id: 4, title: "4. ปุริสลิงค์ (ปุลลิงค์)", desc: "การแจกวิภัตตินามนามเพศชาย",
+                questions: [
+                    { q: "ปุริส + สิ (ปฐมาวิภัตติ เอกวจนะ) ได้รูปใด", options: ["ปุริสัง", "ปุริเสนะ", "ปุริโส", "ปุริสา"], ans: 2 },
+                    { q: "ปุริส + โย (ปฐมาวิภัตติ พหุวจนะ) ได้รูปใด", options: ["ปุริโส", "ปุริสา", "ปุริเส", "ปุริสัง"], ans: 1 },
+                    { q: "ปุริส + อัง (ทุติยาวิภัตติ เอกวจนะ) ได้รูปใด", options: ["ปุริสัง", "ปุริเส", "ปุริสัสสะ", "ปุริสาสุ"], ans: 0 },
+                    { q: "คำว่า 'ปุริเสหิ' เป็นวิภัตติใด", options: ["ปฐมา", "ตติยา/ปัญจมี พหุ", "ฉัฏฐี", "สัตตมี"], ans: 1 },
+                    { q: "'ปุริสัสสะ' เป็นวิภัตติใดได้บ้าง", options: ["ปฐมา", "ทุติยา", "จตุรถี/ฉัฏฐี เอกะ", "สัตตมี"], ans: 2 }
+                ]
+            },
+            {
+                id: 5, title: "5. อิตถีลิงค์", desc: "การแจกวิภัตตินามนามเพศหญิง (อา การันต์)",
+                questions: [
+                    { q: "กญฺญา + โย (ปฐมาวิภัตติ พหุวจนะ) ได้รูปใด", options: ["กญฺญาย", "กญฺญาโย / กญฺญา", "กญฺญํ", "กญฺญาหิ"], ans: 1 },
+                    { q: "กญฺญา + สิ (ปฐมาวิภัตติ เอกวจนะ) ได้รูปใด", options: ["กญฺญา", "กญฺญํ", "กญฺญาย", "กญฺญาโย"], ans: 0 },
+                    { q: "รูป 'กญฺญํ' เป็นวิภัตติใด", options: ["ปฐมา", "ทุติยา เอกะ", "ตติยา", "ฉัฏฐี"], ans: 1 },
+                    { q: "คำว่า 'กญฺญานํ' เป็นวิภัตติใด", options: ["ทุติยา พหุ", "จตุรถี/ฉัฏฐี พหุ", "สัตตมี เอกะ", "ปัญจมี"], ans: 1 },
+                    { q: "'กญฺญายํ' หรือ 'กญฺญาย' ลงสัตตมีวิภัตติแปลว่าอะไร", options: ["ซึ่งนางสาวน้อย", "ด้วยนางสาวน้อย", "ในนางสาวน้อย", "ของนางสาวน้อย"], ans: 2 }
+                ]
+            },
+            {
+                id: 6, title: "6. นปุงสกลิงค์", desc: "นามนามเพศกลาง (อ การันต์)",
+                questions: [
+                    { q: "คำว่า 'จิตฺต' (ใจ) + สิ ปฐมาวิภัตติ ได้รูปใด", options: ["จิตฺโต", "จิตฺตํ", "จิตฺตา", "จิตฺเต"], ans: 1 },
+                    { q: "จิตฺต + โย (ปฐมาวิภัตติ พหุวจนะ) ได้รูปใด", options: ["จิตฺตานิ", "จิตฺตา", "จิตฺโต", "จิตฺตัง"], ans: 0 },
+                    { q: "'จิตฺเตน' เป็นตติยาวิภัตติ แปลว่าอะไร", options: ["อันใจ / ด้วยใจ", "ซึ่งใจ", "แก่ใจ", "แห่งใจ"], ans: 0 },
+                    { q: "คำว่า 'ผล' (ผลไม้) จัดเป็นลิงค์ใด", options: ["ปุลลิงค์", "อิตถีลิงค์", "นปุงสกลิงค์", "ไม่มีลิงค์"], ans: 2 },
+                    { q: "รูป 'ผลานิ' เป็นวจนะใด", options: ["เอกวจนะ", "พหุวจนะ", "ทวิวจนะ", "อพยยวจนะ"], ans: 1 }
+                ]
+            },
+            {
+                id: 7, title: "7. สัพพนาม (สรรพนาม)", desc: "ปุริสสัพพนาม และ วิเสสนสัพพนาม",
+                questions: [
+                    { q: "'เอต' สัพพนาม แปลว่าอะไร", options: ["นั้น", "นี้", "โน้น", "ใคร"], ans: 1 },
+                    { q: "'ต' สัพพนาม แปลว่าอะไร", options: ["นั้น", "นี้", "โน้น", "อะไร"], ans: 0 },
+                    { q: "'อิม' สัพพนาม แปลว่าอะไร", options: ["นั้น", "นี้", "โน้น", "ใด"], ans: 1 },
+                    { q: "'อมุ' สัพพนาม แปลว่าอะไร", options: ["นั้น", "นี้", "โน้น/แนะ", "ใคร"], ans: 2 },
+                    { q: "'กิ' สัพพนาม (กิง) แปลว่าอะไร", options: ["ใคร / อะไร", "โน้น", "นี้", "นั้น"], ans: 0 }
+                ]
+            },
+            {
+                id: 8, title: "8. สังขยา (การนับจำนวน)", desc: "ปกติสังขยา และ ปูรณสังขยา",
+                questions: [
+                    { q: "'ปญฺจ' (ปัญจะ) หมายถึงจำนวนเท่าใด", options: ["3", "4", "5", "6"], ans: 2 },
+                    { q: "'เอกาทสะ' หมายถึงจำนวนเท่าใด", options: ["10", "11", "12", "21"], ans: 1 },
+                    { q: "'วีสติ' หมายถึงจำนวนเท่าใด", options: ["12", "20", "30", "100"], ans: 1 },
+                    { q: "'สตํ' หมายถึงจำนวนเท่าใด", options: ["50", "100", "1,000", "10,000"], ans: 1 },
+                    { q: "'ปฐโม' จัดเป็นปูรณสังขยา แปลว่าอะไร", options: ["ที่ 1", "ที่ 2", "ที่ 3", "ที่ 4"], ans: 0 }
+                ]
+            },
+            {
+                id: 9, title: "9. อาขยาต: ธาตุวิภาค", desc: "ความหมายของธาตุพื้นฐานในกิริยา",
+                questions: [
+                    { q: "ธาตุ 'ภู' (ภู ธาตุ) มีความหมายว่าอย่างไร", options: ["ในความมี ความเป็น", "ในความไป", "ในความทำ", "ในความกิน"], ans: 0 },
+                    { q: "ธาตุ 'คมฺ' (คม ธาตุ) มีความหมายว่าอย่างไร", options: ["ในความเห็น", "ในความไป", "ในความนั่ง", "ในความนอน"], ans: 1 },
+                    { q: "ธาตุ 'กรฺ' (กร ธาตุ) มีความหมายว่าอย่างไร", options: ["ในความทำ", "ในความพูด", "ในความตาย", "ในความฟัง"], ans: 0 },
+                    { q: "ธาตุ 'ทิสฺ' (ทิส ธาตุ) มีความหมายว่าอย่างไร", options: ["ในความเห็น", "ในความให้", "ในความถือเอา", "ในความยืน"], ans: 0 },
+                    { q: "ธาตุ 'ทา' (ทา ธาตุ) มีความหมายว่าอย่างไร", options: ["ในความให้", "ในความกิน", "ในความดื่ม", "ในความรู้"], ans: 0 }
+                ]
+            },
+            {
+                id: 10, title: "10. วัตตมานาวิภัตติ", desc: "การแจกวิภัตติบอกปัจจุบันกาล (ติ อันติ...)",
+                questions: [
+                    { q: "วิภัตติ 'วัตตมานา' (ติ อันติ...) บอกกาลใด", options: ["อดีตกาล", "ปัจจุบันกาล", "อนาคตกาล", "ความบังคับ"], ans: 1 },
+                    { q: "ปุริโส คจฺฉติ - 'ติ' เป็นประธานประเภทใด", options: ["ปฐมปุริสะ (เขา/คนอื่น)", "มัธยมปุริสะ (ท่าน)", "อุตตมปุริสะ (ข้าพเจ้า)", "พหุวจนะ"], ans: 0 },
+                    { q: "วิภัตติ 'อันติ' ใช้กับประธานแบบใด", options: ["เอกวจนะ", "พหุวจนะ (เขาทั้งหลาย)", "ท่าน", "ข้าพเจ้า"], ans: 1 },
+                    { q: "วิภัตติ 'สิ' (เช่น คจฺฉสิ) ใช้กับประธานคำว่าอะไร", options: ["โส (เขา)", "ตฺวํ (ท่าน)", "อหํ (ข้าพเจ้า)", "เต (เขาทั้งหลาย)"], ans: 1 },
+                    { q: "วิภัตติ 'มิ' (เช่น คจฺฉามิ) ใช้กับประธานคำว่าอะไร", options: ["โส", "ตฺวํ", "อหํ (ข้าพเจ้า)", "มยํ"], ans: 2 }
+                ]
+            },
+            {
+                id: 11, title: "11. กิตก์ (กิริยากิตก์)", desc: "ปัจจัยบอกกาลในกิริยากิตก์",
+                questions: [
+                    { q: "ปัจจัยใดในกิริยากิตก์ใช้บอก 'อดีตกาล'", options: ["อันต", "มานะ", "ตเว", "ต / ตะ"], ans: 3 },
+                    { q: "ปัจจัย 'อันต' และ 'มานะ' บอกกาลใด", options: ["อดีตกาล", "ปัจจุบันกาล", "อนาคตกาล", "พหุวจนะ"], ans: 1 },
+                    { q: "ปัจจัย 'ตวา' (ตฺวา) แปลว่าอะไร", options: ["แล้ว (ทำ...แล้ว)", "เพื่ออัน", "อยู่", "พึง"], ans: 0 },
+                    { q: "ปัจจัย 'ตพฺพ' (ตัพพะ) แปลว่าอะไร", options: ["แล้ว", "พึง (พึงทำ)", "อยู่", "เมื่อ"], ans: 1 },
+                    { q: "ปัจจัย 'ตเว' หรือ 'ตุํ' (ตัง) ใช้ในความหมายใด", options: ["เพื่ออัน...", "แล้ว", "กำลัง", "ผู้"], ans: 0 }
+                ]
+            },
+            {
+                id: 12, title: "12. สมาสวิภาค", desc: "การย่อคำนามตั้งแต่ 2 คำขึ้นไป",
+                questions: [
+                    { q: "สมาสที่เชื่อมด้วยคำว่า 'และ' (เช่น นรมนุสฺสา) คือสมาสใด", options: ["กัมมธารยสมาส", "ทวันทวสมาส", "ตัปปุริสสมาส", "อัพยยีภาวสมาส"], ans: 1 },
+                    { q: "สมาสที่มีตัวเลข (สังขยา) อยู่ข้างหน้า คือสมาสใด", options: ["ทิคุสมาส", "ทวันทวสมาส", "พหุพพีหิสมาส", "อัพยยีภาวสมาส"], ans: 0 },
+                    { q: "สมาสที่มีอุปสัคหรือนิบาตอยู่ข้างหน้า คือสมาสใด", options: ["กัมมธารยสมาส", "อัพยยีภาวสมาส", "ตัปปุริสสมาส", "ทิคุสมาส"], ans: 1 },
+                    { q: "สมาสที่มีการย่อโดยใช้วิภัตตินามเชื่อมโยง คือสมาสใด", options: ["ตัปปุริสสมาส", "ทวันทวสมาส", "ทิคุสมาส", "กัมมธารยสมาส"], ans: 0 },
+                    { q: "สมาสที่แปลออกชื่อนามอื่น (แปลว่า 'ผู้มี...') คือสมาสใด", options: ["พหุพพีหิสมาส", "ทวันทวสมาส", "ตัปปุริสสมาส", "ทิคุสมาส"], ans: 0 }
+                ]
+            },
+            {
+                id: 13, title: "13. ตัทธิตวิภาค", desc: "การใช้ปัจจัยต่อท้ายนามนามเพื่อย่อความ",
+                questions: [
+                    { q: "ตัทธิต ใช้ลงท้ายคำเพื่อวัตถุประสงค์ใดเป็นหลัก", options: ["ย่อคำให้สั้นลง", "ขยายกิริยา", "แปลงเพศ", "บอกกาลเวลา"], ans: 0 },
+                    { q: "'สามัญญตัทธิต' แบ่งออกเป็นกี่หมวดใหญ่", options: ["3 หมวด", "5 หมวด", "9 หมวด", "12 หมวด"], ans: 2 },
+                    { q: "ปัจจัย 'ณ' ในตัทธิต มักมีผลอย่างไรกับสระหน้า", options: ["พฤทธิ์ (ทีฆะ) สระหน้า", "ลบสระหน้า", "แปลงเป็น นิคหิต", "ไม่เปลี่ยนแปลง"], ans: 0 },
+                    { q: "ตัทธิตที่ใช้บอกความตั้งอยู่ หรือความเป็น (ภาวะ) คือตัทธิตใด", options: ["ภาวตัทธิต", "ชาติตัทธิต", "สมูหตัทธิต", "สังขยาตัทธิต"], ans: 0 },
+                    { q: "คำว่า 'มนุสสตฺตํ' (ความเป็นแห่งมนุษย์) ลงปัจจัยใดในภาวตัทธิต", options: ["ตฺต (ตตฺต)", "ณ", "อิยะ", "มย"], ans: 0 }
+                ]
+            },
+            {
+                id: 14, title: "14. อุปสัควิภาค", desc: "คำใช้นำหน้านามหรือกิริยาให้ความหมายเปลี่ยนไป",
+                questions: [
+                    { q: "อุปสัคในภาษาบาลีมีทั้งหมดกี่ตัว", options: ["10 ตัว", "12 ตัว", "20 ตัว", "24 ตัว"], ans: 2 },
+                    { q: "อุปสัค 'อภิ' มักมีความหมายว่าอย่างไร", options: ["ปราศจาก", "ยิ่ง, ใหญ่, เฉพาะ", "ลง, ลบ", "กลับความ"], ans: 1 },
+                    { q: "อุปสัค 'สุ' มีความหมายว่าอย่างไร", options: ["ดี, งาม, ง่าย", "ชั่ว, ยาก", "ออก, พ้น", "หลีก"], ans: 0 },
+                    { q: "อุปสัค 'ทุ' มีความหมายว่าอย่างไร", options: ["ชั่ว, ยาก", "ดี, งาม", "ยิ่ง", "ทั่ว"], ans: 0 },
+                    { q: "อุปสัค 'อติ' มีความหมายว่าอย่างไร", options: ["ยิ่ง, ล่วงเกิน", "ลง", "เข้า", "เฉพาะ"], ans: 0 }
+                ]
+            },
+            {
+                id: 15, title: "15. นิบาตวิภาค", desc: "คำลงในระหว่างบอกความหมายต่างๆ",
+                questions: [
+                    { q: "คำว่า 'อปิจ' หรือ 'จ' เป็นนิบาตบอกความหมายใด", options: ["ถาม", "รับ", "เชื่อม (และ/ด้วย)", "ห้าม"], ans: 2 },
+                    { q: "นิบาต 'สเจ' หรือ 'ยทิ' ใช้ในความหมายใด", options: ["ถ้าว่า / หากว่า", "เพราะว่า", "อนึ่ง", "ผิว่า"], ans: 0 },
+                    { q: "นิบาต 'มา' (เช่น มา กโรถ) ใช้ในความหมายใด", options: ["อย่า / ห้าม", "อีก", "แน่นอน", "แท้จริง"], ans: 0 },
+                    { q: "นิบาต 'อถ' ใช้ในความหมายใด", options: ["ครั้งนั้น / ต่อจากนั้น", "เหมือน", "เพื่อ", "คำถาม"], ans: 0 },
+                    { q: "นิบาต 'วิย' หรือ 'อิว' ใช้ในความหมายใด", options: ["เปรียบเหมือน / ราวกับ", "ห้าม", "รับคำ", "ต่อมา"], ans: 0 }
+                ]
+            }
+        ];
+
+        // บันทึกสถานะข้อปัจจุบันและคะแนนของแต่ละเกม
+        let gameState = gamesData.map(() => ({ currentQ: 0, score: 0 }));
+
+        function renderGames() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = '';
+            
+            gamesData.forEach((game, gIdx) => {
+                const state = gameState[gIdx];
+                const qData = game.questions[state.currentQ];
+
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                
+                let optionsHTML = '';
+                qData.options.forEach((opt, optIdx) => {
+                    optionsHTML += `<button id="btn-${gIdx}-${optIdx}" onclick="checkAnswer(${gIdx}, ${optIdx})">${opt}</button>`;
+                });
+
+                card.innerHTML = `
+                    <div class="game-title">${game.title}</div>
+                    <div class="game-desc">${game.desc}</div>
+                    <div class="game-body">
+                        <div class="q-box" id="qbox-${gIdx}">${qData.q}</div>
+                        <div class="options-grid" id="optgrid-${gIdx}">
+                            ${optionsHTML}
+                        </div>
+                        <div class="feedback" id="feedback-${gIdx}"></div>
+                        <button class="btn-next" id="next-${gIdx}" onclick="nextQuestion(${gIdx})">ข้อถัดไป ➔</button>
+                        <div class="score-board">
+                            <span>ข้อที่: ${state.currentQ + 1}/5</span>
+                            <span id="score-${gIdx}">คะแนน: ${state.score}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function checkAnswer(gIdx, selectedIdx) {
+            const game = gamesData[gIdx];
+            const state = gameState[gIdx];
+            const qData = game.questions[state.currentQ];
+            const feedbackEl = document.getElementById(`feedback-${gIdx}`);
+            const nextBtn = document.getElementById(`next-${gIdx}`);
+
+            // ปิดไม่ให้กดปุ่มตอบซ้ำในข้อเดิม
+            const buttons = document.querySelectorAll(`#optgrid-${gIdx} button`);
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIdx === qData.ans) {
+                feedbackEl.textContent = "✓ ถูกต้อง! เก่งมาก";
+                feedbackEl.className = "feedback correct";
+                state.score += 1;
+                document.getElementById(`score-${gIdx}`).textContent = `คะแนน: ${state.score}`;
+            } else {
+                feedbackEl.textContent = `✗ ยังไม่ถูก (เฉลย: ${qData.options[qData.ans]})`;
+                feedbackEl.className = "feedback wrong";
+            }
+
+            if (state.currentQ < game.questions.length - 1) {
+                nextBtn.style.display = 'block';
+            } else {
+                feedbackEl.textContent += ` [จบเกม! ได้ ${state.score}/5 คะแนน]`;
+                nextBtn.textContent = "เล่นใหม่อีกครั้ง ↺";
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        function nextQuestion(gIdx) {
+            const game = gamesData[gIdx];
+            const state = gameState[gIdx];
+
+            if (state.currentQ < game.questions.length - 1) {
+                state.currentQ += 1;
+            } else {
+                // รีเซ็ตเกมถ้าเล่นครบ 5 ข้อแล้ว
+                state.currentQ = 0;
+                state.score = 0;
+            }
+
+            // โหลดเฉพาะการ์ดเกมนั้นๆ ใหม่
+            const qData = game.questions[state.currentQ];
+            document.getElementById(`qbox-${gIdx}`).textContent = qData.q;
+            
+            const optGrid = document.getElementById(`optgrid-${gIdx}`);
+            optGrid.innerHTML = '';
+            qData.options.forEach((opt, optIdx) => {
+                optGrid.innerHTML += `<button id="btn-${gIdx}-${optIdx}" onclick="checkAnswer(${gIdx}, ${optIdx})">${opt}</button>`;
+            });
+
+            document.getElementById(`feedback-${gIdx}`).textContent = '';
+            document.getElementById(`next-${gIdx}`).style.display = 'none';
+            document.getElementById(`next-${gIdx}`).textContent = 'ข้อถัดไป ➔';
+            
+            // อัปเดตตัวเลขข้อและคะแนน
+            const scoreBoard = document.querySelectorAll(`#main-grid .game-card`)[gIdx].querySelector('.score-board');
+            scoreBoard.children[0].textContent = `ข้อที่: ${state.currentQ + 1}/5`;
+            scoreBoard.children[1].textContent = `คะแนน: ${state.score}`;
+        }
+
+        window.onload = renderGames;
+    </script>
+</body>
+</html>

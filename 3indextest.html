@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PALI AI SYSTEM – Splash</title>
+<style>
+  :root{
+    --ctrl-bg: rgba(0,0,0,.35);
+    --btn: #ffd54f;
+    --btn-txt: #222;
+    --bgsize: contain;
+  }
+  html,body{height:100%;margin:0}
+  body{font-family: system-ui,"Noto Sans Thai",sans-serif;background:#111;color:#fff;}
+
+  #splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;
+          background:#000;transition:opacity .4s ease;}
+  #splash.hidden{opacity:0;pointer-events:none;display:none;}
+
+  .stage{position:absolute;inset:0;overflow:hidden;}
+  .slide{position:absolute;inset:0;background-size:var(--bgsize);
+         background-position:center;background-repeat:no-repeat;
+         opacity:0;transition:opacity .7s ease;}
+  .slide.show{opacity:1}
+
+  /* แถบควบคุม 2 แถว */
+  .controls{
+    position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+    background:var(--ctrl-bg);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.15);border-radius:16px;
+    padding:12px 16px;width:min(1280px,98vw);
+    display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;
+    align-items:center;justify-items:center;column-gap:14px;row-gap:10px;
+  }
+  .controls label{display:flex;align-items:center;gap:6px;font-size:.95rem;opacity:.95}
+  .controls input[type=range]{width:160px}
+  .btn{background:var(--btn);color:var(--btn-txt);border:none;border-radius:999px;
+       padding:8px 14px;font-weight:700;cursor:pointer;white-space:nowrap;
+       display:inline-flex;align-items:center;justify-content:center;
+       text-decoration:none;transition:transform .15s;}
+  .btn:active{transform:translateY(1px)} .btn:disabled{opacity:.6;cursor:default;}
+  .hint{position:absolute;top:18px;left:50%;transform:translateX(-50%);
+        background:rgba(0,0,0,.5);border-radius:999px;padding:6px 12px;font-size:.9rem;}
+
+  .view-counter{position:fixed;right:12px;top:12px;background:rgba(0,0,0,.45);
+                backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.15);
+                border-radius:999px;padding:6px 12px;display:flex;align-items:center;
+                gap:6px;font-size:.95rem;z-index:10000;}
+
+  main{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:32px;}
+  .index-card{background:#fff;color:#222;border-radius:16px;
+              box-shadow:0 10px 40px rgba(0,0,0,.3);width:min(960px,95vw);padding:24px;}
+  .index-card h1{margin-top:0}.share-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .share-bar .btn{background:#f1f1f1;color:#222}.share-note{font-size:.9rem;opacity:.8}
+</style>
+</head>
+<body>
+
+<div class="view-counter">👁️ ผู้เข้าชม: <strong id="viewCountVal">—</strong></div>
+
+<div id="splash">
+  <div class="stage" id="stage">
+    <div class="slide" id="slideA"></div>
+    <div class="slide" id="slideB"></div>
+  </div>
+
+  <div class="hint">คลิกที่ภาพ หรือกด Enter เพื่อเข้าสู่หน้าดัชนี</div>
+
+  <div class="controls" id="controls">
+    <label>ความเร็ว:
+      <input type="range" id="speed" min="1" max="10" step="1" value="4"/>
+      <span id="speedVal">4s</span>
+    </label>
+    <label><input type="checkbox" id="fitContain" checked/> พอดีภาพ (ไม่ตัด)</label>
+
+    <button class="btn" id="pauseBtn">⏸️ หยุดสไลด์</button>
+    <button class="btn" id="resumeBtn" disabled>▶️ ทำงานต่อ</button>
+
+    <!-- ตั้งปลายทางไว้ที่ 3indextestv1.html โดยตรง (ทำงานแม้ปิด JS) -->
+    <a href="5indextestv1.html" class="btn" id="enterBtn">เข้าสู่หน้าบาลีไวยากรณ์</a>
+
+    <a class="btn" id="shareBtnUI" href="#">📢 แชร์</a>
+    <a class="btn" href="https://web.facebook.com/Anak5396/?locale=th_TH&_rdc=1&_rdr#" target="_blank">Facebook วัดโกรกกราก</a>
+    <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=https://paliwatkrokkrak.com" target="_blank">Facebook</a>
+    <a class="btn" href="d:\\pali_ai-system\\pali ai grammer\\หน้าชุดมีเสียงพูด\\มีเสียงพูดมีวีดีโอ\\คลังภาพวัดโกรกกราก\\คลังภาพv3.html">หน้าคลังรูปภาพ</a>
+    <a class="btn" href="https://line.me/R/msg/text/?เชิญชมเว็บไซต์ https://paliwatkrokkrak.com" target="_blank">LINE</a>
+    <a class="btn" href="guru.html"style="display:none;">กรุหลวงปู่โกรกกราก</a>
+    <a class="btn" href="มหาสมัยสูตร.pdf"style="display:none;>บทสวดมหาสมัยสูตร</a>
+    <a class="btn" href="indexคนสูงวัย.html"style="font-size:18px; padding:20px 40px; display:none;">หมวดคนสูงวัย</a>    
+  </div>
+</div>
+
+<main>
+  <div class="index-card">
+    <h1>หน้าดัชนี</h1>
+    <p>หลังจากปิดสไลด์ ส่วนนี้จะปรากฏขึ้น สามารถใส่ข้อมูลหลักหรือสารบัญได้</p>
+    <p class="share-note">👁️ ผู้เข้าชมหน้านี้: <strong id="viewCountValInline">—</strong></p>
+    <div class="share-bar">
+      <a class="btn" id="shareBtnUI2" href="#">📢 แชร์ผ่านระบบ</a>
+      <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=https://paliwatkrokkrak.com" target="_blank">Facebook</a>
+      <a class="btn" href="https://line.me/R/msg/text/?เชิญชมเว็บไซต์ https://paliwatkrokkrak.com" target="_blank">LINE</a>
+      <a class="btn" href="#" id="copyLinkBtn">🔗 คัดลอกลิงก์</a>
+    </div>
+  </div>
+</main>
+
+<script>
+/* ===== Slide Config ===== */
+const IMAGES=[
+  "images/splash/114860.jpg","images/splash/a1.jpg","images/splash/114824.jpg",
+  "images/splash/114820.jpg","images/splash/114821.jpg","images/splash/114822.jpg",
+  "images/splash/114823.jpg","images/splash/114807.jpg","images/splash/114808.jpg",
+  "images/splash/114809.jpg","images/splash/114810.jpg","images/splash/114811.jpg",
+  "images/splash/114812.jpg","images/splash/114813.jpg","images/splash/114814.jpg",
+  "images/splash/114815.jpg","images/splash/114816.jpg","images/splash/114817.jpg",
+  "images/splash/114818.jpg","images/splash/114819.jpg","images/splash/114856.jpg",
+  "images/splash/114857.jpg","images/splash/114858.jpg","images/splash/114859.jpg",
+];
+let intervalSec=4,idx=0,useA=true,timer=null,paused=false;
+const slideA=document.getElementById("slideA");
+const slideB=document.getElementById("slideB");
+const speed=document.getElementById("speed");
+const speedVal=document.getElementById("speedVal");
+const pauseBtn=document.getElementById("pauseBtn");
+const resumeBtn=document.getElementById("resumeBtn");
+const fitContain=document.getElementById("fitContain");
+const splash=document.getElementById("splash");
+
+function setSlide(el,src){el.style.backgroundImage=`url("${src}")`;}
+function next(){
+  idx=(idx+1)%IMAGES.length;
+  const src=IMAGES[idx];
+  if(useA){setSlide(slideB,src);slideB.classList.add("show");slideA.classList.remove("show");}
+  else{setSlide(slideA,src);slideA.classList.add("show");slideB.classList.remove("show");}
+  useA=!useA;
+}
+function start(){stop();timer=setInterval(next,intervalSec*1000);}
+function stop(){if(timer){clearInterval(timer);timer=null;}}
+function pause(){paused=true;stop();update();}
+function resume(){paused=false;start();update();}
+function update(){pauseBtn.disabled=paused;resumeBtn.disabled=!paused;}
+
+/* ✅ กดแล้วไป 3indextestv1.html โดยตรง */
+function goIndex(){
+  window.location.assign("5indextestv1.html");
+}
+
+function init(){
+  IMAGES.forEach(s=>{const i=new Image();i.src=s;});
+  setSlide(slideA,IMAGES[0]);
+  slideA.classList.add("show");
+  start();
+
+  speed.oninput=()=>{intervalSec=parseInt(speed.value);speedVal.textContent=speed.value+"s";if(!paused)start();}
+  fitContain.onchange=()=>{document.documentElement.style.setProperty("--bgsize",fitContain.checked?"contain":"cover");};
+  pauseBtn.onclick=pause;
+  resumeBtn.onclick=resume;
+
+  const enterEl=document.getElementById("enterBtn");
+  if(enterEl){
+    enterEl.addEventListener("click",e=>{e.preventDefault();goIndex();});
+  }
+  const stageEl=document.getElementById("stage");
+  if(stageEl){stageEl.addEventListener("click",()=>goIndex());}
+  document.addEventListener("keydown",e=>{if(e.key==="Enter")goIndex();});
+}
+
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}else{init();}
+</script>
+
+<script>
+/* ===== แชร์ + เคาน์เตอร์ผู้เข้าชม ===== */
+(function(){
+  const shareTargets=[document.getElementById('shareBtnUI'),document.getElementById('shareBtnUI2')].filter(Boolean);
+  shareTargets.forEach(btn=>{
+    btn.addEventListener('click',async e=>{
+      e.preventDefault();
+      const shareData={title:document.title,text:"เชิญชมเว็บไซต์วัดโกรกกราก",url:window.location.href};
+      if(navigator.share){try{await navigator.share(shareData);}catch{}}
+      else{await navigator.clipboard.writeText(shareData.url);alert("คัดลอกลิงก์แล้ว!");}
+    });
+  });
+  const copy=document.getElementById('copyLinkBtn');
+  if(copy)copy.onclick=async e=>{
+    e.preventDefault();
+    await navigator.clipboard.writeText(window.location.href);
+    copy.textContent="✅ คัดลอกแล้ว";
+    setTimeout(()=>copy.textContent="🔗 คัดลอกลิงก์",1500);
+  };
+
+  const ns=(location.hostname||"local").replace(/\W/g,"-");
+  const key=(location.pathname||"index").replace(/\W/g,"-");
+  const api=`https://api.countapi.xyz/hit/${ns}/${key}`;
+  fetch(api).then(r=>r.json()).then(d=>{
+    const val=d.value||d.count||1;
+    document.querySelectorAll("#viewCountVal,#viewCountValInline").forEach(el=>el.textContent=val.toLocaleString('th-TH'));
+  }).catch(()=>{
+    const local=Number(localStorage.getItem("viewCount")||0)+1;
+    localStorage.setItem("viewCount",local);
+    document.querySelectorAll("#viewCountVal,#viewCountValInline").forEach(el=>el.textContent=local);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คลังข้อมูลนักธรรมอัจฉริยะ</title>
+    <!-- เรียกใช้ Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #0f172a; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
+        .nav-active { border-bottom: 4px solid #fbbf24; color: #fbbf24; }
+        .group-active { background-color: #f59e0b; color: #ffffff; border-color: #d97706; }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col justify-between">
+
+    <!-- ส่วนหัวระบบ -->
+    <header class="bg-[#1e293b] border-b border-slate-700 sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">📿</span>
+                    <h1 class="text-xl font-bold text-white">คลังนักธรรม <span class="text-amber-400">อัจฉริยะ</span></h1>
+                </div>
+                <!-- ปุ่มกลับหน้าหลักบาลี -->
+                <a href="index9.8.3.html" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1">
+                    🏠 กลับหน้าหลัก
+                </a>
+            </div>
+
+            <!-- 🔘 บนสุด: ปุ่มกดสลับกลุ่มใหญ่ (พระภิกษุ / ฆราวาส) -->
+            <div class="flex max-w-md mx-auto p-1 bg-slate-900/60 border border-slate-700/60 rounded-2xl mb-2 shadow-inner">
+                <button id="btn-main-monk" onclick="switchMainGroup('monk')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-sm transition-all text-center group-active">
+                    พระภิกษุ - 三เณร
+                </button>
+                <button id="btn-main-lay" onclick="switchMainGroup('layperson')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-sm transition-all text-center text-slate-400 hover:text-white">
+                    ฆราวาส (ธรรมศึกษา)
+                </button>
+            </div>
+            
+            <!-- 📂 เมนูสลับแท็บย่อย (ชั้น ตรี-โท-เอก) จะเปลี่ยนตามกลุ่มหลักอัตโนมัติ -->
+            <nav class="flex gap-8 justify-center">
+                <button id="tab-tri" onclick="switchSubTab('tri')" class="py-3 px-6 font-bold text-lg nav-active">นักธรรมชั้นตรี</button>
+                <button id="tab-tho" onclick="switchSubTab('tho')" class="py-3 px-6 font-bold text-lg text-slate-400 hover:text-white transition-all">นักธรรมชั้นโท</button>
+                <button id="tab-ek" onclick="switchSubTab('ek')" class="py-3 px-6 font-bold text-lg text-slate-400 hover:text-white transition-all">นักธรรมชั้นเอก</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ส่วนเนื้อหาหลัก -->
+    <main class="max-w-7xl mx-auto p-6 flex-1 w-full">
+
+        <!-- =========================================================================================== -->
+        <!-- 🟠 [SECTION 1] : ฝั่งพระภิกษุ - สามเณร (รวม 27 ปุ่มลิงก์อิสระ) -->
+        <!-- =========================================================================================== -->
+        <div id="group-monk-zone" class="block">
+            
+            <!-- 🟧 พระ - ชั้นตรี -->
+            <div id="monk-tri" class="space-y-12 block">
+                <!-- ประถม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-amber-500 bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">พระภิกษุ - ชั้นตรี (ระดับประถมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><p class="text-xs text-slate-400 mb-6">หนังสือเรียนหลักสูตรนักธรรมตรี ระดับประถม</p><a href="https://drive.google.com/file/d/1QA1E2fJ3FHHle35gak7IW8slcdKR04bQ/view?usp=drive_link" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><p class="text-xs text-slate-400 mb-6">รวบรวมปัญหาและเฉลยย้อนหลัง</p><a href="monk-tri-p2.html" class="block w-full text-center bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><p class="text-xs text-slate-400 mb-4">ระบบทดสอบออนไลน์</p><div class="flex gap-2"><a href="monk-tri-p3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center font-bold">แบบช้อยส์</a><a href="monk-tri-p3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center font-bold">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- มัธยม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-purple-400 bg-purple-400/10 px-4 py-1 rounded-full border border-purple-400/20">พระภิกษุ - ชั้นตรี (ระดับมัธยมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><p class="text-xs text-slate-400 mb-6">หนังสือเรียนหลักสูตรนักธรรมตรี ระดับมัธยม</p><a href="monk-tri-m1.html" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><p class="text-xs text-slate-400 mb-6">รวบรวมปัญหาและเฉลยย้อนหลัง</p><a href="monk-tri-m2.html" class="block w-full text-center bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><p class="text-xs text-slate-400 mb-4">ระบบทดสอบออนไลน์</p><div class="flex gap-2"><a href="monk-tri-m3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center font-bold">แบบช้อยส์</a><a href="monk-tri-m3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center font-bold">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- อุดมศึกษา (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-teal-400 bg-teal-400/10 px-4 py-1 rounded-full border border-teal-400/20">พระภิกษุ - ชั้นตรี (ระดับอุดมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><p class="text-xs text-slate-400 mb-6">หนังสือเรียนหลักสูตรนักธรรมตรี ระดับอุดมศึกษา</p><a href="monk-tri-u1.html" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><p class="text-xs text-slate-400 mb-6">รวบรวมปัญหาและเฉลยย้อนหลัง</p><a href="monk-tri-u2.html" class="block w-full text-center bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><p class="text-xs text-slate-400 mb-4">ระบบทดสอบออนไลน์</p><div class="flex gap-2"><a href="monk-tri-u3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center font-bold">แบบช้อยส์</a><a href="monk-tri-u3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center font-bold">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 🟫 พระ - ชั้นโท -->
+            <div id="monk-tho" class="space-y-12 hidden">
+                <!-- ประถม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-amber-500 bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">พระภิกษุ - ชั้นโท (ระดับประถมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="monk-tho-p1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="monk-tho-p2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="monk-tho-p3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="monk-tho-p3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- มัธยม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-purple-400 bg-purple-400/10 px-4 py-1 rounded-full border border-purple-400/20">พระภิกษุ - ชั้นโท (ระดับมัธยมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="monk-tho-m1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="monk-tho-m2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="monk-tho-m3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="monk-tho-m3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- อุดมศึกษา (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-teal-400 bg-teal-400/10 px-4 py-1 rounded-full border border-teal-400/20">พระภิกษุ - ชั้นโท (ระดับอุดมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="monk-tho-u1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="monk-tho-u2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="monk-tho-u3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="monk-tho-u3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ⬛ พระ - ชั้นเอก -->
+            <div id="monk-ek" class="space-y-12 hidden">
+                <!-- ประถม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-amber-500 bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">พระภิกษุ - ชั้นเอก (ระดับประถมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="monk-ek-p1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="monk-ek-p2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="monk-ek-p3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="monk-ek-p3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- มัธยม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-purple-400 bg-purple-400/10 px-4 py-1 rounded-full border border-purple-400/20">พระภิกษุ - ชั้นเอก (ระดับมัธยมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="monk-ek-m1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="monk-ek-m2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="monk-ek-m3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="monk-ek-m3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- อุดมศึกษา (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-teal-400 bg-teal-400/10 px-4 py-1 rounded-full border border-teal-400/20">พระภิกษุ - ชั้นเอก (ระดับอุดมศึกษา)</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="monk-ek-u1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="monk-ek-u2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="monk-ek-u3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="monk-ek-u3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+
+        <!-- =========================================================================================== -->
+        <!-- 🔵 [SECTION 2] : ฝั่งฆราวาส (ธรรมศึกษา) (รวม 27 ปุ่มลิงก์อิสระ) -->
+        <!-- =========================================================================================== -->
+        <div id="group-lay-zone" class="hidden">
+            
+            <!-- 🟦 ฆราวาส - ชั้นตรี -->
+            <div id="lay-tri" class="space-y-12 block">
+                <!-- ประถม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-amber-500 bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">ฆราวาส (ธรรมศึกษาตรี) - ระดับประถมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-tri-p1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="https://drive.google.com/file/d/1ZmWgWL4mr-MeRwFPAyQIoeeBea2yprnx/view?usp=sharing"target="_blank"rel="noopener noreferrer" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-tri-p3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-tri-p3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+
+               </section>
+                <!-- มัธยม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-purple-400 bg-purple-400/10 px-4 py-1 rounded-full border border-purple-400/20">ฆราวาส (ธรรมศึกษาตรี) - ระดับมัธยมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-tri-m1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="https://drive.google.com/file/d/1JevvllJKTYXpjnEiqwEfeLqrupM63dPb/view?usp=sharing" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-tri-m3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-tri-m3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- อุดมศึกษา (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-teal-400 bg-teal-400/10 px-4 py-1 rounded-full border border-teal-400/20">ฆราวาส (ธรรมศึกษาตรี) - ระดับอุดมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-tri-u1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="https://drive.google.com/file/d/1GSe_MkyrW3h3GdzoGJzc-oXz33kje7WJ/view?usp=sharing"target="_blank"rel="noopener noreferrer" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-tri-u3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-tri-u3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 🟦 ฆราวาส - ชั้นโท -->
+            <div id="lay-tho" class="space-y-12 hidden">
+                <!-- ประถม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-amber-500 bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">ฆราวาส (ธรรมศึกษาโท) - ระดับประถมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-tho-p1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="https://drive.google.com/file/d/1vav9T1nJzJi9-R5zRuAY_cZ5GkZK7a5p/view?usp=sharing"target="_blank"rel="noopener noreferrer" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-tho-p3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-tho-p3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- มัธยม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-purple-400 bg-purple-400/10 px-4 py-1 rounded-full border border-purple-400/20">ฆราวาส (ธรรมศึกษาโท) - ระดับมัธยมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-tho-m1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="lay-tho-m2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-tho-m3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-tho-m3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- อุดมศึกษา (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-teal-400 bg-teal-400/10 px-4 py-1 rounded-full border border-teal-400/20">ฆราวาส (ธรรมศึกษาโท) - ระดับอุดมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-tho-u1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="lay-tho-u2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-tho-u3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-tho-u3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 🟦 ฆราวาส - ชั้นเอก -->
+            <div id="lay-ek" class="space-y-12 hidden">
+                <!-- ประถม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-amber-500 bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">ฆราวาส (ธรรมศึกษาเอก) - ระดับประถมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-ek-p1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="https://drive.google.com/file/d/1GSe_MkyrW3h3GdzoGJzc-oXz33kje7WJ/view?usp=sharing" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-ek-p3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-ek-p3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- มัธยม (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-purple-400 bg-purple-400/10 px-4 py-1 rounded-full border border-purple-400/20">ฆราวาส (ธรรมศึกษาเอก) - ระดับมัธยมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-ek-m1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="lay-ek-m2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-ek-m3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-ek-m3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+                <!-- อุดมศึกษา (3 ปุ่ม) -->
+                <section class="w-full">
+                    <div class="flex items-center gap-4 mb-6"><div class="h-[1px] flex-1 bg-slate-700"></div><h2 class="text-sm font-bold text-teal-400 bg-teal-400/10 px-4 py-1 rounded-full border border-teal-400/20">ฆราวาส (ธรรมศึกษาเอก) - ระดับอุดมศึกษา</h2><div class="h-[1px] flex-1 bg-slate-700"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-blue-500/50 transition-all"><div class="text-3xl mb-4">📙</div><h3 class="text-lg font-bold mb-2">ตำราเรียน</h3><a href="lay-ek-u1.html" class="block w-full text-center bg-blue-600 py-2.5 rounded-xl">เปิดตู้หนังสือ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-red-500/50 transition-all"><div class="text-3xl mb-4">📄</div><h3 class="text-lg font-bold mb-2">ข้อสอบเก่าสนามหลวง</h3><a href="lay-ek-u2.html" class="block w-full text-center bg-red-600 py-2.5 rounded-xl">ดาวน์โหลดข้อสอบ</a></div>
+                        <div class="glass border border-slate-700/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all"><div class="text-3xl mb-4">✏️</div><h3 class="text-lg font-bold mb-2">แบบฝึกหัดท้ายบท</h3><div class="flex gap-2"><a href="lay-ek-u3-choice.html" class="flex-1 text-[10px] bg-emerald-600 py-2 rounded-lg text-center">แบบช้อยส์</a><a href="lay-ek-u3-fill.html" class="flex-1 text-[10px] bg-emerald-700 py-2 rounded-lg text-center">แบบเติมคำ</a></div></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ส่วนท้ายเว็บ -->
+    <footer class="bg-slate-900 border-t border-slate-800 p-4 text-center mt-10">
+        <p class="text-xs text-slate-500 tracking-widest">SMART NAKTHAM SYSTEM DATABASE V3.0</p>
+    </footer>
+
+    <!-- JavaScript อัจฉริยะสำหรับจัดการแสดงผล 54 ปุ่มแยกอิสระ -->
+    <script>
+    // ตัวแปรเก็บสถานะปัจจุบันเริ่มต้น
+    let currentMainGroup = 'monk'; // 'monk' หรือ 'layperson'
+    let currentSubTab = 'tri';       // 'tri', 'tho', 'ek'
+
+    // 1. ฟังก์ชันสลับกลุ่มหลัก (พระ / ฆราวาส)
+    function switchMainGroup(group) {
+        currentMainGroup = group;
+        
+        const btnMonk = document.getElementById('btn-main-monk');
+        const btnLay = document.getElementById('btn-main-lay');
+        const zoneMonk = document.getElementById('group-monk-zone');
+        const zoneLay = document.getElementById('group-lay-zone');
+
+        if (group === 'monk') {
+            btnMonk.classList.add('group-active'); btnMonk.classList.remove('text-slate-400');
+            btnLay.classList.remove('group-active'); btnLay.classList.add('text-slate-400');
+            zoneMonk.classList.remove('hidden'); zoneMonk.classList.add('block');
+            zoneLay.classList.remove('block'); zoneLay.classList.add('hidden');
+        } else {
+            btnLay.classList.add('group-active'); btnLay.classList.remove('text-slate-400');
+            btnMonk.classList.remove('group-active'); btnMonk.classList.add('text-slate-400');
+            zoneLay.classList.remove('hidden'); zoneLay.classList.add('block');
+            zoneMonk.classList.remove('block'); zoneMonk.classList.add('hidden');
+        }
+        // อัปเดตการแสดงผลชั้นย่อยให้สอดคล้อง
+        refreshDisplay();
+    }
+
+    // 2. ฟังก์ชันสลับแท็บย่อย (ตรี - โท - เอก)
+    function switchSubTab(level) {
+        currentSubTab = level;
+        
+        const tabIds = ['tab-tri', 'tab-tho', 'tab-ek'];
+        tabIds.forEach(id => {
+            const btn = document.getElementById(id);
+            btn.classList.remove('nav-active', 'text-amber-400');
+            btn.classList.add('text-slate-400');
+        });
+
+        const activeTab = document.getElementById('tab-' + level);
+        activeTab.classList.add('nav-active', 'text-amber-400');
+        activeTab.classList.remove('text-slate-400');
+
+        refreshDisplay();
+    }
+
+    // 3. ฟังก์ชันรีเฟรชเพื่อซ่อน/แสดงกล่องข้อมูลตามเงื่อนไขอย่างถูกต้อง
+    function refreshDisplay() {
+        // รายการ ID คอนเทนต์ทั้งหมด
+        const monkContents = { tri: 'monk-tri', tho: 'monk-tho', ek: 'monk-ek' };
+        const layContents = { tri: 'lay-tri', tho: 'lay-tho', ek: 'lay-ek' };
+
+        // ซ่อนฝั่งพระทั้งหมดก่อน
+        Object.values(monkContents).forEach(id => document.getElementById(id).style.display = 'none');
+        // ซ่อนฝั่งฆราวาสทั้งหมดก่อน
+        Object.values(layContents).forEach(id => document.getElementById(id).style.display = 'none');
+
+        // เปิดเฉพาะตัวที่เลือกตามสถานะปัจจุบัน
+        if (currentMainGroup === 'monk') {
+            document.getElementById(monkContents[currentSubTab]).style.display = 'block';
+        } else {
+            document.getElementById(layContents[currentSubTab]).style.display = 'block';
+        }
+    }
+
+    // สั่งรันระบบเริ่มต้นเมื่อเปิดหน้าเว็บ
+    switchMainGroup('monk');
+    switchSubTab('tri');
+    </script>
+
+</body>
+</html>

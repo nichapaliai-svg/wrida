@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PALI AI SYSTEM - หน้าไวยากรณ์</title>
+
+  <!-- ===============================
+       THEME: Minimal Elegant (Green + Soft Gold)
+       =============================== -->
+  <style>
+    :root{
+      --bg:#f5f8f4;
+      --hero-grad:linear-gradient(180deg,#f7fbf6, #eef6ef);
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:#e6ebe3;
+      --accent:#86efac;       /* mint */
+      --accent-2:#22c55e;     /* emerald */
+      --gold:#cdbf8a;         /* soft gold */
+      --gold-2:#b3a46f;
+      --shadow:0 10px 28px rgba(16,24,40,.06);
+      --radius:14px;
+    }
+
+    /* Base */
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family: system-ui, "Sarabun", "Noto Sans Thai", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* Hero Header */
+    .hero{
+      background: var(--hero-grad);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-inner{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px;
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
+    .hero .side-img{
+      width:120px; height:120px; object-fit:cover; border-radius:16px;
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      background:#fff;
+    }
+    .hero .title{
+      flex:1; text-align:center;
+    }
+    .hero h1{
+      margin:0 0 2px 0;
+      font-size: clamp(18px, 3.2vw, 28px);
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .hero h2{
+      margin:6px 0 2px 0;
+      font-size: clamp(16px, 2.2vw, 22px);
+      color: var(--muted);
+      font-weight:700;
+    }
+    .hero p{
+      margin:4px 0;
+      color:#334155;
+      font-weight:500;
+    }
+
+    /* Main Grid Cards */
+    .wrap{
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1.4fr 1fr;
+      gap: 20px;
+    }
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .card h3, .column-title{
+      margin: 2px 0 10px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      color: #0b3b28; /* deep green */
+      display:flex; align-items:center; gap:8px;
+    }
+    .card h3::before, .column-title::before{
+      content:"";
+      width:10px;height:10px;border-radius:50%;
+      background: conic-gradient(from 0deg, var(--gold), var(--gold-2));
+      box-shadow: 0 0 0 3px rgba(205,191,138,.15);
+    }
+
+    /* Textareas */
+    textarea, input[type="text"]{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #dfe7db;
+      background:#fff;
+      color:var(--ink);
+      outline:none;
+      transition: box-shadow .15s ease, border-color .15s ease;
+      font-size:15px;
+    }
+    textarea{ resize: vertical; }
+    textarea:focus, input[type="text"]:focus{
+      border-color:#b7e6c6;
+      box-shadow: 0 0 0 3px rgba(134,239,172,.35);
+    }
+
+    /* Buttons (unified) */
+    .btn, button{
+      appearance:none; border:0; cursor:pointer;
+      padding:10px 12px; border-radius:10px;
+      font-weight:700;
+      background: linear-gradient(180deg,#ecfdf3,#d1fadf);
+      color:#064e3b;
+      border:1px solid #cfead7;
+      box-shadow: 0 2px 0 rgba(0,0,0,.03);
+      transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover, button:hover{ filter:brightness(1.03) }
+    .btn:active, button:active{ transform: translateY(1px) }
+    .btn-green{ background: linear-gradient(180deg,#bbf7d0,#86efac); border-color:#b7e6c6; color:#064e3b; }
+    .btn-gold{ background: linear-gradient(180deg,#f8f5e9,#efe7c9); border-color:#e3dab3; color:#5b4e28; }
+
+    /* Button layouts */
+    .button-vertical,
+    .button-grid{
+      display:grid; gap:10px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      margin-top: 12px;
+    }
+    .button-grid.onecol{ grid-template-columns: 1fr; }
+
+    /* Image row */
+    .image-row{
+      margin-top: 14px;
+      border-radius: 12px;
+      overflow:hidden;
+      border:1px solid var(--line);
+    }
+    .image-row img{
+      width:100%; height:auto; display:block;
+    }
+
+    /* PALI Chat (blend with page) */
+    .pali-box{
+      background:#f0f9f0 !important;
+      border:1px solid #cce3cc !important;
+      color:#1f2937 !important;
+      border-radius:14px !important;
+      box-shadow: var(--shadow) !important;
+      padding:14px 16px !important;
+    }
+    .pali-box h3{ color:#047857 !important; font-weight:700 !important; margin-bottom:8px !important; }
+    .pali-inp,.pali-out{
+      background:#ffffff !important;
+      border:1px solid #cce3cc !important;
+      color:#1e293b !important;
+      border-radius:10px !important;
+      transition: box-shadow .2s;
+    }
+    .pali-inp:focus,.pali-out:focus{ box-shadow: 0 0 0 2px #86efac !important; }
+    .pali-btn{
+      background: linear-gradient(180deg,#bbf7d0,#86efac) !important;
+      color:#064e3b !important; font-weight:800 !important;
+      border:1px solid #b7e6c6 !important;
+      border-radius:10px !important;
+      transition: transform .12s ease, filter .15s ease;
+    }
+    .pali-btn:hover{ transform: translateY(-1px); filter:brightness(1.03); }
+    .pali-note{ color:#166534 !important; }
+
+    /* Small helpers */
+    .sp24{ height:24px }
+    .muted{ color: var(--muted) }
+
+    /* Responsive */
+    @media (max-width: 1024px){
+      .hero .side-img{ width:98px; height:98px }
+      .grid{ grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <!-- ====== INDEX LAYOUT SWITCHER (CSS) ====== -->
+  <style>
+    /* แผงควบคุม (ลอยมุมซ้ายล่าง) */
+    #layoutSwitcher{
+      position: fixed; left: 16px; bottom: 16px; z-index: 9999;
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(6px);
+      border: 1px solid #e6ebe3; border-radius: 12px;
+      padding: 10px 12px; box-shadow: 0 8px 24px rgba(16,24,40,.12);
+      display:flex; align-items:center; gap:8px;
+      font-family: system-ui, "Sarabun", "Noto Sans Thai", sans-serif;
+    }
+    #layoutSwitcher label{ font-weight:700; color:#0b3b28; font-size:14px; }
+    #layoutSwitcher select{
+      appearance:none; padding:8px 10px; border-radius:10px;
+      border:1px solid #dfe7db; background:#fff; font-weight:700;
+      cursor:pointer;
+    }
+    @media (max-width: 600px){
+      #layoutSwitcher{ left: 10px; bottom: 10px; padding: 8px 10px; }
+      #layoutSwitcher label{ display:none; }
+    }
+
+    /* ====== LAYOUT VARIANTS ======
+       แบบเดิม = layout-default (หรือไม่ใส่คลาสก็ได้) */
+
+    /* --- NEW 1: Minimal Cards --- */
+    body.layout-new1 .grid{
+      grid-template-columns: 1.1fr 1.3fr 1.1fr !important;
+      gap: 22px !important;
+    }
+    body.layout-new1 .card{
+      border-radius: 16px !important;
+      box-shadow: 0 16px 40px rgba(16,24,40,.08) !important;
+      border-color: #e8efe7 !important;
+    }
+    body.layout-new1 .btn, body.layout-new1 button{
+      border-radius: 999px !important; /* pill */
+      padding: 10px 14px !important;
+    }
+    body.layout-new1 .column-title{
+      letter-spacing: .4px !important;
+    }
+
+    /* --- NEW 2: Two-Column Focus --- */
+    @media (min-width: 1025px){
+      body.layout-new2 .grid{
+        grid-template-columns: 1.2fr 1.8fr !important;
+        grid-auto-flow: dense;
+      }
+      body.layout-new2 .grid > .card:nth-child(1){ grid-column: 1; }
+      body.layout-new2 .grid > .card:nth-child(2){ grid-column: 2; }
+      body.layout-new2 .grid > .card:nth-child(3){ grid-column: 1 / span 2; }
+    }
+    body.layout-new2 .card:nth-child(2){
+      border: 2px solid #b7e6c6 !important;
+    }
+    body.layout-new2 .hero-inner{
+      padding-bottom: 18px !important;
+    }
+
+    /* --- NEW 3: Tile Menu --- */
+    body.layout-new3 .hero-inner{
+      padding-top: 40px !important; padding-bottom: 32px !important;
+    }
+    body.layout-new3 .card:nth-child(2) .button-grid.onecol{
+      display:grid !important; grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+      gap: 14px !important;
+    }
+    body.layout-new3 .card:nth-child(2) .button-grid.onecol .btn{
+      height: 72px; font-size: 16px; font-weight: 800;
+      border-radius: 16px;
+    }
+    @media (max-width: 800px){
+      body.layout-new3 .card:nth-child(2) .button-grid.onecol{
+        grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+      }
+    }
+
+    body.layout-default .grid{ /* สไตล์เดิม (ไม่เปลี่ยน) */ }
+  </style>
+
+  <!-- ====== BG PHOTO THEME (Add-on) ====== -->
+  <style>
+    /* แผงสลับฉากหลัง (ลอยมุมขวาล่าง) */
+    #bgSwitcher{
+      position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(6px);
+      border: 1px solid #e6ebe3;
+      border-radius: 12px; padding: 10px 12px;
+      box-shadow: 0 8px 24px rgba(16,24,40,.12);
+      display: flex; align-items: center; gap: 8px;
+      font-family: system-ui, "Sarabun", "Noto Sans Thai", sans-serif;
+    }
+    #bgSwitcher .dot{
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.9);
+      box-shadow: 0 1px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.08);
+      cursor: pointer; background-size: cover; background-position: center;
+      outline: none; transition: transform .08s ease, filter .15s ease;
+    }
+    #bgSwitcher .dot:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    #bgSwitcher .dot.active{ outline: 2px solid #22c55e; }
+    #bgSwitcher span{ font-weight: 700; color: #0b3b28; font-size: 14px; margin-right: 6px; }
+    @media (max-width:600px){
+      #bgSwitcher{ right: 10px; bottom: 10px; padding: 8px 10px; }
+      #bgSwitcher span{ display:none; }
+    }
+  </style>
+</head>
+<body class="layout-default">
+  <!-- ========== HERO ========== -->
+  <header class="hero">
+    <!-- ปุ่มกลับหน้าฐานข้อมูลกลางบาลีอัจฉริยะ (วางไว้บนสุดตรงนี้) -->
+    <div style="display: flex; justify-content: center; width: 100%; padding-top: 8px; padding-bottom: 0px; margin-bottom: -5px;">
+        <a href="index9.8.5.html" style="background-color: #2e7d32; color: #ffffff; padding: 4px 12px; font-size: 12px; font-weight: normal; text-decoration: none; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-family: inherit; display: inline-flex; align-items: center; gap: 4px;">
+            🔍 กลับสู่ระบบฐานข้อมูลกลางบาลีอัจฉริยะ
+        </a>
+    </div>
+    <div class="hero-inner">
+      <img src="pali ai system logo.jpg" alt="โลโก้ PALI AI" class="side-img">
+      <div class="title">
+        <h1>PALI AI SYSTEM by Nicha · วัดโกรกกราก</h1>
+        <h2>หน้าไวยากรณ์ (Grammar Index)</h2>
+        <p>เรียนง่าย · เน้นสนุก · ประยุกต์ AI · เสียงพูดไทย</p>
+        <p class="muted">“บาลียากมาก ถ้าไม่เรียน ไม่ทำ ไม่จำ ไม่รู้”</p>
+      </div>
+      <img src="ลพ โกรกกราก.jpg" alt="พระรูป" class="side-img">
+    </div>
+  </header>
+
+  <!-- ========== MAIN GRID ========== -->
+  <main class="wrap">
+    <section class="grid">
+
+      <!-- Left Column -->
+      <aside class="card">
+        <div class="column-title">อักขระวิธี</div>
+        <div class="button-vertical">
+          <button class="btn-green" onclick="window.location.href='บาลีไวยากรณ์มีเสียงพูด.html'">บาลีไวยากรณ์</button>
+          <button class="btn-green" onclick="window.location.href='สมัญญาภิธานมีเสียงพูด.html'">สมัญญาภิธาน</button>
+          <button onclick="window.location.href='สระมีเสียงพูด.html'">สระ</button>
+          <button onclick="window.location.href='พยัญชนะมีเสียงพูด.html'">พยัญชนะ</button>
+          <button onclick="window.location.href='ฐานกรณ์ของอักขระมีเสียงพูด.html'">ฐานกรณ์ของอักขระ</button>
+          <button onclick="window.location.href='เสียงอักขระมีเสียงพูด.html'">เสียงอักขระ</button>
+          <button onclick="window.location.href='พยัญชนะสังโยคมีเสียงพูด.html'">พยัญชนะสังโยค</button>
+          <button class="btn-green" onclick="window.location.href='สนธิมีเสียงพูด.html'">สนธิ</button>
+          <button onclick="window.location.href='สนธิกริโยปกรณ์มีเสียงพูด.html'">สนธิกริโยปกรณ์</button>
+          <button onclick="window.location.href='สระสนธิมีเสียงพูด.html'">สระสนธิ</button>
+          <button onclick="window.location.href='พยัญชนะสนธิมีเสียงพูด.html'">พยัญชนะสนธิ</button>
+          <button onclick="window.location.href='นิคคหิตสนธิมีเสียงพูด.html'">นิคคหิตสนธิ</button>
+        </div>
+
+        <div class="sp24"></div>
+        <div class="column-title">หมวดไวยากรณ์</div>
+        <div class="button-vertical">
+          <button class="btn-green" onclick="window.location.href='นามมีเสียงพูด.html'">นาม</button>
+          <button onclick="window.location.href='ลิงค์มีเสียงพูด.html'">ลิงค์</button>
+          <button onclick="window.location.href='วจนะมีเสียงพูด.html'">วจนะ</button>
+          <button onclick="window.location.href='วิภัตตินามมีเสียงพูด.html'">วิภัตตินาม</button>
+          <button onclick="window.location.href='อายตนิบาตมีเสียงพูด.html'">อายตนิบาต</button>
+          <button onclick="window.location.href='การันต์มีเสียงพูด.html'">การันต์</button>
+          <button onclick="window.location.href='วิธีแจกการันต์มีเสียงพูด.html'">วิธีแจกการันต์ใน</button>
+          <button onclick="window.location.href='ปุงลิงค์มีเสียงพูด.html'">ปุงลิงค์</button>
+          <button onclick="window.location.href='อิตถีลิงค์มีเสียงพูด.html'">อิตถีลิงค์</button>
+          <button onclick="window.location.href='นปุงสกลิงค์มีเสียงพูด.html'">นปุงสกลิงค์</button>
+          <button onclick="window.location.href='กติปยศัพท์มีเสียงพูด.html'">กติปยศัพท์</button>
+          <button onclick="window.location.href='มโนคณะศัพท์มีเสียงพูด.html'">มโนคณะศัพท์</button>
+          <button onclick="window.location.href='สังขยาคุณนามมีเสียงพูด.html'">สังขยาคุณนาม</button>
+          <button onclick="window.location.href='สัพพนามมีเสียงพูด.html'">สัพพนาม</button>
+<button class="btn-green" onclick="window.location.href='อัพยยศัพท์มีเสียงพูด.html'">อัพยยศัพท์</button>
+            <button onclick="window.location.href='อุปสัคมีเสียงพูด.html'">อุปสัค</button>
+            <button onclick="window.location.href='นิบาตมีเสียงพูด.html'">นิบาต</button>
+            <button onclick="window.location.href='ปัจจัยอัพยยศัพท์มีเสียงพูด.html'">ปัจจัย อัพยยศัพท์</button>
+<button class="btn-green" onclick="window.location.href='อาขยาตมีเสียงพูด.html'">อาขยาต</button>
+            <button onclick="window.location.href='วิภัตติอาขยาตมีเสียงพูด.html'">วิภัตติอาขยาต</button>
+            <button onclick="window.location.href='กาลอาขยาตมีเสียงพูด.html'">กาล</button>
+            <button onclick="window.location.href='บทอาขยาตมีเสียงพูด.html'">บท</button>
+            <button onclick="window.location.href='วจนะมีเสียงพูด.html'">วจนะ</button>
+            <button onclick="window.location.href='บุรุษมีเสียงพูด.html'">บุรุษ</button>            
+        </div>
+      </aside>
+
+      <!-- Center Column -->
+      <section class="card">
+<button onclick="window.location.href='indexคนสูงวัย.html'" 
+        style="font-size:32px; padding:18px 110px;">
+  หมวดคนสูงวัย
+</button>
+        <div class="column-title">ข้อความ</div>
+        <textarea placeholder="พิมพ์ข้อความบาลีที่นี่"></textarea>
+
+        <div class="column-title" style="margin-top: 14px;">คำตอบ</div>
+        <textarea placeholder="แสดงคำแปลหรือวิเคราะห์ไวยากรณ์" readonly></textarea>
+
+        <!-- PALI BOX START :: SET1 -->
+        <div class="pali-box" id="paliBox1" style="margin-top:14px;">
+          <h3>🕉️ PALI Chat (เฉพาะบาลี)</h3>
+          <input id="paliKey1" type="text" placeholder="OpenAI API Key (sk-...)" class="pali-inp" style="min-height:40px">
+          <textarea id="paliAsk1" class="pali-inp" placeholder="ถามเฉพาะเรื่องบาลี เช่น ‘วิเคราะห์วิภัตติคำว่า พุทฺธสฺส’" style="min-height:90px;"></textarea>
+          <button id="paliSend1" class="pali-btn">ถามระบบบาลี</button>
+          <div id="paliAns1" class="pali-out" aria-live="polite" style="min-height:140px;max-height:260px;overflow:auto;margin-top:8px;"></div>
+          <div class="pali-note" style="margin-top:6px;">ระบบนี้จะปฏิเสธคำถามที่ไม่เกี่ยวกับบาลีอัตโนมัติ</div>
+        </div>
+        <!-- PALI BOX END :: SET1 -->
+
+        <!-- PALI BOX START :: SET2 -->
+        <div class="pali-row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;">
+          <select id="paliMode2" class="pali-sel" style="height:40px;">
+            <option value="general">ทั่วไป (บาลี)</option>
+            <option value="lexicon">ศัพท์/ราก/ตัวอย่าง</option>
+            <option value="grammar">ไวยากรณ์/วิภัตติ/สมาส</option>
+            <option value="translate">แปล บาลี ↔ ไทย</option>
+          </select>
+          <input id="paliAllow2" class="pali-inp" style="min-height:40px"
+                 placeholder="คำสำคัญที่อนุญาต (คั่นด้วยจุลภาค)"
+                 value="บาลี,Pali,ปาฬิ,ไวยากรณ์,วิภัตติ,สมาส,ตัทธิต,ธาตุ,ศัพท์,แปลบาลี,พระไตรปิฎก">
+        </div>
+        <!-- PALI BOX END :: SET2 -->
+
+        <!-- PALI BOX START :: SET3 -->
+        <div class="pali-note">เคล็ดลับ: กด <kbd>Ctrl</kbd>+<kbd>Enter</kbd> เพื่อส่งคำถาม • ระบบจะจำ API Key ไว้ในเครื่องคุณ</div>
+        <!-- PALI BOX END :: SET3 -->
+
+        <!-- Links -->
+        <div class="button-grid onecol" style="margin-top: 12px;">
+          <button class="btn-gold">วิธีแจก</button>
+          <button class="btn-green" onclick="window.location.href='3indextest.html'">พ่อปู่โกรกกราก</button>
+          <button class="btn-green" onclick="window.location.href='4indextest1.html'">ถามตอบ</button>
+          <button class="btn-green" onclick="window.location.href='Gramma-pali-book.pdf'">ebook gramma pali วัดโมลี</button>
+        </div>
+
+        <!-- Image -->
+        <div class="image-row">
+          <img src="pdfวัดโมลีหน้าแรก.png" alt="นักเรียนกำลังเรียนบาลี">
+        </div>
+      </section>
+
+      <!-- Right Column -->
+      <aside class="card">
+        <div class="column-title">หมวดไวยากรณ์ ต่อ</div>
+        <div style="display:flex; gap:16px;">
+          <!-- Col 1 -->
+          <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+<button class="btn-green" onclick="window.location.href='อาขยาตมีเสียงพูด.html'">อาขยาต ต่อ</button>
+            <button onclick="window.location.href='ธาตุมีเสียงพูด.html'">ธาตุ</button>
+            <button onclick="window.location.href='วาจกอาขยาตมีเสียงพูด.html'">วาจกอาขยาต</button>
+            <button onclick="window.location.href='ปัจจัยอาขยาตมีเสียงพูด.html'">ปัจจัยอาขยาต</button>
+<button class="btn-green" onclick="window.location.href='กิตก์มีเสียงพูด.html'">กิตก์</button>
+            <button onclick="window.location.href='นามกิตก์มีเสียงพูด.html'">นามกิตก์</button>
+            <button onclick="window.location.href='สาธนะมีเสียงพูด.html'">สาธนะ</button>
+            <button onclick="window.location.href='ปัจจัยแห่งนามกิตก์มีเสียงพูด.html'">ปัจจัยแห่งนามกิตก์</button>
+            <button onclick="window.location.href='วิเคราะห์แห่งนามกิตก์มีเสียงพูด.html'">วิเคราะห์แห่งนาม กิตก์</button>
+            <button onclick="window.location.href='กริยากิตก์มีเสียงพูด.html'">กริยากิตก์</button>
+            <button onclick="window.location.href='วิภัตติกิตก์มีเสียงพูด.html'">วิภัตติกิตก์</button>
+            <button onclick="window.location.href='กาลกิตก์มีเสียงพูด.html'">กาลกิตก์</button>
+            <button onclick="window.location.href='วาจกกิตก์มีเสียงพูด.html'">วาจกกิตก์</button>
+            <button onclick="window.location.href='ปัจจัยแห่งกริยากิตก์มีเสียงพูด.html'">ปัจจัยแห่งกริยากิตก์</button>            
+          </div>
+
+          <!-- Col 2 -->
+          <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+
+<button class="btn-green" onclick="window.location.href='สมาสมีเสียงพูด.html'">สมาส</button>
+            <button onclick="window.location.href='กัมมธารยสมาสมีเสียงพูด.html'">กัมมธารยสมาส</button>
+            <button onclick="window.location.href='ทิคุสมาสมีเสียงพูด.html'">ทิคุสมาส</button>
+            <button onclick="window.location.href='ตัปปุริสสมาสมีเสียงพูด.html'">ตัปปุริสสมาส</button>
+            <button onclick="window.location.href='ทวันทวสมาสมีเสียงพูด.html'">ทวันทวสมาส</button>
+            <button onclick="window.location.href='อัพยยีภาวสมาสมีเสียงพูด.html'">อัพยยีภาวสมาส</button>
+            <button onclick="window.location.href='พหุพพิหิสมาสมีเสียงพูด.html'">พหุพพิหิสมาส</button>
+            <button onclick="window.location.href='นบุพพบทพหุพพิหิสมาสมีเสียงพูด.html'">นบุพพบทพหุพพิหิสมาส</button>
+            <button onclick="window.location.href='ภินนาธิกรณพหุพพิหิสมาสมีเสียงพูด.html'">ภินนาธิกรณพหุพพิหิสมาส</button>
+            <button onclick="window.location.href='สมาสท้องมีเสียงพูด.html'">สมาสท้อง</button>
+            <button onclick="window.location.href='สหบุพพบทพหุพพิหิสมาสมีเสียงพูด.html'">สหบุพพบทพหุพพิหิสมาส</button>            
+          </div>
+
+          <!-- Col 3 -->
+          <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+
+            <button class="btn-green" onclick="window.location.href='ตัทธิตมีเสียงพูด.html'">ตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">สามัญญตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">โคตตตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ตรัตยาทิตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ราคาทิตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ชาตาทิตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">สมุหตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ฐานตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">พหุลตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">เสฏฐตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ตทัสสัตถิตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ปกติตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">สังขยาตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">ปูรณตัทธิต</button>
+            <button onclick="window.location.href='สามัญญตัทธิตมีเสียงพูด.html'">วิภาคตัทธิต</button>
+            <button onclick="window.location.href='ภาวตัทธิตมีเสียงพูด.html'">ภาวตัทธิต</button>
+            <button onclick="window.location.href='อัพยยตัทธิตมีเสียงพูด.html'">อัพยยตัทธิต</button>
+          </div>
+        </div>
+      </aside>
+
+    </section>
+  </main>
+
+  <!-- ========== JS (เดิมทั้งหมด คงไว้ ปรับแค่สไตล์ด้านบน) ========== -->
+  <!-- SET1 - JS -->
+  <script>
+  (function(){
+    const keyEl = document.getElementById('paliKey1');
+    const askEl = document.getElementById('paliAsk1');
+    const ansEl = document.getElementById('paliAns1');
+    const sendEl = document.getElementById('paliSend1');
+
+    function isPali(q){
+      const kw = ['บาลี','pali','ปาฬิ','ไวยากรณ์','วิภัตติ','สมาส','ตัทธิต','ธาตุ','วาจก','วัจนะ','บุรุษ','สนธิ','ศัพท์','แปลบาลี','พระไตรปิฎก'];
+      q = (q||'').toLowerCase();
+      return kw.some(k => q.includes(k.toLowerCase()));
+    }
+
+    async function paliSendBase(){
+      const key = (keyEl.value||'').trim();
+      const q   = (askEl.value||'').trim();
+      if(!key){ ansEl.textContent='❌ กรุณาใส่ API Key'; return; }
+      if(!q){ ansEl.textContent='❌ กรุณาพิมพ์คำถามเกี่ยวกับบาลี'; return; }
+      if(!isPali(q)){ ansEl.textContent='🚫 ระบบนี้ตอบเฉพาะบาลีเท่านั้น'; return; }
+
+      ansEl.textContent='⏳ กำลังประมวลผล...';
+      try{
+        const res = await fetch('https://api.openai.com/v1/chat/completions',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+          body: JSON.stringify({
+            model:'gpt-4o-mini',
+            messages:[
+              {role:'system',content:'คุณเป็นครูผู้เชี่ยวชาญภาษาบาลี ตอบเฉพาะบาลี/ไวยากรณ์/วิภัตติ/สมาส/ธาตุ/ศัพท์/การแปล หากนอกเรื่องให้ตอบว่า “ระบบนี้ตอบเฉพาะบาลีเท่านั้น” แล้วจบ'},
+              {role:'user',content:q}
+            ],
+            temperature:0.5
+          })
+        });
+        const data = await res.json();
+        ansEl.innerHTML = data?.choices?.[0]?.message?.content || ('⚠️ ไม่สามารถตอบได้: '+(data?.error?.message||''));
+      }catch(e){
+        ansEl.textContent = '❌ ข้อผิดพลาดเครือข่าย: '+e.message;
+      }
+    }
+
+    // expose
+    window.paliSend = paliSendBase;
+    sendEl.addEventListener('click', ()=> window.paliSend());
+  })();
+  </script>
+
+  <!-- SET2 - JS -->
+  <script>
+  (function(){
+    const allowEl = document.getElementById('paliAllow2');
+    const modeEl  = document.getElementById('paliMode2');
+    const ansEl   = document.getElementById('paliAns1');
+    const askEl   = document.getElementById('paliAsk1');
+    const keyEl   = document.getElementById('paliKey1');
+
+    function modeGuide(m){
+      switch(m){
+        case 'lexicon': return 'โหมดศัพท์: อธิบายรากศัพท์/ธาตุ/ความหมาย พร้อมตัวอย่างสั้น';
+        case 'grammar': return 'โหมดไวยากรณ์: วิเคราะห์วิภัตติ สมาส สนธิ กาล วาจก วัจนะ บุรุษ + ผันรูป';
+        case 'translate': return 'โหมดแปล: แปลสั้น กระชับ ระบุศัพท์สำคัญและโครงสร้าง';
+        default: return 'โหมดทั่วไป: ตอบเฉพาะภาษาบาลี ไม่หลุดหัวข้อ';
+      }
+    }
+    function allowed(q){
+      const wl = (allowEl.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+      q = (q||'').toLowerCase();
+      return wl.some(k => q.includes(k.toLowerCase()));
+    }
+
+    window.paliSend = async function(){
+      const key = (keyEl.value||'').trim();
+      const q   = (askEl.value||'').trim();
+      if(!key){ ansEl.textContent='❌ กรุณาใส่ API Key'; return; }
+      if(!q){ ansEl.textContent='❌ กรุณาพิมพ์คำถามเกี่ยวกับบาลี'; return; }
+      if(!allowed(q)){ ansEl.textContent='🚫 ระบบนี้ตอบเฉพาะบาลีเท่านั้น'; return; }
+
+      ansEl.textContent='⏳ กำลังประมวลผล...';
+      try{
+        const res = await fetch('https://api.openai.com/v1/chat/completions',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+          body: JSON.stringify({
+            model:'gpt-4o-mini',
+            temperature:0.5,
+            messages:[
+              {role:'system',content:"คุณเป็นครูผู้เชี่ยวชาญภาษาบาลี (เฉพาะบาลีเท่านั้น) ตอบเฉพาะ: ไวยากรณ์ วิภัตติ สมาส สนธิ ธาตุ กาล วาจก วัจนะ บุรุษ ศัพท์ การผัน และการแปลบาลี↔ไทย หากนอกเรื่องให้ตอบสั้น ๆ ว่า 'ระบบนี้ตอบเฉพาะบาลีเท่านั้น' แล้วจบ พร้อมจัดรูปแบบเป็นข้อ ๆ"},
+              {role:'user',content:`[${modeGuide(modeEl.value)}] คำถาม: ${q}`}
+            ]
+          })
+        });
+        const data = await res.json();
+        let out = data?.choices?.[0]?.message?.content || ('⚠️ ไม่สามารถตอบได้: '+(data?.error?.message||''));      
+        if(/ฟุตบอล|หุ้น|การเมือง|บันเทิง|มือถือ|เกม|คริปโท|น้ำมัน|ดารา|ข่าว/i.test(out) && !/เฉพาะบาลี/.test(out)){
+          out = 'ระบบนี้ตอบเฉพาะบาลีเท่านั้น';
+        }
+        ansEl.innerHTML = out;
+      }catch(e){
+        ansEl.textContent = '❌ ข้อผิดพลาดเครือข่าย: '+e.message;
+      }
+    };
+  })();
+  </script>
+
+  <!-- SET3 - JS (จำ API Key + Hotkey) -->
+  <script>
+  (function(){
+    const keyEl = document.getElementById('paliKey1');
+    const askEl = document.getElementById('paliAsk1');
+
+    // จำ API Key (localStorage)
+    const K = 'pali_only_api_key';
+    const saved = localStorage.getItem(K);
+    if(saved) keyEl.value = saved;
+    const saveKey = ()=> localStorage.setItem(K, keyEl.value.trim());
+    keyEl.addEventListener('change', saveKey);
+    keyEl.addEventListener('blur', saveKey);
+    keyEl.addEventListener('keyup', (e)=>{ if(e.key==='Enter') saveKey(); });
+
+    // Hotkey: Ctrl+Enter
+    document.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey||e.metaKey) && e.key==='Enter'){
+        if(document.activeElement === askEl){ e.preventDefault(); window.paliSend && window.paliSend(); }
+      }
+    });
+  })();
+  </script>
+
+  <!-- ====== INDEX LAYOUT SWITCHER (JS) ====== -->
+  <script>
+  (function(){
+    // รายชื่อรูปแบบ (เพิ่ม/ลบได้ตามใจ)
+    const LAYOUTS = [
+      { key:'default', name:'แบบเดิม'  },
+      { key:'new1',    name:'แบบใหม่ 1'},
+      { key:'new2',    name:'แบบใหม่ 2'},
+      { key:'new3',    name:'แบบใหม่ 3'},
+    ];
+    const LS_KEY = 'pali_index_layout_key';
+
+    // สร้างแผงสลับ layout
+    function buildLayoutSwitcher(){
+      const box = document.createElement('div');
+      box.id = 'layoutSwitcher';
+      box.setAttribute('role','group');
+      box.setAttribute('aria-label','สลับรูปแบบหน้าดัชนี');
+
+      const label = document.createElement('label');
+      label.textContent = 'รูปแบบ:';
+      label.setAttribute('for','layoutSelect');
+
+      const sel = document.createElement('select');
+      sel.id = 'layoutSelect';
+      LAYOUTS.forEach(l=>{
+        const opt = document.createElement('option');
+        opt.value = l.key; opt.textContent = l.name;
+        sel.appendChild(opt);
+      });
+
+      // ค่าที่เคยเลือก
+      const saved = localStorage.getItem(LS_KEY) || 'default';
+      sel.value = saved;
+      applyLayout(saved);
+
+      sel.addEventListener('change', ()=>{
+        const k = sel.value;
+        applyLayout(k);
+        localStorage.setItem(LS_KEY, k);
+      });
+
+      box.appendChild(label);
+      box.appendChild(sel);
+      document.body.appendChild(box);
+    }
+
+    // ใส่/ถอดคลาสบน body
+    function applyLayout(key){
+      const all = LAYOUTS.map(l => 'layout-' + l.key);
+      document.body.classList.remove(...all);
+      if(key && key !== 'default'){
+        document.body.classList.add('layout-' + key);
+      }else{
+        document.body.classList.add('layout-default');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', buildLayoutSwitcher);
+  })();
+  </script>
+
+  <!-- ====== BG PHOTO THEME (JS) ====== -->
+  <script>
+  (function(){
+    // ===== ตั้งค่ารูปฉากหลัง (แก้เป็นไฟล์ของคุณได้เลย) =====
+    const BG_IMAGES = [
+      {name:'ใบไม้',  url:'bg/bg-leaf.jpg'},
+      {name:'กระดาษ', url:'bg/bg-paper.jpg'},
+      {name:'ลินิน',  url:'bg/bg-linen.jpg'}
+    ];
+    const LS_KEY = 'pali_index_bg_url';
+
+    // สร้างแผงสลับฉากหลัง (ลอยมุมขวาล่าง)
+    function buildSwitcher(){
+      const box = document.createElement('div');
+      box.id = 'bgSwitcher';
+      const label = document.createElement('span');
+      label.textContent = 'ฉากหลัง:';
+      box.appendChild(label);
+
+      const saved = localStorage.getItem(LS_KEY);
+      BG_IMAGES.forEach((it,idx)=>{
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'dot';
+        b.title = it.name;
+        b.style.backgroundImage = `url('${it.url}')`;
+        b.addEventListener('click', ()=>{
+          applyBg(it.url);
+          setActive(idx);
+          localStorage.setItem(LS_KEY, it.url);
+        });
+        box.appendChild(b);
+      });
+
+      document.body.appendChild(box);
+
+      function setActive(i){
+        const btns = box.querySelectorAll('.dot');
+        btns.forEach((el,ix)=> el.classList.toggle('active', ix===i));
+      }
+
+      // กำหนด active ตามค่าเดิม
+      const idx = BG_IMAGES.findIndex(it=> it.url === saved);
+      setActive(idx >= 0 ? idx : 0);
+    }
+
+    // เซ็ตฉากหลัง (ใส่ overlay จาง ๆ ให้ยังอ่านตัวหนังสือชัด)
+    function applyBg(url){
+      document.body.classList.add('photo-bg');
+      document.body.style.backgroundImage =
+        `linear-gradient(180deg, rgba(247,251,246,.92), rgba(238,246,239,.92)), url('${url}')`;
+      document.body.style.backgroundAttachment = 'fixed,fixed';
+      document.body.style.backgroundSize = 'auto,cover';
+      document.body.style.backgroundPosition = 'center,center';
+      document.body.style.backgroundRepeat = 'no-repeat,no-repeat';
+    }
+
+    // เริ่มทำงาน
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // ใช้ค่าที่เคยเลือกไว้ หรือไม่มีก็ใช้รูปแรก
+      const saved = localStorage.getItem(LS_KEY) || BG_IMAGES[0].url;
+      applyBg(saved);
+      buildSwitcher();
+    });
+  })();
+  </script>
+</body>
+</html>
