@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>กิตก์</title>
+  <style>
+    body{font-family:"Noto Sans Thai","Sarabun",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#fdfcf8;color:#222;margin:0;padding:20px;line-height:1.65}
+    h1{text-align:center;color:#4a148c;margin:0 0 10px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin:20px auto;max-width:1100px;box-shadow:0 6px 18px rgba(31,41,55,.06)}
+    .secbar{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+    .secbar .btn{padding:8px 12px;border:1px solid #e5e7eb;border-radius:10px;cursor:pointer;font-weight:700;background:#fff}
+    .secbar .btn.primary{background:#6a1b9a;color:#fff;border-color:#6a1b9a}
+    .secbar .btn.danger{background:#e53935;color:#fff;border-color:#e53935}
+    .toolbar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;background:rgba(255,255,255,.75);backdrop-filter:blur(6px);border:1px solid #eee;border-radius:12px;margin:12px auto 0;max-width:1100px;padding:10px}
+    .toolbar .btn{border:1px solid #e5e7eb;background:#fff;padding:8px 10px;border-radius:10px;cursor:pointer}
+    .toolbar .btn.primary{background:#7c3aed;border-color:#7c3aed;color:#fff}
+    .muted{color:#6b7280;font-size:13px}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .select,.range{border:1px solid #e5e7eb;background:#fff;padding:6px 8px;border-radius:10px;font-size:14px}
+    input[type="range"]{accent-color:#7c3aed}
+    /* ไฮไลต์ย่อหน้าที่กำลังอ่าน */
+    .reading{background:#fff7ed;outline:2px solid #fed7aa;border-radius:8px}
+    .p-actions{text-align:right;margin-top:6px}
+    .p-btn{font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+    .p-btn:hover{background:#f9fafb}
+
+    /* ==== วิดีโอ 2 กล่อง ==== */
+    .videogrid{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin:18px auto 6px;max-width:1100px}
+    @media(max-width:860px){.videogrid{grid-template-columns:1fr}}
+    .vbox{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.06);padding:10px}
+    .vhead{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+    .vhead input[type="url"],.vhead input[type="file"],.vhead select{flex:1;min-width:160px}
+    .vprogress{height:6px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin-top:8px}
+    .vprogress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#10b981);transition:width .25s ease}
+    .vbox.dragover{outline:2px dashed #7c3aed;outline-offset:4px;background:#faf7ff}
+
+    .navbtns{text-align:center;margin:20px 0}
+    .navbtns button{margin:6px;padding:10px 16px;border:1px solid #aaa;border-radius:8px;background:#f4f1ea;cursor:pointer}
+    .image{text-align:center;margin:20px 0}
+    .image img{max-width:320px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+    .image {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .image iframe {
+      width: 48%;
+      height: 700px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- แถบควบคุม TTS -->
+<section class="toolbar" aria-label="ตัวควบคุมเสียงทั้งหมด">
+  <div class="controls" style="grid-column:1/-1;gap:12px">
+    <button class="btn primary" id="btnSpeakAll">🔊 อ่านทั้งหน้า</button>
+    <button class="btn" id="btnPause">⏸️ หยุดชั่วคราว</button>
+    <button class="btn" id="btnResume">⏯️ ทำต่อ</button>
+    <button class="btn" id="btnStop">⏹️ หยุด</button>
+    <span class="muted" id="ttsStatus">พร้อมอ่าน</span>
+    <label class="muted">ภาษา
+      <select id="langSel" class="select" title="เลือกภาษา">
+        <option value="th">ไทย (th)</option>
+        <option value="en">English (en)</option>
+        <option value="zh">中文 (zh)</option>
+        <option value="lo">Lao (lo)</option>
+        <option value="my">Burmese (my)</option>
+        <option value="ja">日本語 (ja)</option>
+        <option value="ko">한국어 (ko)</option>
+      </select>
+    </label>
+    <label class="muted">เสียง
+      <select id="voiceSel" class="select" title="เลือกเสียง">
+        <option value="">อัตโนมัติ (ตามภาษา)</option>
+      </select>
+    </label>
+    <label class="muted">ความเร็ว <input id="rate" class="range" type="range" min="0.7" max="1.6" step="0.1" value="1"></label>
+    <label class="muted">โทนเสียง <input id="pitch" class="range" type="range" min="0.8" max="1.3" step="0.1" value="1"></label>
+  </div>
+</section>
+
+<div class="card">
+  <h1>กิตก์</h1>
+
+  <section data-tts id="sec-1">
+    <h2>กิตก์</h2>
+    <p>เป็นชื่อของศัพท์ที่ท่านประกอบด้วยปัจจัยหมู่หนึ่ง ซึ่งเป็นเครื่องกำหนดหมายเนื้อความของนามศัพท์และกิริยาศัพท์ที่ต่าง ๆ กัน แบ่งเป็น ๒ คือ เป็นนามกิตก์อย่าง ๑ เป็นกิริยากิตก์อย่าง ๑ ฯ</p>
+    <div class="secbar">
+      <button class="btn primary" data-say="#sec-1">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-1">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <!-- แก้ id ซ้ำ: เดิมเคยใช้ id="sec-1" ซ้ำกัน -->
+  <section data-tts id="sec-1b">
+    <h2>กิตก์นั้น</h2>
+    <p>กิตก์นั้น แบ่งออกเป็น ๒ ก่อนคือเป็น นามศัพท์ อย่าง ๑ เป็น กิริยาศัพท์ อย่าง ๑ กิตก์ทั้ง ๒ อย่างนี้ ล้วนมี ธาตุ เป็นที่ตั้งทั้งสิ้น ฯ</p>
+    <div class="secbar">
+      <button class="btn primary" data-say="#sec-1b">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-1b">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <section data-tts id="sec-2">
+    <h3>ตัวอย่างพยัญชนะตามวรรค</h3>
+    <ul>
+      <li>ก-วรรค: ก ข ค ฆ ง</li>
+      <li>จ-วรรค: จ ฉ ช ฌ ญ</li>
+      <li>ฏ-วรรค: ฏ ฐ ฑ ฒ ณ</li>
+      <li>ต-วรรค: ต ถ ท ธ น</li>
+      <li>ป-วรรค: ป ผ พ ภ ม</li>
+      <li>อวรรค: ย ร ล ว ส ห ฬ อํ</li>
+    </ul>
+    <div class="secbar">
+      <button class="btn primary" data-say="#sec-4">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-4">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+</div>
+
+   <!-- วิดีโอประกอบการเรียน: 2 กล่อง -->
+  <section aria-label="วิดีโอประกอบการเรียน">
+    <div class="videogrid" id="videoArea">
+      <!-- กล่องวิดีโอที่ 1 -->
+      <div class="vbox" data-vbox="1">
+        <div class="vhead">
+          <input type="url" placeholder="วางลิงก์ .mp4 หรือ .webm" class="select" data-url>
+          <input type="file" accept="video/*" class="select" data-file>
+          <button class="btn" data-load>โหลดคลิป</button>
+        </div>
+        <video controls playsinline preload="metadata" style="width:100%;border-radius:8px;" data-video></video>
+        <div class="vprogress" aria-hidden="true"><span></span></div>
+      </div>
+
+      <!-- กล่องวิดีโอที่ 2 -->
+      <div class="vbox" data-vbox="2" id="fixedBox2">
+        <div class="vhead" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <select class="select" id="clipSelect2" title="เลือกคลิป" style="flex: 1;">
+              <option value="https://media.wrida.site/%E0%B8%81%E0%B8%B4%E0%B8%A3%E0%B8%B4%E0%B8%A2%E0%B8%B2%E0%B8%81%E0%B8%B4%E0%B8%95%E0%B8%81%E0%B9%8C.mp4">กิตก์</option>
+              <option value="clips/lesson2.mp4">บทที่ 2 — สั้น/ยาว และตัวอย่าง</option>
+              <option value="clips/lesson3.mp4">บทที่ 3 — เคล็ดลับการออกเสียง</option>
+            </select>
+            <button class="btn" id="loadPreset2">ใช้คลิปนี้</button>
+          </div>
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <input type="url" placeholder="หรือวางลิงก์ .mp4 / .webm" class="select" id="urlInput2" style="flex: 1;">
+            <input type="file" accept="video/*" class="select" id="fileInput2" style="max-width: 150px;">
+            <button class="btn" id="loadExternal2">โหลดไฟล์</button>
+          </div>
+        </div>
+
+        <video controls playsinline preload="metadata" style="width:100%;border-radius:8px;margin-top:8px;"
+               id="video2" poster="clips/cover1.jpg" controlslist="nodownload">
+          <source src="https://media.wrida.site/%E0%B8%81%E0%B8%B4%E0%B8%A3%E0%B8%B4%E0%B8%A2%E0%B8%B2%E0%B8%81%E0%B8%B4%E0%B8%95%E0%B8%81%E0%B9%8C.mp4" type="video/mp4">
+
+          เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
+        </video>
+        <div class="vprogress" aria-hidden="true"><span></span></div>
+        <p class="note">เลือกคลิปบทเรียน หรือนำเข้าวิดีโอของคุณเองจากด้านบนได้</p>
+      </div>
+    </div>
+  </section>
+<!-- ปุ่มนำทาง -->
+<div class="navbtns">
+  <button onclick="location.href='5indextestv2.html'">← กลับหน้าไวยากรณ์</button>
+  <button onclick="location.href='ปัจจัยอาขยาตมีเสียงพูด.html'">← กลับหน้าปัจจัยอาขยาต</button>
+  <button onclick="location.href='นามกิตก์มีเสียงพูด.html'">ไปหน้านามกิตก์ →</button>
+  <button onclick="location.href='1รวมไวยากรณ์บาลีคำศัพท์ต้องจำ 24พค69.html'">ไปหน้าทำข้อสอบเก่าย้อนหลัง →</button>
+  <button onclick="location.href='Gramma-pali-book.html'">ไปหน้ารายละเอียดทั้งหมด →</button>
+  <button onclick="location.href='15เกมบาลี 3กย69.html'">ไปหน้า15เกม →</button>  
+</div>
+
+  <!-- รูปภาพ -->
+  <div class="image">
+  <iframe src="page_135.pdf#page=1&view=FitH&toolbar=0" title="กิตก์"></iframe>
+</div>
+
+<footer style="text-align:center;margin:20px 0;color:#777">© 2025 Pāli AI System</footer>
+
+<!-- ====== TTS (อ่านทั้งหน้า/หัวข้อ) ====== -->
+<script>
+(function(){
+  const synth = window.speechSynthesis;
+  const btnAll = document.getElementById('btnSpeakAll');
+  const btnPause = document.getElementById('btnPause');
+  const btnResume = document.getElementById('btnResume');
+  const btnStop = document.getElementById('btnStop');
+  const statusEl = document.getElementById('ttsStatus');
+  const rateEl = document.getElementById('rate');
+  const pitchEl = document.getElementById('pitch');
+  const langSel = document.getElementById('langSel');
+  const voiceSel = document.getElementById('voiceSel');
+
+  let voices = [];
+  let queue = [], speakingAll = false;
+
+  const LANG_MAP = { th:/^th-/i, en:/^en-/i, zh:/^zh-/i, lo:/^lo-/i, my:/^my-/i, ja:/^ja-/i, ko:/^ko-/i };
+
+  function loadVoices(){ voices = synth.getVoices(); populateVoicesFor(langSel.value); }
+  function populateVoicesFor(code){
+    voiceSel.innerHTML = '<option value="">อัตโนมัติ (ตามภาษา)</option>';
+    const re = LANG_MAP[code]||/.^/;
+    voices.filter(v=>re.test(v.lang)||(code==='th'&&/Thai/i.test(v.name)))
+      .sort((a,b)=>a.name.localeCompare(b.name))
+      .forEach(v=>{ const o=document.createElement('option'); o.value=v.name; o.textContent=`${v.name} (${v.lang})`; voiceSel.appendChild(o); });
+  }
+  synth.onvoiceschanged = loadVoices; loadVoices();
+  langSel.addEventListener('change', ()=>populateVoicesFor(langSel.value));
+
+  function pickVoice(){
+    const byName = voices.find(v=>v.name===voiceSel.value);
+    if(byName) return byName;
+    const re = LANG_MAP[langSel.value||'th']||/^th-/i;
+    return voices.find(v=>re.test(v.lang)) || voices.find(v=>/^en-/i.test(v.lang)) || null;
+  }
+
+  function speak(text,onend){
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice();
+    if(v){ u.voice=v; u.lang=v.lang; } else { u.lang=(langSel.value||'th')+'-XX'; }
+    u.rate=+rateEl.value; u.pitch=+pitchEl.value;
+    u.onend=()=>{ onend&&onend(); };
+    synth.speak(u);
+  }
+  function setStatus(t){ statusEl.textContent = t; }
+  function stopAll(){ synth.cancel(); speakingAll=false; setStatus('หยุดแล้ว'); document.querySelectorAll('.reading').forEach(el=>el.classList.remove('reading')); }
+
+  // อ่านย่อหน้ารายปุ่ม
+  document.querySelectorAll('.p-btn[data-read]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      stopAll();
+      const actions = btn.closest('.p-actions');
+      const p = actions ? actions.previousElementSibling : null;
+      if(!(p && p.tagName==='P')) return;
+      p.classList.add('reading'); setStatus('กำลังอ่านย่อหน้า…');
+      speak(p.innerText, ()=>{ p.classList.remove('reading'); setStatus('พร้อมอ่าน'); });
+    });
+  });
+
+  // อ่านทั้งหน้า (ทุก section ที่มี data-tts)
+  btnAll.addEventListener('click', ()=>{
+    stopAll(); setStatus('กำลังอ่านทั้งหน้า…');
+    queue = Array.from(document.querySelectorAll('[data-tts]'));
+    speakingAll=true; let i=0;
+    const next=()=>{
+      if(!speakingAll || i>=queue.length){ speakingAll=false; setStatus('อ่านจบ'); return; }
+      document.querySelectorAll('.reading').forEach(el=>el.classList.remove('reading'));
+      const el = queue[i++]; el.classList.add('reading');
+      // ตัดปุ่ม/คอนโทรลออกจากข้อความ
+      const clone = el.cloneNode(true); clone.querySelectorAll('button,select,input,.secbar').forEach(x=>x.remove());
+      speak(clone.textContent.trim(), next);
+    };
+    next();
+  });
+  btnPause.addEventListener('click', ()=>{ if(synth.speaking && !synth.paused) synth.pause(); });
+  btnResume.addEventListener('click', ()=>{ if(synth.paused) synth.resume(); });
+  btnStop.addEventListener('click', stopAll);
+
+  // พูดเฉพาะหัวข้อจากปุ่มในแต่ละ section
+  document.addEventListener('click', (e)=>{
+    const say = e.target.closest('[data-say]'); const st = e.target.closest('[data-stop]');
+    if(say){ stopAll(); const sel=say.getAttribute('data-say'); const el=document.querySelector(sel); if(!el) return;
+      const clone=el.cloneNode(true); clone.querySelectorAll('button,select,input,.secbar').forEach(x=>x.remove());
+      el.classList.add('reading'); speak(clone.textContent.trim(), ()=>{ el.classList.remove('reading'); });
+    }
+    if(st){ stopAll(); }
+  });
+
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden && (synth.speaking||synth.paused)) synth.cancel(); });
+})();
+</script>
+
+<!--ระบบเล่นวิดีโอกล่องที่ 1 -->
+<script>
+(function(){
+  const grid = document.getElementById('videoArea');
+  if(!grid) return;
+  const KEY = (n)=>`palai:video:url:${n}`;
+
+  function setBar(box,p){ 
+    const bar=box.querySelector('.vprogress>span'); 
+    if(bar) bar.style.width = (p==null?0:Math.max(0,Math.min(100,p)))+'%'; 
+  }
+
+  async function loadInto(box, src, isObject=false){
+    const v = box.querySelector('[data-video]'); if(!v) return false;
+    setBar(box,8); v.src = src; v.load();
+    return new Promise(res=>{
+      let done=false;
+      const ok=()=>{ 
+        if(done) return; done=true; setBar(box,100); setTimeout(()=>setBar(box,null),400);
+        const idx=box.getAttribute('data-vbox'); if(idx && !isObject) localStorage.setItem(KEY(idx), src);
+        cleanup(); res(true);
+      };
+      const err=()=>{ if(done) return; done=true; alert('โหลดวิดีโอไม่สำเร็จ ตรวจลิงก์/ไฟล์อีกครั้ง'); setBar(box,null); cleanup(); res(false); };
+      const cleanup=()=>{ v.removeEventListener('canplay',ok); v.removeEventListener('canplaythrough',ok); v.removeEventListener('error',err); };
+      v.addEventListener('canplay',ok); v.addEventListener('canplaythrough',ok); v.addEventListener('error',err);
+    });
+  }
+
+  grid.querySelectorAll('.vbox').forEach(box=>{
+    if(box.id === 'fixedBox2') return;
+    const urlInput=box.querySelector('[data-url]'); 
+    const fileInput=box.querySelector('[data-file]'); 
+    const loadBtn=box.querySelector('[data-load]');
+
+    const idx=box.getAttribute('data-vbox'); 
+    const saved=idx?localStorage.getItem(KEY(idx)):'';
+    if(saved && urlInput){ urlInput.value=saved; loadInto(box,saved); }
+
+    loadBtn?.addEventListener('click', async ()=>{
+      const u=(urlInput?.value||'').trim();
+      if(!u){ alert('กรุณาวางลิงก์ .mp4 หรือ .webm'); return; }
+      if(!/^https?:\/\/|^\.{0,2}\//i.test(u)){ alert('ลิงก์ควรขึ้นต้นด้วย http(s):// หรือเป็นพาธไฟล์ภายในโฟลเดอร์'); return; }
+      setBar(box,12); await loadInto(box,u);
+    });
+
+    fileInput?.addEventListener('change', async ()=>{
+      const f=fileInput.files?.[0]; if(!f) return;
+      const obj=URL.createObjectURL(f); setBar(box,12); await loadInto(box,obj,true);
+    });
+  });
+})();
+</script>
+
+<!-- ระบบเล่นวิดีโอกล่องที่ 2 -->
+<script>
+(function(){
+  const box           = document.getElementById('fixedBox2');
+  if(!box) return;
+
+  const video         = document.getElementById('video2');
+  const sel           = document.getElementById('clipSelect2');
+  const loadPresetBtn = document.getElementById('loadPreset2');
+
+  const urlInput      = document.getElementById('urlInput2');
+  const fileInput     = document.getElementById('fileInput2');
+  const loadExtBtn    = document.getElementById('loadExternal2');
+
+  const DEFAULT_VIDEO =
+    'https://media.wrida.site/%E0%B8%81%E0%B8%B4%E0%B8%A3%E0%B8%B4%E0%B8%A2%E0%B8%B2%E0%B8%81%E0%B8%B4%E0%B8%95%E0%B8%81%E0%B9%8C.mp4';
+
+  function loadSrc(src) {
+    if(!src) return;
+    video.src = src;
+    video.load();
+    video.play().catch(function(err){
+      console.log("วิดีโอพร้อมเล่น");
+    });
+  }
+
+  loadPresetBtn?.addEventListener('click', function(){
+    if(sel?.value) playSrc(sel.value);
+  });
+
+  sel?.addEventListener('change', function(){
+    if(sel?.value) playSrc(sel.value);
+  });
+
+  fileInput?.addEventListener('change', function(){
+    const file = fileInput.files?.[0];
+    if(file){
+      const objectUrl = URL.createObjectURL(file);
+      playSrc(objectUrl);
+    }
+  });
+
+  loadExtBtn?.addEventListener('click', function(){
+    if(fileInput?.files && fileInput.files[0]){
+      const objectUrl = URL.createObjectURL(fileInput.files[0]);
+      playSrc(objectUrl);
+      return;
+    }
+    const url = (urlInput?.value || '').trim();
+    if(url){
+      playSrc(url);
+    } else {
+      alert('กรุณาเลือกไฟล์วิดีโอ หรือวางลิงก์ก่อนกดโหลดไฟล์ครับ');
+    }
+  });  
+})();
+</script>
+
+</body>
+</html>

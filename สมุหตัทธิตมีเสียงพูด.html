@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>สมุหตัทธิต</title>
+  <style>
+    body{font-family:"Noto Sans Thai",sans-serif;background:#fdfcf8;color:#222;margin:0;padding:20px;line-height:1.6}
+    h1{text-align:center;color:#4a148c}
+    .card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;margin:20px auto;max-width:900px;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+    .secbar{margin-top:10px}
+    .secbar button{margin-right:6px;margin-bottom:6px;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+    .primary{background:#6a1b9a;color:#fff}
+    .danger{background:#e53935;color:#fff}
+    .warn{background:#ffb74d;color:#000}
+    .ok{background:#43a047;color:#fff}
+    .toolbar{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+    footer{text-align:center;margin-top:20px;color:#777}
+    .navbtns{text-align:center;margin:20px 0}
+    .navbtns button{margin:6px;padding:10px 16px;border:1px solid #aaa;border-radius:8px;background:#f4f1ea;cursor:pointer}
+    .image{text-align:center;margin:20px 0}
+    img{max-width:320px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.15)}
+    .image img 
+.image img {
+  width: 200px;   /* บังคับกว้าง 200px */
+  height: auto;   /* คงสัดส่วนเดิม */
+  display: block;
+  margin: 0 auto; /* จัดให้อยู่กลาง */
+}
+
+    /* ==== วิดีโอ 2 กล่อง ==== */
+    .videogrid{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin:18px auto 6px;max-width:95%;}
+    @media(max-width:860px){.videogrid{grid-template-columns:1fr}}
+    .vbox{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.06);padding:10px}
+    .vhead{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+    .vhead input[type="url"], .vhead input[type="file"], .vhead select{flex:1;min-width:160px}
+    .vprogress{height:6px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin-top:8px}
+    .vprogress > span{display:block;height:100%;width:0;background:#7c3aed;transition:width .25s ease}
+
+    @media (max-width: 860px){ .ttsbar{ grid-template-columns:1fr; } }
+
+  .image {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .image iframe {
+      width: 48%;
+      height: 700px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }    
+
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>สมุหตัทธิต</h1>
+
+  <!-- ปุ่มควบคุมเสียงทั้งหมด -->
+  <div class="toolbar">
+    <button class="primary" id="btnSpeakAll">▶️ พูดทั้งหมด</button>
+    <button class="warn" id="btnPause">⏸️ หยุดชั่วคราว</button>
+    <button class="ok" id="btnResume">⏯️ ทำต่อ</button>
+    <button class="danger" id="btnStop">⏹️ หยุด</button>
+  </div>
+
+  <section data-tts id="sec-1">
+    <h2>สมุหตัทธิต</h2>
+    <p>อาขยาตแบ่งบทเป็น ๒ บท คือ ปรัสสบท บทเพื่อผู้อื่น ๑ อัตตโนบท บทเพื่อตน ๑ ฯ</p>
+    <div class="secbar">
+      <button class="primary" data-say="#sec-1">▶️ พูดหัวข้อนี้</button>
+      <button class="danger" data-stop="#sec-1">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <section data-tts id="sec-2">
+    <p>-ปรัสสบทเป็นเครื่องหมายให้รู้กิริยาที่เป็นกัตตุวาจก เหตุกัตตุวาจก</p>
+    <div class="secbar">
+      <button class="primary" data-say="#sec-2">▶️ พูดหัวข้อนี้</button>
+      <button class="danger" data-stop="#sec-2">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <section data-tts id="sec-3">
+    <p>-อัตตโนบทเป็นเครื่องหมายให้รู้กิริยาที่เป็นกัมมวาจก และ ภาววาจก ฯพยัญชนะพยัญชนะเหล่านี้ชื่อว่า นิสิต เพราะอาศัยสระ จึงออกเสียงให้ปรากฏ</p>
+    <div class="secbar">
+      <button class="primary" data-say="#sec-3">▶️ พูดหัวข้อนี้</button>
+      <button class="danger" data-stop="#sec-3">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+</div>
+
+   <!-- วิดีโอประกอบการเรียน: 2 กล่อง -->
+  <section aria-label="วิดีโอประกอบการเรียน">
+    <div class="videogrid" id="videoArea">
+      <!-- กล่องวิดีโอที่ 1 -->
+      <div class="vbox" data-vbox="1">
+        <div class="vhead">
+          <input type="url" placeholder="วางลิงก์ .mp4 หรือ .webm" class="select" data-url>
+          <input type="file" accept="video/*" class="select" data-file>
+          <button class="btn" data-load>โหลดคลิป</button>
+        </div>
+        <video controls playsinline preload="metadata" style="width:100%;border-radius:8px;" data-video></video>
+        <div class="vprogress" aria-hidden="true"><span></span></div>
+      </div>
+
+      <!-- กล่องวิดีโอที่ 2 -->
+      <div class="vbox" data-vbox="2" id="fixedBox2">
+        <div class="vhead" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <select class="select" id="clipSelect2" title="เลือกคลิป" style="flex: 1;">
+              <option value="https://media.wrida.site/%E0%B8%95%E0%B8%B1%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%95.mp4">สมุหตัทธิต</option>
+              <option value="clips/lesson2.mp4">บทที่ 2 — สั้น/ยาว และตัวอย่าง</option>
+              <option value="clips/lesson3.mp4">บทที่ 3 — เคล็ดลับการออกเสียง</option>
+            </select>
+            <button class="btn" id="loadPreset2">ใช้คลิปนี้</button>
+          </div>
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <input type="url" placeholder="หรือวางลิงก์ .mp4 / .webm" class="select" id="urlInput2" style="flex: 1;">
+            <input type="file" accept="video/*" class="select" id="fileInput2" style="max-width: 150px;">
+            <button class="btn" id="loadExternal2">โหลดไฟล์</button>
+          </div>
+        </div>
+
+        <video controls playsinline preload="metadata" style="width:100%;border-radius:8px;margin-top:8px;"
+               id="video2" poster="clips/cover1.jpg" controlslist="nodownload">
+          <source src="https://media.wrida.site/%E0%B8%95%E0%B8%B1%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%95.mp4" type="video/mp4">
+          เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
+        </video>
+        <div class="vprogress" aria-hidden="true"><span></span></div>
+        <p class="note">เลือกคลิปบทเรียน หรือนำเข้าวิดีโอของคุณเองจากด้านบนได้</p>
+      </div>
+    </div>
+  </section>
+
+
+<!-- ปุ่มนำทาง 3 ปุ่ม -->
+<div class="navbtns">
+  <button onclick="location.href='5indextestv2.html'">← กลับหน้าไวยากรณ์</button>
+  <button onclick="location.href='ชาตาทิตัทธิตมีเสียงพูด.html'">← กลับหน้าชาตาทิตัทธิต</button>
+  <button onclick="location.href='ฐานตัทธิตมีเสียงพูด.html'">ไปหน้าฐานตัทธิต →</button>
+  <button onclick="location.href='1รวมไวยากรณ์บาลีคำศัพท์ต้องจำ 24พค69.html'">ไปหน้าทำข้อสอบเก่าย้อนหลัง →</button>
+  <button onclick="location.href='Gramma-pali-book.pdf'">ไปหน้ารายละเอียดทั้งหมด →</button>
+  <button onclick="location.href='15เกมบาลี 3กย69.html'">ไปหน้า15เกม →</button>
+</div>
+
+  <!-- รูปภาพ -->
+  <div class="image">
+  <iframe src="page_210.pdf#page=1&view=FitH&toolbar=0" title="สมุหตัทธิต"></iframe>
+  <iframe src="page_211.pdf#page=1&view=FitH&toolbar=0" title="สมุหตัทธิต"></iframe>
+</div>
+
+<footer>© 2025 Pāli AI System</footer>
+
+<script>
+(function(){
+  const synth = window.speechSynthesis;
+  const btnAll = document.getElementById('btnSpeakAll');
+  const btnPause = document.getElementById('btnPause');
+  const btnResume = document.getElementById('btnResume');
+  const btnStop = document.getElementById('btnStop');
+
+  function nodeToText(node){
+    const clone=node.cloneNode(true);
+    clone.querySelectorAll('button').forEach(b=>b.remove());
+    return clone.textContent.trim();
+  }
+  function speakText(text,onend){
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='th-TH';
+    u.onend=()=>onend&&onend();
+    synth.speak(u);
+    return u;
+  }
+  let queue=[], speakingAll=false;
+  btnAll.addEventListener('click',()=>{
+    synth.cancel();
+    queue=[...document.querySelectorAll('[data-tts]')];
+    speakingAll=true;
+    next();
+  });
+  function next(){
+    if(!speakingAll||queue.length===0){speakingAll=false;return;}
+    const el=queue.shift();
+    const text=nodeToText(el);
+    speakText(text,next);
+  }
+  btnPause.addEventListener('click',()=>{if(synth.speaking&&!synth.paused) synth.pause();});
+  btnResume.addEventListener('click',()=>{if(synth.paused) synth.resume();});
+  btnStop.addEventListener('click',()=>{speakingAll=false;synth.cancel();});
+  document.addEventListener('click',e=>{
+    if(e.target.dataset.say){
+      synth.cancel();
+      const el=document.querySelector(e.target.dataset.say);
+      if(el) speakText(nodeToText(el));
+    }
+    if(e.target.dataset.stop){
+      synth.cancel();
+    }
+  });
+})();
+
+<!--ระบบเล่นวิดีโอกล่องที่ 1 -->
+
+(function(){
+  const grid = document.getElementById('videoArea');
+  if(!grid) return;
+  const KEY = (n)=>`palai:video:url:${n}`;
+
+  function setBar(box,p){ 
+    const bar=box.querySelector('.vprogress>span'); 
+    if(bar) bar.style.width = (p==null?0:Math.max(0,Math.min(100,p)))+'%'; 
+  }
+
+  async function loadInto(box, src, isObject=false){
+    const v = box.querySelector('[data-video]'); if(!v) return false;
+    setBar(box,8); v.src = src; v.load();
+    return new Promise(res=>{
+      let done=false;
+      const ok=()=>{ 
+        if(done) return; done=true; setBar(box,100); setTimeout(()=>setBar(box,null),400);
+        const idx=box.getAttribute('data-vbox'); if(idx && !isObject) localStorage.setItem(KEY(idx), src);
+        cleanup(); res(true);
+      };
+      const err=()=>{ if(done) return; done=true; alert('โหลดวิดีโอไม่สำเร็จ ตรวจลิงก์/ไฟล์อีกครั้ง'); setBar(box,null); cleanup(); res(false); };
+      const cleanup=()=>{ v.removeEventListener('canplay',ok); v.removeEventListener('canplaythrough',ok); v.removeEventListener('error',err); };
+      v.addEventListener('canplay',ok); v.addEventListener('canplaythrough',ok); v.addEventListener('error',err);
+    });
+  }
+
+grid.querySelectorAll('.vbox').forEach(async (box)=>{
+    if(box.id === 'fixedBox2') return;
+    const urlInput=box.querySelector('[data-url]'); 
+    const fileInput=box.querySelector('[data-file]'); 
+    const loadBtn=box.querySelector('[data-load]');
+
+    const idx=box.getAttribute('data-vbox'); 
+    const saved=idx?localStorage.getItem(KEY(idx)):'';
+    if(saved && urlInput){ urlInput.value=saved; loadInto(box,saved); }
+
+    loadBtn?.addEventListener('click', async ()=>{
+      const u=(urlInput?.value||'').trim();
+      if(!u){ alert('กรุณาวางลิงก์ .mp4 หรือ .webm'); return; }
+      if(!/^https?:\/\/|^\.{0,2}\//i.test(u)){ alert('ลิงก์ควรขึ้นต้นด้วย http(s):// หรือเป็นพาธไฟล์ภายในโฟลเดอร์'); return; }
+      setBar(box,12); await loadInto(box,u);
+    });
+
+    fileInput?.addEventListener('change', async ()=>{
+      const f=fileInput.files?.[0]; if(!f) return;
+      const obj=URL.createObjectURL(f); setBar(box,12); await loadInto(box,obj,true);
+    });
+  });
+})();
+
+
+// ระบบเล่นวิดีโอกล่องที่ 2
+
+
+(function(){
+  const box           = document.getElementById('fixedBox2');
+  if(!box) return;
+
+  const video         = document.getElementById('video2');
+  const sel           = document.getElementById('clipSelect2');
+  const loadPresetBtn = document.getElementById('loadPreset2');
+
+  const urlInput      = document.getElementById('urlInput2');
+  const fileInput     = document.getElementById('fileInput2');
+  const loadExtBtn    = document.getElementById('loadExternal2');
+
+  const DEFAULT_VIDEO =
+    'https://media.wrida.site/%E0%B8%95%E0%B8%B1%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%95.mp4';
+
+  function playSrc(src) {
+    if(!src) return;
+    video.src = src;
+    video.load();
+    video.play().catch(function(err){
+      console.log("วิดีโอพร้อมเล่น");
+    });
+  }
+
+  loadPresetBtn?.addEventListener('click', function(){
+    if(sel?.value) playSrc(sel.value);
+  });
+
+  sel?.addEventListener('change', function(){
+    if(sel?.value) playSrc(sel.value);
+  });
+
+  fileInput?.addEventListener('change', function(){
+    const file = fileInput.files?.[0];
+    if(file){
+      const objectUrl = URL.createObjectURL(file);
+      playSrc(objectUrl);
+    }
+  });
+
+  loadExtBtn?.addEventListener('click', function(){
+    if(fileInput?.files && fileInput.files[0]){
+      const objectUrl = URL.createObjectURL(fileInput.files[0]);
+      playSrc(objectUrl);
+      return;
+    }
+    const url = (urlInput?.value || '').trim();
+    if(url){
+      playSrc(url);
+    } else {
+      alert('กรุณาเลือกไฟล์วิดีโอ หรือวางลิงก์ก่อนกดโหลดไฟล์ครับ');
+    }
+  });  
+})();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>พยัญชนะสนธิ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf7f2; --card:#ffffff; --ink:#1f2937; --muted:#6b7280; --accent:#7c3aed; --accent-2:#10b981; --border:#e5e7eb; --ring:#c4b5fd;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Thai", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    .container{max-width:1500px;margin:28px auto;padding:0 16px}
+
+    header{background:linear-gradient(135deg,#7c3aed 0%,#10b981 100%);color:#fff;border-radius:22px;padding:22px 20px;box-shadow:0 10px 28px rgba(124,58,237,.25)}
+    header h1{margin:0 0 6px;font-size:clamp(20px,4vw,36px);font-weight:800}
+    header p{margin:0;opacity:.95}
+
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    button,.btn{
+      appearance:none;border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;
+      box-shadow:0 2px 8px rgba(31,41,55,.06)
+    }
+    button:hover{background:#f8f7ff}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .primary{background:#7c3aed;color:#fff;border-color:#6d28d9}
+    .danger{background:#fee2e2;border-color:#fecaca}
+    .warn{background:#fff7ed;border-color:#ffedd5}
+    .ok{background:#ecfdf5;border-color:#d1fae5}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 6px 18px rgba(31,41,55,.05)}
+    .section{position:relative;border:1px dashed #e5e7eb;border-radius:14px;padding:14px;margin-top:12px}
+    .section h2,.section h3{margin:0 0 6px}
+    .secbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 0}
+    .note{color:var(--muted);font-size:.95em}
+
+    .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px}
+    table{width:100%;border-collapse:collapse;min-width:680px}
+    thead th{position:sticky;top:0;background:#fbfbff;border-bottom:1px solid var(--border);text-align:left;padding:12px 14px;font-weight:700}
+    tbody td{padding:12px 14px;border-top:1px solid var(--border)}
+    tbody tr:hover{background:#fafaff}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:#fff}
+    .badge.y{border-color:#d9d6ff}
+    .badge.s{border-color:#c7f0e9}
+    .ipa{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:.95em; color:#374151; background:#f5f6fb; padding:2px 8px; border-radius:8px}
+
+    footer{color:var(--muted);text-align:center;margin:20px 0 10px;font-size:.9em}
+    :where(button,[href]):focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
+
+    .image img{width:200px;height:auto;display:block;margin:0 auto}
+
+    .button-row{
+      display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center
+    }
+    .button-row button,.button-row a{
+      white-space:nowrap;display:inline-flex;align-items:center
+    }
+
+    .image-row{
+      display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:flex-start;margin:16px auto;max-width:1200px
+    }
+    .image-row img{flex:1 1 300px;max-width:100%;height:auto;border-radius:8px;object-fit:cover}
+
+    /* === Video grid (สองกล่อง) === */
+    .videogrid{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px
+    }
+    @media (max-width:900px){.videogrid{grid-template-columns:1fr}}
+    .vbox{
+      background:#fff;border:1px solid var(--border);border-radius:14px;
+      padding:12px;box-shadow:0 6px 18px rgba(31,41,55,.05)
+    }
+    .vhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+    .vhead .select{flex:1 1 260px}
+    .vprogress{margin-top:8px;height:8px;border-radius:999px;background:#f3f4f6;position:relative;overflow:hidden}
+    .vprogress span{
+      position:absolute;left:0;top:0;bottom:0;width:0%;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      transition:width .25s ease
+    }
+    .vbox.dragover{outline:2px dashed var(--accent);outline-offset:4px;background:#fafaff}
+
+    /* ===== Lightbox with Zoom ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      z-index: 9999;
+    }
+    .lightbox:target { display: flex; }
+    .lightbox img {
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+      max-width: none;
+      max-height: none;
+    }
+    .lightbox .close {
+      position: fixed;
+      top: 16px;
+      right: 24px;
+      font-size: 32px;
+      color: #fff;
+      text-decoration: none;
+    }
+    .zoom-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .zoom-controls button {
+      padding: 10px 14px;
+      font-size: 20px;
+      border: none;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+    }
+  .image {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .image iframe {
+      width: 48%;
+      height: 700px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <header>
+    <h1>พยัญชนะสนธิ</h1>
+    <p>คลิกปุ่มเพื่อให้เว็บอ่าน “ทั้งหมด” หรือ “ทีละหัวข้อ” ได้เลย</p>
+
+    <!-- GLOBAL TTS TOOLBAR -->
+    <div class="toolbar" role="group" aria-label="ตัวควบคุมเสียงทั้งหมด">
+      <button class="primary" id="btnSpeakAll">▶️ พูดทั้งหมด</button>
+      <button class="warn" id="btnPause">⏸️ หยุดชั่วคราว</button>
+      <button class="ok" id="btnResume">⏯️ ทำต่อ</button>
+      <button class="danger" id="btnStop">⏹️ หยุด</button>
+      <select id="voiceSelect" title="เลือกเสียง (ถ้ามี)">
+        <option value="">เลือกเสียงพูด… (จะเลือกไทยให้อัตโนมัติ)</option>
+      </select>
+      <label style="display:inline-flex;align-items:center;gap:6px">
+        ความเร็ว <input id="rate" type="range" min="0.6" max="1.6" step="0.1" value="1" />
+        <span id="rateVal">1.0×</span>
+      </label>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <section class="card section" data-tts id="sec-overview">
+    <h2>พยัญชนะสนธิ</h2>
+    <p>
+      พยัญชนะสนธิใช้สนธิกิริโยปกรณ์ ๕ อย่าง คือ โลโป อาเทโส อาคโม ปกติ สญฺโญโค
+    </p>
+    <p> </p>
+    <div class="secbar">
+      <button class="btn" data-say="#sec-overview">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-overview">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+    <section class="card section" data-tts id="sec-overview-1">
+    <h2>1.โลปพยัญชนสนธิ</h2>
+    <p>
+    เช่น เอวํ+อสฺส = เอวํส ฯ ปุปฺผํ+อสฺสา =ปุปฺผํสา ฯ 
+    </p>
+    <div class="secbar">
+      <button class="btn" data-say="#sec-overview-1">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-overview-1">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <section class="card section" data-tts id="sec-overview-2">
+    <h2>2.อาเทสพยัญชนสนธิ</h2>
+    <p>
+      เช่น อิติ+เอวํ = อิจฺเจวํ ฯ ปติ+อุตฺตริตฺวา = ปจฺจุตฺตริตฺวาฯ
+    </p>
+    <div class="secbar">
+      <button class="btn" data-say="#sec-overview-2">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-overview-2">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <section class="card section" data-tts id="sec-overview-3">
+    <h2>3. อาคมพยัญชนสนธิ</h2>
+    <p>
+   พยัญชนะอาคม 8 ตัวคือ  ยฺ  วฺ  มฺ  ทฺ  นฺ  ตฺ  รฺ  ฬฺ อํ                 
+ย อาคม    เช่น    ยถา–อิทํ     เป็น ยถายิทํ
+ว อาคม    เช่น    อุ–ทิกฺขติ     เป็น วุทิกฺขติ
+ม อาคม    เช่น    ครุ–เอสฺสติ    เป็น ครุเมสฺสติ
+ท อาคม    เช่น    อตฺต–อตฺโถ   เป็น อตฺตทตฺโถ
+น อาคม    เช่น    อิโต–อายติ    เป็น อิโตนายติ
+ต อาคม    เช่น    ตสฺมา–อิห     เป็น ตสฺมาติห
+ร อาคม    เช่น    สพฺภิ–เอว      เป็น สพฺภิเรว
+ฬ อาคม    เช่น    ฉ–อายตนํ     เป็น ฉฬายตนํ    
+ลง ห อาคม ก็ได้  เช่น  สุ+อุชุ = สุหุชุ ฯ  สุ+อุฏฺฐิตํ = สุหุฏฺฐิตํ ฯ     
+    </p>
+    <div class="secbar">
+      <button class="btn" data-say="#sec-overview-3">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-overview-3">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+  <section class="card section" data-tts id="sec-overview-4">
+    <h2>4.ปกติพยัญชนสนธิ </h2>
+    <p>
+
+    </p>
+    <div class="secbar">
+      <button class="btn" data-say="#sec-overview-4">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-overview-4">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>  
+
+    <section class="card section" data-tts id="sec-overview-5">
+    <h2>5.สัญโญคพยัญชนสนธิ</h2>
+    <p>
+       มี 2 คือ ๑. ซ้อนพยัญชนะที่มีรูปเหมือนกัน  เช่น  อิธ+ปโมทติ = อิธปฺปโมทติฯ     จาตุ+ทสี = จาตุทฺทสี  
+              ๒. ซ้อนพยัญชนะที่มีรูปไม่เหมือนกัน  เช่น  จตฺตาริ+ฐานานิ = จตฺตาริฏฺฐานานิ ฯ เอโสว+จ+ฌานผโล = เอโสวจชฺฌานผโล ฯ    
+    </p>
+    <div class="secbar">
+      <button class="btn" data-say="#sec-overview-5">▶️ พูดหัวข้อนี้</button>
+      <button class="btn danger" data-stop="#sec-overview-5">⏹️ หยุดหัวข้อนี้</button>
+    </div>
+  </section>
+
+   <!-- วิดีโอประกอบการเรียน: 2 กล่อง -->
+  <section aria-label="วิดีโอประกอบการเรียน">
+    <div class="videogrid" id="videoArea">
+      <!-- กล่องวิดีโอที่ 1 -->
+      <div class="vbox" data-vbox="1">
+        <div class="vhead">
+          <input type="url" placeholder="วางลิงก์ .mp4 หรือ .webm" class="select" data-url>
+          <input type="file" accept="video/*" class="select" data-file>
+          <button class="btn" data-load>โหลดคลิป</button>
+        </div>
+        <video controls playsinline preload="metadata" style="width:100%;border-radius:8px;" data-video></video>
+        <div class="vprogress" aria-hidden="true"><span></span></div>
+      </div>
+
+      <!-- กล่องวิดีโอที่ 2 -->
+      <div class="vbox" data-vbox="2" id="fixedBox2">
+        <div class="vhead" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <select class="select" id="clipSelect2" title="เลือกคลิป" style="flex: 1;">
+              <option value="https://media.wrida.site/%E0%B8%AA%E0%B8%99%E0%B8%98%E0%B8%B4.mp4">พยัญชนะสนธิ</option>
+              <option value="clips/lesson2.mp4">บทที่ 2 — สั้น/ยาว และตัวอย่าง</option>
+              <option value="clips/lesson3.mp4">บทที่ 3 — เคล็ดลับการออกเสียง</option>
+            </select>
+            <button class="btn" id="loadPreset2">ใช้คลิปนี้</button>
+          </div>
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <input type="url" placeholder="หรือวางลิงก์ .mp4 / .webm" class="select" id="urlInput2" style="flex: 1;">
+            <input type="file" accept="video/*" class="select" id="fileInput2" style="max-width: 150px;">
+            <button class="btn" id="loadExternal2">โหลดไฟล์</button>
+          </div>
+        </div>
+
+        <video controls playsinline preload="metadata" style="width:100%;border-radius:8px;margin-top:8px;"
+               id="video2" poster="clips/cover1.jpg" controlslist="nodownload">
+          <source src="https://media.wrida.site/%E0%B8%AA%E0%B8%99%E0%B8%98%E0%B8%B4.mp4" type="video/mp4">
+          เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
+        </video>
+        <div class="vprogress" aria-hidden="true"><span></span></div>
+        <p class="note">เลือกคลิปบทเรียน หรือนำเข้าวิดีโอของคุณเองจากด้านบนได้</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ปุ่มนำทาง -->
+  <div class="button-row" style="margin-top:20px">
+    <button onclick="location.href='5indextestv2.html'">← กลับหน้าไวยากรณ์</button>
+    <button onclick="location.href='สระสนธิมีเสียงพูด.html'">← กลับหน้ากลับหน้าสระสนธิ</button>
+    <button onclick="location.href='นิคคหิตสนธิมีเสียงพูด.html'">ไปหน้านิคคหิตสนธิ →</button>
+    <button onclick="location.href='1รวมไวยากรณ์บาลีคำศัพท์ต้องจำ 24พค69.html'">ไปหน้าทำข้อสอบเก่าย้อนหลัง →</button>
+    <button onclick="location.href='Gramma-pali-book.pdf'">ไปหน้ารายละเอียดทั้งหมด →</button>  
+    <button onclick="location.href='15เกมบาลี 3กย69.html'">ไปหน้า15เกม →</button>
+    
+  </div>
+
+  <!-- รูปภาพ -->
+  <div class="image">
+  <iframe src="page_238.pdf#page=1&view=FitH&toolbar=0" title="พยัญชนะสนธิ"></iframe>
+  <iframe src="page_239.pdf#page=1&view=FitH&toolbar=0" title="พยัญชนะสนธิ"></iframe>
+  <iframe src="page_240.pdf#page=1&view=FitH&toolbar=0" title="พยัญชนะสนธิ"></iframe>
+  <iframe src="page_241.pdf#page=1&view=FitH&toolbar=0" title="พยัญชนะสนธิ"></iframe>
+  </div>
+
+  <footer>© 2025 Pāli Study • Thai TTS Demo</footer>
+</div>
+
+<!-- ====== TTS (พูดทั้งหมด/พูดรายหัวข้อ) ====== -->
+<script>
+(function(){
+  const synth = window.speechSynthesis;
+  const voiceSelect = document.getElementById('voiceSelect');
+  const rateInput = document.getElementById('rate');
+  const rateVal = document.getElementById('rateVal');
+  const btnSpeakAll = document.getElementById('btnSpeakAll');
+  const btnPause = document.getElementById('btnPause');
+  const btnResume = document.getElementById('btnResume');
+  const btnStop = document.getElementById('btnStop');
+
+  let voices = [];
+  let currentUtterances = [];
+  let sectionQueue = [];
+  let speakingAll = false;
+
+  function populateVoices(){
+    voices = synth.getVoices();
+    const current = voiceSelect.value;
+    voiceSelect.innerHTML = '<option value="">เลือกเสียงพูด… (จะเลือกไทยให้อัตโนมัติ)</option>';
+    voices.forEach((v, idx)=>{
+      const opt = document.createElement('option');
+      opt.value = String(idx);
+      opt.textContent = `${v.name} — ${v.lang}`;
+      voiceSelect.appendChild(opt);
+    });
+    const thaiIndex = voices.findIndex(v => /th-TH/i.test(v.lang) || /Thai/i.test(v.name));
+    if (thaiIndex >= 0) voiceSelect.value = String(thaiIndex);
+    else if (current) voiceSelect.value = current;
+  }
+
+  populateVoices();
+  if (typeof speechSynthesis !== 'undefined') {
+    speechSynthesis.onvoiceschanged = populateVoices;
+  }
+
+  rateInput.addEventListener('input', ()=>{
+    rateVal.textContent = Number(rateInput.value).toFixed(1) + '×';
+  });
+
+  function getSelectedVoice(){
+    const idx = parseInt(voiceSelect.value, 10);
+    if (!isNaN(idx) && voices[idx]) return voices[idx];
+    return voices.find(v => /th-TH/i.test(v.lang) || /Thai/i.test(v.name)) || null;
+  }
+
+  function speakText(text, onend){
+    if (!text || !text.trim()) { onend && onend(); return null; }
+    const u = new SpeechSynthesisUtterance(text);
+    const v = getSelectedVoice();
+    if (v) u.voice = v;
+    u.lang = (v && v.lang) ? v.lang : 'th-TH';
+    u.rate = Number(rateInput.value) || 1.0;
+    u.onend = ()=>{ onend && onend(); };
+    u.onerror = ()=>{ onend && onend(); };
+    synth.speak(u);
+    return u;
+  }
+
+  function nodeToPlainText(node){
+    const clone = node.cloneNode(true);
+    clone.querySelectorAll('button, select, input, .secbar').forEach(el => el.remove());
+    return clone.textContent.replace(/\s+\n/g,'\n').replace(/\n{2,}/g,'\n').trim();
+  }
+
+  btnSpeakAll.addEventListener('click', ()=>{
+    stopAll();
+    const sections = Array.from(document.querySelectorAll('[data-tts]'));
+    sectionQueue = sections.map(s => '#' + s.id);
+    speakingAll = true;
+    playNextInQueue();
+  });
+
+  function playNextInQueue(){
+    if (!speakingAll || sectionQueue.length === 0){ speakingAll = false; return; }
+    const sel = sectionQueue.shift();
+    const el = document.querySelector(sel);
+    if (!el){ playNextInQueue(); return; }
+    const text = nodeToPlainText(el);
+    const u = speakText(text, ()=> playNextInQueue());
+    if (u) currentUtterances.push(u);
+  }
+
+  btnPause.addEventListener('click', ()=>{ if (synth.speaking && !synth.paused) synth.pause(); });
+  btnResume.addEventListener('click', ()=>{ if (synth.paused) synth.resume(); });
+  btnStop.addEventListener('click', stopAll);
+
+  function stopAll(){
+    speakingAll = false;
+    currentUtterances.length = 0;
+    if (synth.speaking || synth.paused) synth.cancel();
+  }
+
+  document.addEventListener('click', (e)=>{
+    const btnSay = e.target.closest('[data-say]');
+    const btnStopSec = e.target.closest('[data-stop]');
+    if (btnSay){
+      stopAll();
+      const sel = btnSay.getAttribute('data-say');
+      const el = document.querySelector(sel);
+      if (!el) return;
+      const text = nodeToPlainText(el);
+      const u = speakText(text, ()=>{});
+      if (u) currentUtterances.push(u);
+    }
+    if (btnStopSec){ stopAll(); }
+  });
+
+  document.addEventListener('visibilitychange', ()=>{
+    if (document.hidden && (synth.speaking || synth.paused)) synth.cancel();
+  });
+
+  if (!('speechSynthesis' in window)) {
+    alert('เบราว์เซอร์นี้ไม่รองรับ Web Speech Synthesis.\nกรุณาใช้ Chrome หรือ Edge เวอร์ชันล่าสุด');
+  }
+})();
+</script>
+
+<!--ระบบเล่นวิดีโอกล่องที่ 1 -->
+<script>
+(function(){
+  const grid = document.getElementById('videoArea');
+  if(!grid) return;
+  const KEY = (n)=>`palai:video:url:${n}`;
+
+  function setBar(box,p){ 
+    const bar=box.querySelector('.vprogress>span'); 
+    if(bar) bar.style.width = (p==null?0:Math.max(0,Math.min(100,p)))+'%'; 
+  }
+
+  async function loadInto(box, src, isObject=false){
+    const v = box.querySelector('[data-video]'); if(!v) return false;
+    setBar(box,8); v.src = src; v.load();
+    return new Promise(res=>{
+      let done=false;
+      const ok=()=>{ 
+        if(done) return; done=true; setBar(box,100); setTimeout(()=>setBar(box,null),400);
+        const idx=box.getAttribute('data-vbox'); if(idx && !isObject) localStorage.setItem(KEY(idx), src);
+        cleanup(); res(true);
+      };
+      const err=()=>{ if(done) return; done=true; alert('โหลดวิดีโอไม่สำเร็จ ตรวจลิงก์/ไฟล์อีกครั้ง'); setBar(box,null); cleanup(); res(false); };
+      const cleanup=()=>{ v.removeEventListener('canplay',ok); v.removeEventListener('canplaythrough',ok); v.removeEventListener('error',err); };
+      v.addEventListener('canplay',ok); v.addEventListener('canplaythrough',ok); v.addEventListener('error',err);
+    });
+  }
+
+  grid.querySelectorAll('.vbox').forEach(box=>{
+    if(box.id === 'fixedBox2') return;
+    const urlInput=box.querySelector('[data-url]'); 
+    const fileInput=box.querySelector('[data-file]'); 
+    const loadBtn=box.querySelector('[data-load]');
+
+    const idx=box.getAttribute('data-vbox'); 
+    const saved=idx?localStorage.getItem(KEY(idx)):'';
+    if(saved && urlInput){ urlInput.value=saved; loadInto(box,saved); }
+
+    loadBtn?.addEventListener('click', async ()=>{
+      const u=(urlInput?.value||'').trim();
+      if(!u){ alert('กรุณาวางลิงก์ .mp4 หรือ .webm'); return; }
+      if(!/^https?:\/\/|^\.{0,2}\//i.test(u)){ alert('ลิงก์ควรขึ้นต้นด้วย http(s):// หรือเป็นพาธไฟล์ภายในโฟลเดอร์'); return; }
+      setBar(box,12); await loadInto(box,u);
+    });
+
+    fileInput?.addEventListener('change', async ()=>{
+      const f=fileInput.files?.[0]; if(!f) return;
+      const obj=URL.createObjectURL(f); setBar(box,12); await loadInto(box,obj,true);
+    });
+  });
+})();
+</script>
+
+<!-- ระบบเล่นวิดีโอกล่องที่ 2 -->
+<script>
+(function(){
+  const box           = document.getElementById('fixedBox2');
+  if(!box) return;
+
+  const video         = document.getElementById('video2');
+  const sel           = document.getElementById('clipSelect2');
+  const loadPresetBtn = document.getElementById('loadPreset2');
+
+  const urlInput      = document.getElementById('urlInput2');
+  const fileInput     = document.getElementById('fileInput2');
+  const loadExtBtn    = document.getElementById('loadExternal2');
+
+  const DEFAULT_VIDEO =
+    'https://media.wrida.site/%E0%B8%AA%E0%B8%99%E0%B8%98%E0%B8%B4.mp4';
+
+  function playSrc(src) {
+    if(!src) return;
+    video.src = src;
+    video.load();
+    video.play().catch(function(err){
+      console.log("วิดีโอพร้อมเล่น");
+    });
+  }
+
+  loadPresetBtn?.addEventListener('click', function(){
+    if(sel?.value) playSrc(sel.value);
+  });
+
+  sel?.addEventListener('change', function(){
+    if(sel?.value) playSrc(sel.value);
+  });
+
+  fileInput?.addEventListener('change', function(){
+    const file = fileInput.files?.[0];
+    if(file){
+      const objectUrl = URL.createObjectURL(file);
+      playSrc(objectUrl);
+    }
+  });
+
+  loadExtBtn?.addEventListener('click', function(){
+    if(fileInput?.files && fileInput.files[0]){
+      const objectUrl = URL.createObjectURL(fileInput.files[0]);
+      playSrc(objectUrl);
+      return;
+    }
+    const url = (urlInput?.value || '').trim();
+    if(url){
+      playSrc(url);
+    } else {
+      alert('กรุณาเลือกไฟล์วิดีโอ หรือวางลิงก์ก่อนกดโหลดไฟล์ครับ');
+    }
+  });  
+})();
+</script><!-- ====== Lightbox overlays (พร้อมซูม + Fit + 100%) ====== -->
+<div id="img1" class="lightbox">
+  <a href="#" class="close">×</a>
+  <img src="97728_0.jpg" id="zoomImg1" alt="">
+  <div class="zoom-controls">
+    <button onclick="zoom('zoomImg1', 1.2)">➕</button>
+    <button onclick="zoom('zoomImg1', 0.8)">➖</button>
+    <button onclick="resetZoom('zoomImg1')">🔄</button>
+    <button onclick="fitZoom('zoomImg1')">🖼️ Fit</button>
+    <button onclick="oneToOne('zoomImg1')">100%</button>
+  </div>
+</div>
+<div id="img2" class="lightbox">
+  <a href="#" class="close">×</a>
+  <img src="97723_0.jpg" id="zoomImg2" alt="">
+  <div class="zoom-controls">
+    <button onclick="zoom('zoomImg2', 1.2)">➕</button>
+    <button onclick="zoom('zoomImg2', 0.8)">➖</button>
+    <button onclick="resetZoom('zoomImg2')">🔄</button>
+    <button onclick="fitZoom('zoomImg2')">🖼️ Fit</button>
+    <button onclick="oneToOne('zoomImg2')">100%</button>
+  </div>
+</div>
+<div id="img3" class="lightbox">
+  <a href="#" class="close">×</a>
+  <img src="ผังสระ.png" id="zoomImg3" alt="">
+  <div class="zoom-controls">
+    <button onclick="zoom('zoomImg3', 1.2)">➕</button>
+    <button onclick="zoom('zoomImg3', 0.8)">➖</button>
+    <button onclick="resetZoom('zoomImg3')">🔄</button>
+    <button onclick="fitZoom('zoomImg3')">🖼️ Fit</button>
+    <button onclick="oneToOne('zoomImg3')">100%</button>
+  </div>
+</div>
+
+<!-- ====== สคริปต์ซูม/แพนรูป + Fit ====== -->
+<script>
+(function(){
+  // ปรับช่วงซูมกว้างขึ้น และย่อได้เล็กกว่าเดิม
+  const MAX = 16, MIN = 0.05;
+
+  function updateTransform(img){
+    const s  = parseFloat(img.dataset.scale||'1');
+    const tx = parseFloat(img.dataset.tx||'0');
+    const ty = parseFloat(img.dataset.ty||'0');
+    img.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+  }
+
+  function changeScale(img, factor){
+    let s = (parseFloat(img.dataset.scale||'1')) * factor;
+    s = Math.max(MIN, Math.min(MAX, s));
+    img.dataset.scale = s;
+    updateTransform(img);
+  }
+
+  function reset(img){
+    img.dataset.scale = 1;
+    img.dataset.tx = 0;
+    img.dataset.ty = 0;
+    updateTransform(img);
+  }
+
+  function fitToScreen(img){
+    const vw = window.innerWidth  - 80;
+    const vh = window.innerHeight - 80;
+    const iw = img.naturalWidth  || img.width;
+    const ih = img.naturalHeight || img.height;
+    if (!iw || !ih) return;
+    const s = Math.min(vw/iw, vh/ih, 1); // ไม่ขยายเกิน 100% อัตโนมัติ
+    img.dataset.scale = s;
+    img.dataset.tx = 0;
+    img.dataset.ty = 0;
+    updateTransform(img);
+  }
+
+  function setupZoomer(img){
+    if(!img) return;
+    img.dataset.scale = 1; img.dataset.tx = 0; img.dataset.ty = 0;
+    img.style.transformOrigin = 'center center';
+    img.style.willChange = 'transform';
+    img.style.userSelect = 'none';
+    img.style.touchAction = 'none';
+    img.style.cursor = 'grab';
+
+    // คลิก = ซูมเข้า, Shift+คลิก = ซูมออก
+    img.addEventListener('click', e=>{
+      changeScale(img, e.shiftKey? 0.8 : 1.25);
+    });
+
+    // ดับเบิลคลิก = รีเซ็ต
+    img.addEventListener('dblclick', e=>{
+      e.preventDefault();
+      reset(img);
+    });
+
+    // สกอลล์เมาส์ = ซูม
+    img.addEventListener('wheel', e=>{
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.1 : 0.9;
+      changeScale(img, factor);
+    }, {passive:false});
+
+    // ลากเพื่อแพน
+    let drag=false, lx=0, ly=0;
+    img.addEventListener('pointerdown', e=>{
+      drag=true; lx=e.clientX; ly=e.clientY; img.setPointerCapture(e.pointerId); img.style.cursor='grabbing';
+    });
+    img.addEventListener('pointermove', e=>{
+      if(!drag) return;
+      const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+      img.dataset.tx = (parseFloat(img.dataset.tx||'0') + dx);
+      img.dataset.ty = (parseFloat(img.dataset.ty||'0') + dy);
+      updateTransform(img);
+    });
+    img.addEventListener('pointerup', ()=>{ drag=false; img.style.cursor='grab'; });
+    img.addEventListener('pointercancel', ()=>{ drag=false; img.style.cursor='grab'; });
+  }
+
+  // ปุ่มควบคุม
+  window.zoom = (id, factor)=>{ const img=document.getElementById(id); if(img) changeScale(img, factor); };
+  window.resetZoom = (id)=>{ const img=document.getElementById(id); if(img) reset(img); };
+  window.fitZoom = (id)=>{ const img=document.getElementById(id); if(img) fitToScreen(img); };
+  window.oneToOne = (id)=>{ const img=document.getElementById(id); if(img){ img.dataset.scale=1; img.dataset.tx=0; img.dataset.ty=0; updateTransform(img);} };
+
+  // Auto Fit เมื่อเปิดภาพ + รีไซซ์จอ
+  function applyFitOnOpen(){
+    const id = location.hash.replace('#','');
+    if(!id) return;
+    const box = document.getElementById(id);
+    const img = box ? box.querySelector('img') : null;
+    if(!img) return;
+    if (!img.complete) img.onload = ()=>fitToScreen(img);
+    else fitToScreen(img);
+  }
+  window.addEventListener('hashchange', applyFitOnOpen);
+  window.addEventListener('resize', applyFitOnOpen);
+
+  // ติดตั้งให้รูปทั้ง 3 ใบ
+  document.addEventListener('DOMContentLoaded', ()=>{
+    ['zoomImg1','zoomImg2','zoomImg3'].forEach(id=> setupZoomer(document.getElementById(id)));
+    applyFitOnOpen();
+  });
+})();
+</script>
+
+</body>
+</html>
