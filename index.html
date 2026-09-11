@@ -438,7 +438,87 @@
     }
 }
 
-    </style>
+    
+/* ==========================================================
+   MOBILE SCROLL FIX V2
+   แก้ปัญหามือถือเลื่อนหน้าหลักขึ้น-ลงไม่ได้
+   โดยไม่กระทบโครงสร้าง Desktop
+   ========================================================== */
+@media (max-width: 768px) {
+    html {
+        height: auto !important;
+        min-height: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body {
+        height: auto !important;
+        min-height: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        display: block !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ยกเลิกการล็อกความสูงของโครงสร้างหลักบนมือถือ */
+    body > div.flex.flex-1 {
+        display: block !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    #main-sidebar + main {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* กล่องเนื้อหาหลักให้ขยายตามเนื้อหา */
+    #main-sidebar + main > div.flex-1 {
+        display: block !important;
+        height: auto !important;
+        min-height: 420px !important;
+        overflow: visible !important;
+    }
+
+    #view-wrapper {
+        height: auto !important;
+        min-height: 420px !important;
+        max-height: none !important;
+        overflow: visible !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #pdfWrapper {
+        height: 70vh !important;
+        min-height: 420px !important;
+    }
+
+    #main-view-frame {
+        height: 100% !important;
+        min-height: 420px !important;
+    }
+
+    /* ป้องกันเมนูด้านซ้ายที่เปิดอยู่ล็อกการเลื่อน */
+    #main-sidebar.mobile-open {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ส่วนข้อสอบให้เลื่อนภายในได้เมื่อมีเนื้อหายาว */
+    #quiz-ui-int {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+</style>
 </head>
 <body class="bg-slate-100 h-screen flex flex-col overflow-hidden">
 <!-- ========================================================================== -->
