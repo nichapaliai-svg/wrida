@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRAVEL V3.2.1 — บาลีแนวท่องเที่ยว</title>
+<title>TRAVEL V3.2.2 — บาลีแนวท่องเที่ยว</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--gold:#f5c542;--purple:#4b247a;--deep:#21112f;--bg:#f6f3fa;--green:#16834b}
@@ -41,7 +41,7 @@ audio{width:100%}
 <body>
 <header>
   <div class="head">
-    <div><h1>TRAVEL V3.2.1</h1><div class="sub">บาลีแนวท่องเที่ยว • NFC + Supabase Storage</div></div>
+    <div><h1>TRAVEL V3.2.2</h1><div class="sub">บาลีแนวท่องเที่ยว • NFC + Supabase Storage</div></div>
     <div class="langs">
       <button data-lang="th-TH">ไทย</button>
       <button data-lang="en-US">English</button>
@@ -249,14 +249,18 @@ async function loadPoint(){
   currentContent=contents?.content || point.description || "ยังไม่มีเนื้อหา";
   $("content").textContent=currentContent;
 
-  const heroPath=pointImagePath(point);
-  const heroUrl=mediaUrl(heroPath);
-  $("debug").textContent="กำลังโหลดภาพ: "+heroUrl;
-  showHero(heroUrl);
-
+  // Load registered media first. If the point has an image in point_media,
+  // use that image as the hero image. This prevents point 002 from incorrectly
+  // trying the default 3.jpg when its registered image is 2.jpg.
   const {data:media,error:mErr}=await sb.from("point_media").select("*")
     .eq("point_id",point.id).order("sort_order");
   if(mErr) throw mErr;
+
+  const firstImage = (media||[]).find(m => (m.media_type||'').toLowerCase() === 'image' && m.url);
+  const heroPath = firstImage ? firstImage.url : pointImagePath(point);
+  const heroUrl = mediaUrl(heroPath);
+  $("debug").textContent="กำลังโหลดภาพ: "+heroUrl;
+  showHero(heroUrl);
 
   const grid=$("mediaGrid");
   grid.innerHTML="";
