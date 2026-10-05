@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRAVEL V3.2.1 — บาลีแนวท่องเที่ยว</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--gold:#f5c542;--purple:#4b247a;--deep:#21112f;--bg:#f6f3fa;--green:#16834b}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,"Noto Sans Thai",sans-serif;background:var(--bg);color:#241b2d}
+header{background:linear-gradient(135deg,#28143d,#5d2c86);color:#fff;padding:18px 20px;position:sticky;top:0;z-index:10;box-shadow:0 3px 12px #0002}
+.head{max-width:1200px;margin:auto;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+h1{font-size:clamp(20px,3vw,30px);margin:0}.sub{opacity:.85;font-size:14px}
+.langs{display:flex;gap:6px}.langs button,.nav button,.speak button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.langs button{background:#ffffff22;color:#fff}.langs button.active{background:var(--gold);color:#241b2d}
+main{max-width:1200px;margin:20px auto;padding:0 14px}
+.status{background:#fff;border-radius:14px;padding:10px 14px;margin-bottom:14px;box-shadow:0 2px 10px #0001;font-size:14px}
+.ok{color:var(--green);font-weight:700}.err{color:#b42318;font-weight:700}
+.hero{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 18px #0002}
+.hero-media{background:#111;min-height:220px;display:flex;align-items:center;justify-content:center}
+.hero img{display:block;width:100%;max-height:520px;object-fit:contain;background:#111}
+.hero iframe{display:block;width:100%;height:520px;border:0;background:#111}
+.grid .card img{display:block;max-height:320px;object-fit:contain}
+.image-fallback{color:#fff;text-align:center;padding:40px;font-size:18px}
+.image-fallback a{display:inline-block;margin-top:14px;background:var(--gold);color:#241b2d;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:800}
+.hero .caption{padding:18px 20px}
+h2{margin:0 0 7px;font-size:clamp(23px,4vw,36px)}p{line-height:1.75}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav button{background:var(--purple);color:#fff}.nav button:disabled{opacity:.4;cursor:not-allowed}
+.pointNo{background:#fff;border-radius:10px;padding:10px 14px;font-weight:800}
+.speak{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.speak button{background:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
+.card{background:#fff;border-radius:16px;padding:15px;box-shadow:0 2px 12px #0001}.card h3{margin-top:0}.card img,.card video{width:100%;border-radius:10px;max-height:360px;object-fit:contain;background:#111}
+audio{width:100%}
+.debug{font-size:12px;color:#665b70;word-break:break-all;margin-top:10px}
+.hidden{display:none}
+@media(max-width:600px){header{padding:14px}.hero img{max-height:360px}.card{padding:12px}.nav button{flex:1}}
+</style>
+</head>
+<body>
+<header>
+  <div class="head">
+    <div><h1>TRAVEL V3.2.1</h1><div class="sub">บาลีแนวท่องเที่ยว • NFC + Supabase Storage</div></div>
+    <div class="langs">
+      <button data-lang="th-TH">ไทย</button>
+      <button data-lang="en-US">English</button>
+      <button data-lang="pi-IN">Pāli</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="status" class="status">กำลังเชื่อมต่อ Supabase...</div>
+
+  <section class="hero">
+    <div id="heroMedia" class="hero-media">
+      <img id="heroImg" alt="ภาพประจำจุด" class="hidden" referrerpolicy="no-referrer" loading="eager">
+      <iframe id="heroFrame" class="hidden" title="ภาพประจำจุด"></iframe>
+      <div id="imageFallback" class="image-fallback hidden">
+        <div>🖼️ ไม่สามารถนำภาพเข้าในหน้าแอปได้</div>
+        <a id="openImageBtn" href="#" target="_blank" rel="noopener">เปิดภาพต้นฉบับ</a>
+      </div>
+    </div>
+    <div class="caption">
+      <h2 id="title">กำลังโหลด...</h2>
+      <p id="content">กำลังโหลดข้อมูล...</p>
+      <div class="speak">
+        <button id="speakBtn">🔊 อ่านออกเสียง</button>
+        <button id="stopBtn">⏹ หยุดเสียง</button>
+      </div>
+      <div class="debug" id="debug"></div>
+      <div style="margin-top:10px">
+        <a id="openImageText" href="#" target="_blank" rel="noopener">🔗 เปิดภาพต้นฉบับในแท็บใหม่</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="nav">
+      <button id="prevBtn">◀ ก่อนหน้า</button>
+      <div class="pointNo" id="pointNo">จุด 001</div>
+      <button id="nextBtn">ถัดไป ▶</button>
+    </div>
+  </div>
+
+  <section>
+    <h2 style="font-size:24px;margin:24px 0 10px">🎒 สื่อประจำจุด</h2>
+    <div id="mediaGrid" class="grid">
+      <div class="card">กำลังโหลดสื่อประจำจุด...</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL = "https://dcrtfasmnmambdzvjarc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjcnRmYXNtbm1hbWJkenZqYXJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExMTUxMTUsImV4cCI6MjEwNjY5MTExNX0.Gertv_iFTTtTE32hN0FUxvFbHOEUt-2RUs8yahEV138";
+const STORAGE_BUCKET = "travel-media";
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const params = new URLSearchParams(location.search);
+const templeCode = params.get("temple") || "krokkrak";
+let currentPoint = params.get("point") || "001";
+const appName = params.get("app") || "travel";
+
+let currentContent = "";
+let currentLang = localStorage.getItem("travel_lang") || "th-TH";
+let pointList = [];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+
+function setStatus(text, cls=""){ $("status").className="status "+cls; $("status").textContent=text; }
+
+function storageUrl(path){
+  if(!path) return "";
+  const clean = String(path).replace(/^\/+/,"");
+  return sb.storage.from(STORAGE_BUCKET).getPublicUrl(clean).data.publicUrl;
+}
+
+/* V3.1: สร้าง URL จาก path โดยตรง
+   รองรับ path เช่น:
+   krokkrak/001/3.jpg
+   หรือ URL เต็มจากฐานข้อมูลก็ยังใช้ได้ */
+function mediaUrl(value){
+  if(!value) return "";
+  if(/^https?:\/\//i.test(value)) return value;
+  return storageUrl(value);
+}
+
+async function showHero(url){
+  const img = $("heroImg");
+  const frame = $("heroFrame");
+  const fallback = $("imageFallback");
+  const openBtn = $("openImageBtn");
+
+  img.classList.add("hidden");
+  frame.classList.add("hidden");
+  fallback.classList.add("hidden");
+  openBtn.href = url;
+  $("openImageText").href = url;
+
+  $("debug").textContent = "กำลังดาวน์โหลดภาพจาก Supabase Storage...";
+
+  try{
+    // Download the public object first, then display it as a local Blob URL.
+    // This avoids the local-file/browser rendering issue seen in V3.1.2.
+    const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-store"
+    });
+
+    if(!response.ok){
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    if(!blob.type || !blob.type.startsWith("image/")){
+      throw new Error("ไฟล์ที่ได้ไม่ใช่ image");
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+
+    img.onload = () => {
+      img.classList.remove("hidden");
+      frame.classList.add("hidden");
+      fallback.classList.add("hidden");
+      $("debug").textContent = `ภาพหลักโหลดสำเร็จ • ${blob.type} • ${(blob.size/1024).toFixed(1)} KB`;
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      throw new Error("Browser แสดง Blob image ไม่ได้");
+    };
+
+    img.src = objectUrl;
+  }catch(err){
+    console.warn("Image fetch failed:", err);
+
+    // Keep the original public URL available as the reliable fallback.
+    frame.classList.add("hidden");
+    fallback.classList.remove("hidden");
+    $("debug").textContent =
+      "โหลดภาพเข้าแอปไม่ได้ (" + (err.message || err) + ") แต่ URL ต้นฉบับยังเปิดได้จากปุ่มด้านล่าง";
+  }
+}
+
+function pointImagePath(point){
+  // ถ้ามี image_path ให้ใช้ก่อน
+  if(point.image_path) return point.image_path;
+  // ถ้ามี image_url แต่เป็น URL เต็ม ใช้ได้
+  if(point.image_url) return point.image_url;
+  // ค่าเริ่มต้น V3.1: หา image หลักในโฟลเดอร์ของจุด
+  return `${templeCode}/${String(point.point_code).padStart(3,"0")}/3.jpg`;
+}
+
+function speak(text){
+  if(!("speechSynthesis" in window) || !text) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = currentLang;
+  u.rate = .9;
+  u.pitch = 1;
+  speechSynthesis.speak(u);
+}
+function applyLangButtons(){
+  document.querySelectorAll("[data-lang]").forEach(b=>b.classList.toggle("active",b.dataset.lang===currentLang));
+}
+document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{
+  currentLang=b.dataset.lang; localStorage.setItem("travel_lang",currentLang); applyLangButtons(); speak(currentContent);
+});
+$("speakBtn").onclick=()=>speak(currentContent);
+$("stopBtn").onclick=()=>speechSynthesis.cancel();
+
+let currentTemple = null;
+
+async function loadTemple(){
+  const {data,error}=await sb.from("temples")
+    .select("*").eq("code",templeCode).eq("active",true).maybeSingle();
+  if(error) throw error;
+  if(!data) throw new Error("ไม่พบวัด code = "+templeCode);
+  currentTemple = data;
+}
+
+async function loadPoints(){
+  const {data,error}=await sb.from("travel_points")
+    .select("*").eq("temple_id",currentTemple.id).eq("active",true).order("point_code");
+  if(error) throw error;
+  pointList=data||[];
+  if(!pointList.length) throw new Error("ไม่พบจุดท่องเที่ยวของวัด "+templeCode);
+}
+
+async function loadPoint(){
+  setStatus("กำลังโหลดจุด "+currentPoint+" ...");
+  const point = pointList.find(p=>String(p.point_code).padStart(3,"0")===String(currentPoint).padStart(3,"0"))
+             || pointList.find(p=>String(p.point_code)===String(currentPoint));
+  if(!point) throw new Error("ไม่พบ point_code = "+currentPoint);
+
+  currentPoint=String(point.point_code).padStart(3,"0");
+  history.replaceState(null,"",`?app=${encodeURIComponent(appName)}&temple=${encodeURIComponent(templeCode)}&point=${encodeURIComponent(currentPoint)}`);
+
+  $("pointNo").textContent=`จุด ${currentPoint}`;
+  $("title").textContent=point.title || `จุด ${currentPoint}`;
+
+  const {data:contents,error:cErr}=await sb.from("point_contents").select("*")
+    .eq("point_id",point.id).eq("language","th").maybeSingle();
+  if(cErr) throw cErr;
+  currentContent=contents?.content || point.description || "ยังไม่มีเนื้อหา";
+  $("content").textContent=currentContent;
+
+  const heroPath=pointImagePath(point);
+  const heroUrl=mediaUrl(heroPath);
+  $("debug").textContent="กำลังโหลดภาพ: "+heroUrl;
+  showHero(heroUrl);
+
+  const {data:media,error:mErr}=await sb.from("point_media").select("*")
+    .eq("point_id",point.id).order("sort_order");
+  if(mErr) throw mErr;
+
+  const grid=$("mediaGrid");
+  grid.innerHTML="";
+  if(!(media||[]).length){
+    grid.innerHTML=`<div class="card"><h3>📭 ยังไม่มีสื่อเพิ่มเติม</h3><p>สามารถเพิ่มภาพ เสียง และวิดีโอของจุดนี้ใน Supabase Storage แล้วลงทะเบียนใน point_media ได้</p></div>`;
+  }else{
+    (media||[]).forEach(m=>{
+      const url=mediaUrl(m.url);
+      const card=document.createElement("div"); card.className="card";
+      const title=esc(m.title || m.media_type || "สื่อ");
+      const type=m.media_type || "";
+      if(type==="image"){
+        card.innerHTML=`<h3>🖼️ ${title}</h3><img loading="lazy" referrerpolicy="no-referrer" src="${esc(url)}" alt="${title}"><div class="debug">ภาพจาก Supabase Storage</div>`;
+      }else if(type==="audio"){
+        card.innerHTML=`<h3>🎵 ${title}</h3><audio controls preload="metadata" src="${esc(url)}"></audio><div class="debug"><a href="${esc(url)}" target="_blank" rel="noopener">เปิดไฟล์เสียง</a></div>`;
+      }else if(type==="video"){
+        card.innerHTML=`<h3>🎬 ${title}</h3><video controls preload="metadata" src="${esc(url)}"></video><div class="debug"><a href="${esc(url)}" target="_blank" rel="noopener">เปิดวิดีโอ</a></div>`;
+      }else{
+        card.innerHTML=`<h3>📎 ${title}</h3><a href="${esc(url)}" target="_blank" rel="noopener">เปิดสื่อ</a>`;
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  const idx=pointList.findIndex(p=>String(p.point_code).padStart(3,"0")===currentPoint);
+  $("prevBtn").disabled=idx<=0;
+  $("nextBtn").disabled=idx<0 || idx>=pointList.length-1;
+  setStatus(`เชื่อมต่อ Supabase แล้ว • ${currentTemple?.name || templeCode} • จุด ${currentPoint}`,"ok");
+
+  // อ่านอัตโนมัติหลังข้อมูลโหลด
+  setTimeout(()=>speak(currentContent),350);
+}
+
+$("prevBtn").onclick=()=>{
+  const idx=pointList.findIndex(p=>String(p.point_code).padStart(3,"0")===currentPoint);
+  if(idx>0){ currentPoint=String(pointList[idx-1].point_code).padStart(3,"0"); loadPoint().catch(showError); }
+};
+$("nextBtn").onclick=()=>{
+  const idx=pointList.findIndex(p=>String(p.point_code).padStart(3,"0")===currentPoint);
+  if(idx>=0 && idx<pointList.length-1){ currentPoint=String(pointList[idx+1].point_code).padStart(3,"0"); loadPoint().catch(showError); }
+};
+
+function showError(e){
+  console.error(e);
+  setStatus("เกิดข้อผิดพลาด: "+(e.message||e),"err");
+  $("title").textContent="โหลดข้อมูลไม่สำเร็จ";
+  $("content").textContent="กรุณาตรวจสอบ Supabase URL / Publishable(Anon) Key / ตารางข้อมูล";
+}
+
+(async()=>{
+  applyLangButtons();
+  if(SUPABASE_ANON_KEY.includes("PASTE_YOUR")){
+    setStatus("กรุณาใส่ Publishable/Anon Key ในไฟล์ index.html","err");
+    return;
+  }
+  try{
+    await loadTemple();
+    await loadPoints();
+    await loadPoint();
+  }catch(e){showError(e)}
+})();
+</script>
+</body>
+</html>
