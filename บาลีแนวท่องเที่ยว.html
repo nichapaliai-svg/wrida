@@ -212,17 +212,40 @@
     color: #fff;
   }
 
-  @media (max-width: 700px) {
+
+  .learner-bar {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+    max-height: 122px;
+    overflow-y: auto;
+    background: #fffaf0;
+    border-bottom: 1px solid #d8c99c;
+    color: #6b4d09;
+    font-size: 13px;
+  }
+  .learner-bar label { display:flex; flex-direction:column; gap:4px; min-width:105px; flex:1; font-weight:bold; }
+  .learner-bar input, .learner-bar select {
+    width:100%; min-width:0; border:1px solid #d8c99c; border-radius:7px;
+    padding:8px; font:inherit; background:#fff; color:#222;
+  }
+  .save-profile-btn { background:#c9a227; color:#241b05; padding:9px 12px; white-space:nowrap; }
+  #profileStatus { flex-basis:100%; color:#765b22; font-size:12px; }
+  .save-profile-btn:disabled { opacity:.65; cursor:wait; }
+\n  @media (max-width: 700px) {
     .temple-panel { width: 42%; min-width: 0; }
     .game-panel { width: 58%; }
     .choices { grid-template-columns: 1fr; }
     .temple-image-wrap { padding: 8px; }
     .temple-title { font-size: 14px; }
     .memory-text { font-size: 10px; }
-    .game-header { padding: 8px; }
+    .game-header { padding: 8px; }\n    .learner-bar { gap:6px; padding:8px; }\n    .learner-bar label { min-width: calc(50% - 8px); }\n    .save-profile-btn { width:100%; }
     .bottom-nav { padding: 8px; }
   }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -253,6 +276,25 @@
        ด้านขวา: เกม 1–15
        ========================= -->
   <main class="game-panel">
+
+    <section class="learner-bar" aria-label="ข้อมูลผู้เรียน">
+      <label>ชื่อ-นามสกุล
+        <input id="learnerName" type="text" maxlength="120" placeholder="กรอกชื่อ-นามสกุล" autocomplete="name" required>
+      </label>
+      <label>เพศ
+        <select id="learnerGender" required>
+          <option value="">เลือกเพศ</option>
+          <option value="ชาย">ชาย</option>
+          <option value="หญิง">หญิง</option>
+          <option value="ไม่ระบุ">ไม่ระบุ</option>
+        </select>
+      </label>
+      <label>อายุ (ปี)
+        <input id="learnerAge" type="number" min="1" max="120" placeholder="เช่น 58" required>
+      </label>
+      <button type="button" class="save-profile-btn" id="saveProfileBtn">บันทึกข้อมูลผู้เรียน</button>
+      <span id="profileStatus" role="status">กรอกข้อมูลก่อนเริ่มเล่น</span>
+    </section>
 
     <header class="game-header">
       <div class="game-number" id="gameTitle">เกมที่ 1</div>
@@ -328,6 +370,100 @@ const games = Array.from({length: 15}, (_, i) => ({
   correct: 0
 }));
 
+// กระจายตำแหน่งคำตอบที่ถูกต้องให้มีทั้ง A, B, C และ D
+// ใช้รูปแบบคงที่เพื่อให้ตำแหน่งเฉลยไม่เปลี่ยนทุกครั้งที่เปิดหน้าเว็บ
+const correctPositions = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2];
+games.forEach((game, i) => {
+  const target = correctPositions[i % correctPositions.length];
+  const originalCorrect = game.correct;
+  if (originalCorrect !== target) {
+    [game.choices[originalCorrect], game.choices[target]] =
+      [game.choices[target], game.choices[originalCorrect]];
+  }
+  game.correct = target;
+});
+
+// ใช้ Supabase โปรเจกต์เดิมชุดเดียวกับเกมบาลีและธรรมกับ AI
+// ใช้เฉพาะ publishable/anon key เท่านั้น ห้ามใส่ service_role key ใน HTML
+const SUPABASE_URL = "https://jyiwohexhmertqvfummt.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_qPPtC5amEHiicevhlmaBaQ_n-YA-5gq";
+const LEARNER_STORAGE_KEY = "pali_dhamma_travel_learner_v1";
+let sbClient = null;
+let learnerProfile = null;
+const answersByGame = Array(games.length).fill(null);
+const savedGames = new Set();
+
+function setProfileStatus(message, isError = false) {
+  const el = document.getElementById("profileStatus");
+  el.textContent = message;
+  el.style.color = isError ? "#b42318" : "#765b22";
+}
+
+function loadLearnerProfile() {
+  try {
+    learnerProfile = JSON.parse(localStorage.getItem(LEARNER_STORAGE_KEY) || "null");
+  } catch (_) { learnerProfile = null; }
+  if (learnerProfile) {
+    document.getElementById("learnerName").value = learnerProfile.full_name || "";
+    document.getElementById("learnerGender").value = learnerProfile.gender || "";
+    document.getElementById("learnerAge").value = learnerProfile.age || "";
+    setProfileStatus("พบข้อมูลผู้เรียนที่บันทึกไว้ในอุปกรณ์นี้");
+  }
+}
+
+function saveLearnerProfile() {
+  const full_name = document.getElementById("learnerName").value.trim();
+  const gender = document.getElementById("learnerGender").value;
+  const age = Number(document.getElementById("learnerAge").value);
+  if (!full_name) { setProfileStatus("กรุณากรอกชื่อ-นามสกุล", true); document.getElementById("learnerName").focus(); return false; }
+  if (!["ชาย", "หญิง", "ไม่ระบุ"].includes(gender)) { setProfileStatus("กรุณาเลือกเพศ", true); document.getElementById("learnerGender").focus(); return false; }
+  if (!Number.isInteger(age) || age < 1 || age > 120) { setProfileStatus("กรุณากรอกอายุ 1–120 ปี", true); document.getElementById("learnerAge").focus(); return false; }
+  learnerProfile = { full_name, gender, age };
+  localStorage.setItem(LEARNER_STORAGE_KEY, JSON.stringify(learnerProfile));
+  setProfileStatus("บันทึกข้อมูลผู้เรียนในอุปกรณ์แล้ว พร้อมเริ่มเล่น");
+  return true;
+}
+
+function initializeSupabase() {
+  if (!window.supabase || !window.supabase.createClient) {
+    setProfileStatus("โหลดไลบรารี Supabase ไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ต แล้วกด Ctrl+F5 เพื่อเปิดใหม่", true);
+    return;
+  }
+  try {
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch (error) {
+    console.error("Supabase initialization failed:", error);
+    setProfileStatus("เริ่มต้น Supabase ไม่สำเร็จ ตรวจการตั้งค่า", true);
+  }
+}
+
+async function saveGameResultToSupabase(gameIndex, selectedIndex) {
+  if (!sbClient || !learnerProfile || savedGames.has(gameIndex)) return;
+  const game = games[gameIndex];
+  const score = selectedIndex === game.correct ? 1 : 0;
+  const row = {
+    full_name: learnerProfile.full_name,
+    gender: learnerProfile.gender,
+    age: learnerProfile.age,
+    game_id: gameIndex + 1,
+    game_title: "PALI DHAMMA TRAVEL — " + game.title,
+    score,
+    total_questions: 5,
+    completed_at: new Date().toISOString()
+  };
+  try {
+    const { error } = await sbClient.from("pali_quiz_results").insert(row);
+    if (error) throw error;
+    savedGames.add(gameIndex);
+    setProfileStatus("บันทึกผล " + game.title + " ลง Supabase แล้ว");
+  } catch (error) {
+    console.error("บันทึกคะแนน PALI DHAMMA TRAVEL ไม่สำเร็จ:", error);
+    setProfileStatus("บันทึกออนไลน์ไม่สำเร็จ: " + (error.message || "ตรวจสิทธิ์ตาราง pali_quiz_results"), true);
+  }
+}
+
+document.getElementById("saveProfileBtn").addEventListener("click", saveLearnerProfile);
+
 let currentGame = 0;
 
 function renderGame() {
@@ -350,7 +486,12 @@ function renderGame() {
     btn.textContent = `${String.fromCharCode(65 + index)}. ${text}`;
 
     btn.onclick = () => {
-      // ป้องกันการกดซ้ำ
+      if (!learnerProfile && !saveLearnerProfile()) {
+        alert("กรุณากรอกชื่อ-นามสกุล เพศ และอายุ แล้วกดบันทึกข้อมูลผู้เรียนก่อนตอบคำถาม");
+        return;
+      }
+      if (answersByGame[currentGame] !== null) return;
+      answersByGame[currentGame] = index;
       [...choices.children].forEach(b => b.disabled = true);
 
       if (index === game.correct) {
@@ -363,10 +504,26 @@ function renderGame() {
         result.textContent = "✗ ยังไม่ถูก ลองเรียนรู้จากเฉลยครับ";
         result.style.color = "crimson";
       }
+      saveGameResultToSupabase(currentGame, index);
     };
 
     choices.appendChild(btn);
   });
+
+  const previousAnswer = answersByGame[currentGame];
+  if (previousAnswer !== null) {
+    [...choices.children].forEach(b => b.disabled = true);
+    if (previousAnswer === game.correct) {
+      choices.children[previousAnswer].classList.add("correct");
+      result.textContent = "✓ ถูกต้องครับ";
+      result.style.color = "green";
+    } else {
+      choices.children[previousAnswer].classList.add("wrong");
+      choices.children[game.correct].classList.add("correct");
+      result.textContent = "✗ ยังไม่ถูก ลองเรียนรู้จากเฉลยครับ";
+      result.style.color = "crimson";
+    }
+  }
 
   document.getElementById("prevBtn").disabled = currentGame === 0;
   document.getElementById("nextBtn").disabled = currentGame === games.length - 1;
@@ -407,6 +564,8 @@ function previousGame() {
 }
 
 createGameSelector();
+loadLearnerProfile();
+initializeSupabase();
 renderGame();
 </script>
 </body>
