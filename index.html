@@ -30,7 +30,7 @@
         body { font-family: 'Sarabun', sans-serif; }
         /* ซ่อน Scrollbar ของเมนูย่อย แต่ยังเลื่อนได้ */
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #abcaf0; border-radius: 4px; }
     /* คลาสสลับสำหรับสั่งให้กรอบภายนอกขยายใหญ่เต็มเบราว์เซอร์ */
 .pdf-maximize {
   position: fixed !important;
@@ -56,14 +56,14 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background-color: #b39642; /* สีทองธีมหลักของธรรมนาวา */
+    background-color: #e9cc77; /* สีทองธีมหลักของธรรมนาวา */
     color: white !important;
     padding: 6px 16px;
     border-radius: 20px;       /* ทำขอบมนให้โค้งกลมเข้ากับปุ่มโกรกกราก */
     text-decoration: none !important;
     font-size: 14px;
     font-weight: bold;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0px 2px 6px rgba(236, 17, 17, 0.15);
     transition: all 0.2s ease;
     cursor: pointer;
     margin-right: 10px;        /* เว้นระยะห่างจากปุ่มวัดโกรกกรากนิดหน่อย */
@@ -180,7 +180,7 @@
         z-index: 10050 !important;
         transform: translateX(-105%);
         transition: transform .25s ease;
-        box-shadow: 8px 0 25px rgba(0,0,0,.22);
+        box-shadow: 8px 0 25px rgba(76, 238, 203, 0.22);
         display: flex !important;
     }
 
@@ -195,7 +195,7 @@
     #mobile-sidebar-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(15,23,42,.48);
+        background: rgba(71, 122, 241, 0.48);
         z-index: 10040;
         display: none;
         backdrop-filter: blur(1px);
@@ -767,12 +767,12 @@ function changePaliTourStep(stepNum) {
         if (tourWrapper) { tourWrapper.remove(); }
     }
 </script>
-    <header id="main-header" class="bg-[#1e293b] text-white px-6 py-4 flex items-center justify-between shadow-md z-6">
+    <header id="main-header" class="bg-[#e9cc77] text-white px-6 py-4 flex items-center justify-between shadow-md z-6">
         <div class="flex items-center space-x-3">
-            <i class="fa-solid fa-book-bible text-2xl text-amber-400"></i>
+            <i class="fa-solid fa-book-bible text-2xl text-amber-700"></i>
             <h1 class="text-xl font-bold tracking-wide">ระบบฐานข้อมูลกลางบาลีอัจฉริยะ วัดโกรกกราก</h1>
         </div>
-<button id="sidebar-toggle-btn" class="btn btn-danger btn-sm" onclick="toggleMobileSidebar()" style="font-size: 16px; font-weight: bold; background-color: #ff1455; border: none; border-radius: 4px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 8px;" aria-label="เปิดหรือปิดเมนู">
+<button id="sidebar-toggle-btn" class="btn btn-danger btn-sm" onclick="toggleMobileSidebar()" style="font-size: 16px; font-weight: bold; background-color: #b86827; border: none; border-radius: 4px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 8px;" aria-label="เปิดหรือปิดเมนู">
     <i class="fas fa-bars"></i> <span>ซ่อน/แสดงเมนู ด้านซ้าย</span>
 </button>    
 
@@ -791,14 +791,14 @@ function changePaliTourStep(stepNum) {
             </button>
         </div>
         <div class="flex items-center space-x-4 text-sm">
-            <div class="bg-indigo-950 px-3 py-1.5 rounded-lg border border-indigo-500 text-xs flex items-center gap-2">
+            <div class="bg-amber-700 px-3 py-1.5 rounded-lg border border-indigo-500 text-xs flex items-center gap-2">
                 <i class="fa-solid fa-bullseye text-amber-400"></i> โฟกัสคำหลักปัจจุบัน: 
                 <span id="current-global-focus" class="text-amber-300 font-bold text-sm">ยังไม่ได้เลือก</span>
             </div>
             <span class="bg-emerald-600 px-3 py-1 rounded-full text-xs flex items-center gap-1">
                 <span class="w-2 h-2 bg-white rounded-full animate-ping"></span> เชื่อมต่อฐานข้อมูลแล้ว
             </span>
-            <div class="text-slate-300">พิกัดล่าสุด: <span id="current-location-text" class="text-amber-300 font-medium">ธรรมบท เล่ม 1 เรื่องที่ 1</span></div>
+            <div class="text-slate-50">พิกัดล่าสุด: <span id="current-location-text" class="text-amber-700 font-medium">ธรรมบท เล่ม 1 เรื่องที่ 1</span></div>
         </div>
 
     </header>
@@ -850,7 +850,7 @@ function changePaliTourStep(stepNum) {
                             </div>
                         </details>
               
-                        <details class="group" open>
+                        <details class="group hidden" open>
                             <summary class="flex items-center justify-between p-2 text-sm font-medium text-slate-700 bg-slate-50/80 hover:bg-slate-100 rounded cursor-pointer list-none border-l-4 border-amber-500">
                                 <span class="font-semibold text-amber-800"><i class="fa-solid fa-gavel mr-1 text-amber-600"></i> ตำราเรียนฉบับพิ้นฐาน </span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
@@ -1047,8 +1047,8 @@ function changePaliTourStep(stepNum) {
                             </summary>
     <a href="https://drive.google.com/file/d/1VYgBYBXqmgALXDr56-bn77M6e_JkdhVl/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('การสัมพันธ์ประโยค')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• การสัมพันธ์ประโยค</a>                            
                             <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
-                                <a href="#" class="block p-2 text-xs text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded">1.1 โครงสร้างพื้นฐาน</a>
-                                <a href="#" class="block p-2 text-xs text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded">1.2 ประโยคแทรก/ถอน</a>
+                                <a href="#" class="hidden block p-2 text-xs text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded">1.1 โครงสร้างพื้นฐาน</a>
+                                <a href="#" class="hidden block p-2 text-xs text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded">1.2 ประโยคแทรก/ถอน</a>
                             </div>
                     <div class="space-y-1">
                         <details class="group">                            
@@ -1081,8 +1081,8 @@ function changePaliTourStep(stepNum) {
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
                             </summary>
                             <div class="pl-4 mt-1 space-y-2 border-l-2 border-amber-200 ml-2">
-                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
-                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
+                                <a href="#" class="hidden block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
+                                <a href="#" class="hidden block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
                                 
                                 <div class="pt-1 space-y-1.5">
                                     <span class="text-[10px] font-bold text-amber-700 block px-1"><i class="fa-solid fa-layer-group"></i> เลือกเล่มตรวจคำหลัก:</span>
@@ -1099,29 +1099,29 @@ function changePaliTourStep(stepNum) {
                                     </a>
 <a href="https://drive.google.com/file/d/17lAwvbTl3pkMMmyAhXdI7igu6TkL_tal/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('ฉบับภูมิพโลภิกขุ')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ฉบับภูมิพโลภิกขุ</a>
 
-                                    <a href="#" onclick="selectDictionaryBook(2, 'ฉบับหลวง')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                    <a href="#" onclick="selectDictionaryBook(2, 'พจนานุกรมธาตุ เรียงตามหมวดธาตุ')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
                                         <div class="w-8 h-10 bg-indigo-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
                                             <img src="https://placehold.co/32x40/4338ca/ffffff?text=Book+2" alt="เล่ม 2" class="w-full h-full object-cover" onerror="this.style.display='none'">
                                             <span class="absolute group-hover:scale-110 transition-transform">เล่ม 2</span>
                                         </div>
                                         <div class="leading-tight">
-                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับหลวงสนามหลวง</div>
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">พจนานุกรมธาตุ เรียงตามหมวดธาตุ</div>
                                             <div class="text-[9px] text-slate-400">พจนานุกรม บาลี-ไทย</div>
                                         </div>
                                     </a>
-<a href="วางลิงก์ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+<a href="https://drive.google.com/file/d/11fBN58QDcIQH7fdJOxA0rn2usAONaXhM/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• พจนานุกรมธาตุ เรียงตามหมวดธาตุ</a>
 
-                                    <a href="#" onclick="selectDictionaryBook(3, 'ฉบับ อ.เปลื้อง ณ นคร')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                    <a href="#" onclick="selectDictionaryBook(3, 'ศัพท์วิเคราะห์ _พระธรรมกิตติวงศ์')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
                                         <div class="w-8 h-10 bg-emerald-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
                                             <img src="https://placehold.co/32x40/047857/ffffff?text=Book+3" alt="เล่ม 3" class="w-full h-full object-cover" onerror="this.style.display='none'">
                                             <span class="absolute group-hover:scale-110 transition-transform">เล่ม 3</span>
                                         </div>
                                         <div class="leading-tight">
-                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ฉบับ อ.เปลื้อง ณ นคร</div>
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ศัพท์วิเคราะห์ _พระธรรมกิตติวงศ์</div>
                                             <div class="text-[9px] text-slate-400">พจนานุกรม บาลี-ไทย</div>
                                         </div>
                                     </a>
-<a href="วางลิงก์ที่คัดลอกมาตรงนี้" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• นามศัพท์</a>
+<a href="https://drive.google.com/file/d/1Cxdn9UULxWCPcvRlR20cmflXiQwImTNQ/view?usp=sharing" target="_blank" onclick="sendCommandToMainTool('นามศัพท์')" class="block p-1 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded">• ศัพท์วิเคราะห์ _พระธรรมกิตติวงศ์</a>
 
                                 </div>
                             </div>
@@ -1133,24 +1133,24 @@ function changePaliTourStep(stepNum) {
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
                             </summary>
                             <div class="pl-4 mt-1 space-y-2 border-l-2 border-amber-200 ml-2">
-                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
-                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
+                                <a href="#" class="hidden block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
+                                <a href="#" class="hidden block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
                                 
                                 <div class="pt-1 space-y-1.5">
                                     <span class="text-[10px] font-bold text-amber-700 block px-1"><i class="fa-solid fa-layer-group"></i> เลือกเล่มตรวจคำหลัก:</span>
                                     
-                                    <a href="#" onclick="selectDictionaryBook(1, 'ฉบับภูมิพโลภิกขุ')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                    <a href="https://drive.google.com/file/d/1TRD798_UATCcYoYpLFQf-kBBzYvoKl9u/view?usp=sharing" onclick="selectDictionaryBook(1, 'ฉบับพระมหาโพธิวงศาจารย์')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
                                         <div class="w-8 h-10 bg-amber-600 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
                                             <img src="https://placehold.co/32x40/b45309/ffffff?text=Book+1" alt="เล่ม 1" class="w-full h-full object-cover onError-hide" onerror="this.style.display='none'">
                                             <span class="absolute group-hover:scale-110 transition-transform">เล่ม 1</span>
                                         </div>
                                         <div class="leading-tight">
-                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">พระมหาโพธิวงศาจารย์ (ทองดี สุรเตโช ป.ธ.๙, ราชบัณฑิต)</div>
-                                            <div class="text-[9px] text-slate-400">พจนานุกรม ไทย-บาลี ได้รับอนุญาติแล้ว</div>
+                                            <div class="text-[11px] font-bold text-slate-700 group-hover:text-amber-700">ศัพท์หมวด ไทย-บาลี พระมหาพรหมมา ปญฺญาปทีโป ป.ธ.๙</div>
+                                            <div class="text-[9px] text-slate-400">พจนานุกรม ไทย-บาลี </div>
                                         </div>
                                     </a>
 
-                                    <a href="#" onclick="selectDictionaryBook(2, 'ฉบับหลวง')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                    <a href="https://drive.google.com/file/d/1pzxvhaPx6Eu1tMVulufo3AfFyDs0ad0A/view?usp=sharing" onclick="selectDictionaryBook(2, 'ฉบับหลวง')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
                                         <div class="w-8 h-10 bg-indigo-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
                                             <img src="https://placehold.co/32x40/4338ca/ffffff?text=Book+2" alt="เล่ม 2" class="w-full h-full object-cover" onerror="this.style.display='none'">
                                             <span class="absolute group-hover:scale-110 transition-transform">เล่ม 2</span>
@@ -1161,7 +1161,7 @@ function changePaliTourStep(stepNum) {
                                         </div>
                                     </a>
 
-                                    <a href="#" onclick="selectDictionaryBook(3, 'ฉบับ อ.เปลื้อง ณ นคร')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
+                                    <a href="https://drive.google.com/file/d/1velAnuBTv680XxSGw1nOXSb8JaFvG7yA/view?usp=sharing" onclick="selectDictionaryBook(3, 'ฉบับ อ.เปลื้อง ณ นคร')" class="flex items-center gap-2 p-1.5 bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 rounded-lg transition text-left group">
                                         <div class="w-8 h-10 bg-emerald-700 rounded flex items-center justify-center text-white font-bold text-[10px] shadow-sm overflow-hidden flex-shrink-0">
                                             <img src="https://placehold.co/32x40/047857/ffffff?text=Book+3" alt="เล่ม 3" class="w-full h-full object-cover" onerror="this.style.display='none'">
                                             <span class="absolute group-hover:scale-110 transition-transform">เล่ม 3</span>
@@ -1181,8 +1181,8 @@ function changePaliTourStep(stepNum) {
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
                             </summary>
                             <div class="pl-4 mt-1 space-y-2 border-l-2 border-amber-200 ml-2">
-                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
-                                <a href="#" class="block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
+                                <a href="#" class="hidden block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรากศัพท์</a>
+                                <a href="#" class="hidden block px-2 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded">• ค้นหาจากรูปสำเร็จ</a>
                                 
                                 <div class="pt-1 space-y-1.5">
                                     <span class="text-[10px] font-bold text-amber-700 block px-1"><i class="fa-solid fa-layer-group"></i> เลือกเล่มตรวจคำหลัก:</span>
@@ -1215,8 +1215,8 @@ function changePaliTourStep(stepNum) {
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
                             </summary>
                             <div class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-2">
-                                <a href="#" class="block p-1.5 text-xs text-slate-600 hover:text-amber-600 rounded">• กลุ่มคำใช้บ่อย (อิติ, จ, เต)</a>
-                                <a href="#" class="block p-1.5 text-xs text-slate-600 hover:text-amber-600 rounded">• กลุ่มคำใช้น้อย</a>
+                                <a href="#" class="hidden block p-1.5 text-xs text-slate-600 hover:text-amber-600 rounded">• กลุ่มคำใช้บ่อย (อิติ, จ, เต)</a>
+                                <a href="#" class="hidden block p-1.5 text-xs text-slate-600 hover:text-amber-600 rounded">• กลุ่มคำใช้น้อย</a>
                             </div>
                         </details>
 
@@ -1234,10 +1234,10 @@ function changePaliTourStep(stepNum) {
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-slate-400"></i>
                             </summary>
                             <div class="pl-4 mt-1 space-y-1 border-l-2 border-teal-200 ml-2">
-<a href="#" onclick="loadPdfToMainView('ผัง ภาพรวมบาลีไวยากรณ', 'ผัง ภาพรวมบาลีไวยากรณPaliGrmrOverview.pdf')" class="block p-1.5 text-xs text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded">
+<a href="#" onclick="loadPdfToMainView('ผัง ภาพรวมบาลีไวยากรณ', 'PaliGrmrOverview.png')" class="block p-1.5 text-xs text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded">
     • ผัง ภาพรวมบาลีไวยากรณ
 </a>
-<a href="#" onclick="loadPdfToMainView('ผังกิริยากิตก์', 'ผังกิริยากิตก์Verb_Kitaka.pdf')" class="block p-1.5 text-xs text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded">
+<a href="#" onclick="loadPdfToMainView('ผังกิริยากิตก์', 'Verb_Kitaka.png')" class="block p-1.5 text-xs text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded">
     • ผังกิริยากิตก์
 </a>                      </details>
                     </div>
@@ -1258,7 +1258,7 @@ function changePaliTourStep(stepNum) {
 
         <div class="flex items-center gap-3 flex-grow justify-end min-w-[280px] max-w-full md:max-w-2xl">
 <a href="บาลีแนวท่องเที่ยว.html" class="btn-dhammanava">
-       ⛵ เปิดระบบ บาลีแนวท่องเที่ยว
+       เปิดระบบ บาลีแนวท่องเที่ยว
     </a>   
             <a href="3indextest.html" target="_blank" class="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:border-amber-500 transition shadow-sm group whitespace-nowrap">
                 <img src="3.jpg" alt="หลวงปู่" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" class="group-hover:scale-110 transition-transform">
@@ -1280,59 +1280,51 @@ function changePaliTourStep(stepNum) {
             </div>
         </div>
     </div>
-
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3 w-full">
-        
-<!-- วิธีสำรองที่ได้ผลแน่นอน 100% กับระบบไฟล์เดี่ยว -->
-<button type="button" onclick="event.preventDefault(); if(typeof goToDashboard === 'function') { goToDashboard(); } if(document.getElementById('welcome-message')) { document.getElementById('welcome-message').classList.remove('hidden'); document.getElementById('welcome-message').style.display = 'block'; } const qBox = Array.from(document.querySelectorAll('div')).find(el => el.className.includes('bg-slate-900')); if(qBox) { qBox.classList.add('hidden'); } const frames = document.querySelectorAll('#view-wrapper iframe, #main-content-view iframe'); frames.forEach(f => f.classList.add('hidden'));" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-cyan-500 hover:text-cyan-600 transition shadow-sm group w-full">
-    <i class="fa-solid fa-house text-lg text-cyan-500 mb-1 group-hover:scale-110 transition-transform"></i>
-    <span class="text-[11px] font-medium">1. หน้าจอหลัก</span>
-</button>
-
-        <button onclick="quickAction(2, 'textbook')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-cyan-500 hover:text-cyan-600 transition shadow-sm group">
-            <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[11px] font-medium">2. ตำราเรียนย่อย</span>
-        </button>
-
-        <button onclick="quickAction(3, 'translation')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition shadow-sm group">
-            <i class="fa-solid fa-language text-lg text-emerald-500 mb-1 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[11px] font-medium">3. ค้นหมวดแปล</span>
-        </button>
-
-        <button onclick="quickAction(4, 'dictionary')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-amber-500 hover:text-amber-600 transition shadow-sm group">
-            <i class="fa-solid fa-layer-group text-lg text-amber-500 mb-1 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[11px] font-medium">4. เทียบพจนานุกรม</span>
-        </button>
-
-        <button onclick="quickAction(5, 'log')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-rose-500 hover:text-rose-600 transition shadow-sm group">
-            <i class="fa-solid fa-cloud-arrow-up text-lg text-rose-500 mb-1 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[11px] font-medium">5. บันทึก Supabase</span>
-        </button>
-
-        <button onclick="quickAction(6, 'history')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-slate-500 hover:text-slate-800 transition shadow-sm group">
-            <i class="fa-solid fa-clock-rotate-left text-lg text-slate-500 mb-1 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[11px] font-medium">6. ประวัติใช้งาน</span>
-        </button>
-
-        <button onclick="quickAction(7, 'freq')" class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-xl hover:border-teal-500 hover:text-teal-600 transition shadow-sm group">
-            <i class="fa-solid fa-chart-line text-lg text-teal-500 mb-1 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[11px] font-medium">7. ทำแบบสำรวจ</span>
-        </button>
-
+    <!-- วิธีสำรองที่ได้ผลแน่นอน 100% กับระบบไฟล์เดี่ยว -->
 <div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
-    <a href="naktham-index3.html" target="_blank" onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('นักธรรม', 'naktham-index3.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }" class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+    <a href="ธรรมกับAI.html"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('ธรรมกับAI', 'ธรรมกับAI.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">1. ธรรมกับAI</span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="บาลีไวยากรณ์สรุป.pdf"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('ตำราเรียนสรุป', 'บาลีไวยากรณ์สรุป.pdf'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">2. ตำราเรียนสรุป</span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="ธาตุอาขยาต ๘ หมวด.html"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('ธาตุอาขยาต ๘ หมวด', 'ธาตุอาขยาต ๘ หมวด.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">3. ธาตุอาขยาต ๘ หมวด </span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="แจกวิภัตติ.html"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('แจกวิภัตติ', 'แจกวิภัตติ.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">4.  แจกวิภัตติ</span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="ธรรมช่วยเรียน.html"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('ธรรมช่วยเรียน', 'ธรรมช่วยเรียน.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">5. ธรรมช่วยเรียน</span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="แผนผังจำธาตุบาลี.html"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('แผนผังจำธาตุบาลี', 'แผนผังจำธาตุบาลี.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">6. แผนผังจำธาตุบาลี</span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="ระบบฝึกท่องจำธาตุบาลี.html"target="_blank"onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('ระบบฝึกท่องจำธาตุบาลี', 'ระบบฝึกท่องจำธาตุบาลี.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }"
+       class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+        <i class="fa-solid fa-book-open text-lg text-cyan-500 mb-1"></i>
+        <span class="font-medium text-[11px]">7. ระบบฝึกท่องจำธาตุบาลี</span></a></div>
+<div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
+    <a href="คลังนักธรรมอัจฉริยะ v2.html" target="_blank" onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('นักธรรม', 'คลังนักธรรมอัจฉริยะ v2.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }" class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
         <i class="fa-solid fa-graduation-cap text-lg text-cyan-500 mb-1"></i>
-        <span class="font-medium text-[11px]">8. นักธรรม</span>
-    </a>
-</div>
-
+        <span class="font-medium text-[11px]">8. นักธรรม</span></a></div>
 <div class="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow-md transition">
-    <a href="15เกมบาลี 3กย69.html" target="_blank" onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('เมนูเกมบาลี', '15เกมบาลี 3กย69.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }" class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
+    <a href="15เกมบาลี 20ตค69.html" target="_blank" onclick="if(typeof loadPdfToMainView === 'function') { event.preventDefault(); if(document.getElementById('welcome-message')) document.getElementById('welcome-message').classList.add('hidden'); loadPdfToMainView('เมนูเกมบาลี', '15เกมบาลี 20ตค69.html'); const frames = document.querySelectorAll('iframe'); frames.forEach(f => f.classList.remove('hidden')); }" class="flex flex-col items-center justify-center h-full gap-1.5 text-xs text-slate-600 hover:text-cyan-600 no-underline">
         <i class="fa-solid fa-gamepad text-lg text-cyan-500 mb-1"></i>
-        <span class="font-medium text-[11px]">9. เมนูเกมบาลี</span>
-    </a>
-</div>
-
+        <span class="font-medium text-[11px]">9. เมนูเกมบาลี</span></a></div>
     </div>
 </section>
 
@@ -1349,8 +1341,8 @@ function changePaliTourStep(stepNum) {
                     <div id="welcome-message" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-slate-50 z-0">
                         <i class="fa-solid fa-wand-magic-sparkles text-5xl text-indigo-400 mb-3 animate-bounce"></i>
                         <h3 class="text-base font-semibold text-slate-700">ยินดีต้อนรับสู่ระบบดัชนีคลังข้อมูลบาลีอัจฉริยะ</h3>
-                        <p class="text-xs text-slate-400 mt-1 max-w-md">ทดลองกดคำว่า <strong class="text-indigo-600 font-bold">"สมาส"</strong> ที่เมนูด้านซ้ายเพื่อกระจายข้อมูลข้ามเล่ม หรือคลิกทำข้อสอบไวยากรณ์บาลี ประโยค 1-2 ด้านล่างได้ทันทีครับ</p>
-                        <button onclick="loadPage('main-tool')" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition shadow">
+                        <p class="text-xs text-slate-400 mt-1 max-w-md">ทดลองกดคำว่า <strong class="text-[#b86827] font-bold">"สมาส"</strong> ที่เมนูด้านซ้ายเพื่อกระจายข้อมูลข้ามเล่ม หรือคลิกทำข้อสอบไวยากรณ์บาลี ประโยค 1-2 ด้านล่างได้ทันทีครับ</p>
+                        <button onclick="loadPage('main-tool')" class="mt-4 px-4 py-2 bg-[#b86827] text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition shadow">
                             เปิดหน้าสแกนและจัดเรียงประโยคปัจจุบัน
                         </button>
                     </div>
@@ -1358,8 +1350,8 @@ function changePaliTourStep(stepNum) {
 
                     <div class="relative w-full h-full" id="pdfWrapper">
                         
-                        <button onclick="togglePdfSize()" class="absolute top-2 right-2 z-50 bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg shadow-md text-xs font-semibold flex items-center gap-1 cursor-pointer">
-                            ↕️ ขยาย / ย่อหน้าจอ
+                        <button onclick="togglePdfSize()" class="absolute top-2 right-2 z-50 bg-[#b86827] hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg shadow-md text-xs font-semibold flex items-center gap-1 cursor-pointer">
+                            ↕ ขยาย / ย่อหน้าจอ
                         </button>
 
                         <iframe id="main-view-frame" src="about:blank" class="w-full h-full border-none hidden relative z-10"></iframe>
@@ -1372,30 +1364,30 @@ function changePaliTourStep(stepNum) {
 <!-- 1. ส่วนโครงสร้างหน้าจอคลังข้อสอบ (HTML) ชุดใหม่ -->
 <!-- ========================================== -->
  
-<section class="bg-slate-900 text-slate-100 p-4 rounded-b-2xl border-b border-x border-slate-800 shadow-md">
+<section class="bg-[#e9cc77] text-slate-100 p-4 rounded-b-2xl border-b border-x border-white shadow-md">
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-2">
-        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2 mb-2 md:mb-0">
-            <i class="fa-solid fa-file-signature text-amber-400"></i> คลังข้อสอบบาลีไวยากรณ์ ประโยค 1-2 (ระบบดึงข้อมูล Excel อัจฉริยะในหน้าเดียว)
+        <h2 class="text-xs font-bold text-amber-50 uppercase tracking-widest flex items-center gap-2 mb-2 md:mb-0">
+            <i class="fa-solid fa-file-signature text-amber-10"></i> คลังข้อสอบบาลีไวยากรณ์ ประโยค 1-2 (ระบบดึงข้อมูล Excel อัจฉริยะในหน้าเดียว)
         </h2>
         <div class="flex flex-wrap items-center gap-2">
             <!-- ช่องเลือกไฟล์ Excel -->
-            <label class="text-[11px] bg-indigo-950 border border-indigo-700 px-2 py-1 rounded cursor-pointer hover:bg-indigo-900 transition text-slate-300">
+            <label class="text-[11px] bg-[#b86827] border border-white px-2 py-1 rounded cursor-pointer hover:bg-indigo-900 transition text-slate-300">
                 <i class="fa-solid fa-file-excel text-emerald-400 mr-1"></i> <span id="excel-file-name">คลิกเพื่อโหลดไฟล์ข้อสอบ (.xlsx)</span>
                 <input type="file" id="excel-input-integrated" accept=".xlsx, .xls" class="hidden">
             </label>
             
-            <button onclick="toggleStatsIntegrated()" class="text-xs bg-emerald-800 border border-emerald-600 px-2.5 py-1 rounded hover:bg-emerald-700 text-white transition flex items-center gap-1">
+            <button onclick="toggleStatsIntegrated()" class="text-xs bg-[#b86827] border border-white px-2.5 py-1 rounded hover:bg-emerald-700 text-white transition flex items-center gap-1">
                 <i class="fa-solid fa-chart-simple"></i> สถิติแยกคน/หมวด
             </button>
             <!-- ปุ่มขยายเต็มหน้าจอ / ย่อขนาด (Fullscreen Toggle) -->
-<button id="toggle-fullscreen-btn" onclick="toggleQuizFullscreen()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+<button id="toggle-fullscreen-btn" onclick="toggleQuizFullscreen()" class="bg-[#b86827] hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
     <i id="fullscreen-icon" class="fa-solid fa-expand"></i>
     <span id="fullscreen-text">ขยายเต็มจอ</span>
 </button>
-            <button onclick="toggleQuizButtons()" id="toggle-quiz-btn" class="text-xs bg-slate-800 border border-slate-600 px-2.5 py-1 rounded hover:bg-slate-700 text-slate-300 transition flex items-center gap-1">
+            <button onclick="toggleQuizButtons()" id="toggle-quiz-btn" class="text-xs bg-[#b86827] border border-white px-2.5 py-1 rounded hover:bg-[#b86827] text-slate-300 transition flex items-center gap-1">
                 <i id="toggle-quiz-icon" class="fa-solid fa-eye-slash"></i> <span id="toggle-quiz-text">ซ่อนแถบข้อสอบ</span>
             </button>
-            <span id="quiz-status" class="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">สถานะ: รอโหลดไฟล์ Excel</span>
+            <span id="quiz-status" class="text-[11px] text-slate-100 bg-[#b86827] px-2 py-0.5 rounded border border-slate-100">สถานะ: รอโหลดไฟล์ Excel</span>
         </div>
     </div>
  <!-- ค้นหาปุ่มสีแดงเดิม แล้วปรับแก้ส่วน onclick="..." ให้เป็นตามนี้ครับ -->
@@ -1407,91 +1399,91 @@ function changePaliTourStep(stepNum) {
 </button>
 
     <!-- แถบปุ่มกด 7 ข้อ -->
-     
+
     <div id="quiz-buttons-container" class="grid grid-cols-4 md:grid-cols-7 gap-2.5 transition-all duration-300 mb-4">
-        <button onclick="filterByTopicIntegrated(1)" id="quiz-int-btn-1" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
-            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">1</span>
+        <button onclick="filterByTopicIntegrated(1)" id="quiz-int-btn-1" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+            <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-00 group-hover:text-white">1</span>
             <span>ข้อที่ 1 สมัญญาฯ</span>
         </button>
-        <button onclick="filterByTopicIntegrated(2)" id="quiz-int-btn-2" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+        <button onclick="filterByTopicIntegrated(2)" id="quiz-int-btn-2" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
             <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">2</span>
             <span>ข้อที่ 2 สนธิ</span>
         </button>
-        <button onclick="filterByTopicIntegrated(3)" id="quiz-int-btn-3" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+        <button onclick="filterByTopicIntegrated(3)" id="quiz-int-btn-3" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
             <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">3</span>
             <span>ข้อที่ 3 นาม/อัพยฯ</span>
         </button>
-        <button onclick="filterByTopicIntegrated(4)" id="quiz-int-btn-4" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+        <button onclick="filterByTopicIntegrated(4)" id="quiz-int-btn-4" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
             <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">4</span>
             <span>ข้อที่ 4 อาขยาต</span>
         </button>
-        <button onclick="filterByTopicIntegrated(5)" id="quiz-int-btn-5" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+        <button onclick="filterByTopicIntegrated(5)" id="quiz-int-btn-5" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
             <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">5</span>
             <span>ข้อที่ 5 กิตก์</span>
         </button>
-        <button onclick="filterByTopicIntegrated(6)" id="quiz-int-btn-6" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+        <button onclick="filterByTopicIntegrated(6)" id="quiz-int-btn-6" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
             <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">6</span>
             <span>ข้อที่ 6 สมาส</span>
         </button>
-        <button onclick="filterByTopicIntegrated(7)" id="quiz-int-btn-7" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
+        <button onclick="filterByTopicIntegrated(7)" id="quiz-int-btn-7" class="quiz-btn-int flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group">
             <span class="w-4 h-4 rounded-full bg-slate-700 text-[10px] flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white">7</span>
             <span>ข้อที่ 7 ตัทธิต</span>
         </button>
     </div>
 
     <!-- แถบตัวกรองข้อย่อยแบบเดียวกับแอปที่ 2 (จะแสดงเมื่อโหลดไฟล์เสร็จ) -->
-    <div id="filter-zone-integrated" class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-4 hidden text-xs flex flex-wrap gap-2 items-center justify-between">
+    <div id="filter-zone-integrated" class="bg-[#b86827] p-2.5 rounded-xl border border-white mb-4 hidden text-xs flex flex-wrap gap-2 items-center justify-between">
         <div class="flex flex-wrap gap-2 items-center">
-            <span class="text-slate-400">👤 ผู้ทำ: <input type="text" id="user-name-int" class="bg-slate-900 border border-slate-600 rounded px-1.5 py-0.5 text-slate-200 w-24" value="ผู้ทั่วไป"></span>
-            <select id="main-topic-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="updateSubDropdownInt(); applyFiltersInt();"></select>
-            <select id="sub-topic-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="updateSub1DropdownInt(); applyFiltersInt();"></select>
-            <select id="sub1-topic-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="applyFiltersInt();"></select>
-            <select id="year-select-int" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1" onchange="applyFiltersInt();"></select>
-            <input type="number" id="back-year-input-int" placeholder="ย้อนหลังปี" oninput="applyFiltersInt()" class="bg-slate-900 border border-slate-600 text-slate-200 rounded p-1 w-16">
+            <span class="text-slate-400">👤 ผู้ทำ: <input type="text" id="user-name-int" class="bg-slate-900 border border-white rounded px-1.5 py-0.5 text-slate-200 w-24" value="ผู้ทั่วไป"></span>
+            <select id="main-topic-select-int" class="bg-slate-900 border border-white text-slate-200 rounded p-1" onchange="updateSubDropdownInt(); applyFiltersInt();"></select>
+            <select id="sub-topic-select-int" class="bg-slate-900 border border-white text-slate-200 rounded p-1" onchange="updateSub1DropdownInt(); applyFiltersInt();"></select>
+            <select id="sub1-topic-select-int" class="bg-slate-900 border border-white text-slate-200 rounded p-1" onchange="applyFiltersInt();"></select>
+            <select id="year-select-int" class="bg-slate-900 border border-white text-slate-200 rounded p-1" onchange="applyFiltersInt();"></select>
+            <input type="number" id="back-year-input-int" placeholder="ย้อนหลังปี" oninput="applyFiltersInt()" class="bg-slate-900 border border-white text-slate-200 rounded p-1 w-16">
         </div>
-        <div id="timer-display-int" class="font-mono text-amber-400 bg-slate-900 px-2 py-1 rounded border border-slate-700 text-sm">เวลา: 00:00</div>
+        <div id="timer-display-int" class="font-mono text-amber-400 bg-slate-900 px-2 py-1 rounded border border-white text-sm">เวลา: 00:00</div>
     </div>
 
     <!-- พื้นที่แสดงคำถามและตัวข้อสอบที่แปลงมาจากแอปที่ 2 -->
-    <div id="quiz-workspace-integrated" class="bg-slate-950 rounded-xl border border-slate-800 p-4 min-h-[200px] hidden flex flex-col items-center">
+    <div id="quiz-workspace-integrated" class="bg-slate-950 rounded-xl border border-white p-4 min-h-[200px] hidden flex flex-col items-center">
         <div id="q-image-container-int" class="text-center mb-3 max-w-full"></div>
         
         <!-- ส่วนกระดานข้อสอบ -->
-        <div id="quiz-ui-int" class="text-slate-200 w-full overflow-x-auto text-sm bg-slate-900/50 p-3 rounded-lg border border-slate-800 min-h-[100px]"></div>
+        <div id="quiz-ui-int" class="text-slate-200 w-full overflow-x-auto text-sm bg-slate-900/50 p-3 rounded-lg border border-white min-h-[100px]"></div>
         
         <!-- ส่วนตัวเลือกคำศัพท์ (โหมดลากวาง) -->
-        <div id="options-ui-int" class="w-full mt-4 p-3 bg-slate-900/80 rounded-lg border-2 border-dashed border-slate-700 flex flex-wrap gap-2 justify-center min-h-[60px]" ondragover="event.preventDefault(); this.classList.add('border-indigo-500');" ondragleave="this.classList.remove('border-indigo-500');" ondrop="dropToBottomInt(event)"></div>
+        <div id="options-ui-int" class="w-full mt-4 p-3 bg-slate-900/80 rounded-lg border-2 border-dashed border-white flex flex-wrap gap-2 justify-center min-h-[60px]" ondragover="event.preventDefault(); this.classList.add('border-indigo-500');" ondragleave="this.classList.remove('border-indigo-500');" ondrop="dropToBottomInt(event)"></div>
         
         <!-- แถบควบคุมข้อสอบ ล้าง/ตรวจ/เลื่อนข้อ -->
-        <div class="w-full mt-4 flex justify-between items-center bg-slate-900 p-2.5 rounded-lg border border-slate-800">
-            <button onclick="moveInt(-1)" class="bg-slate-800 border border-slate-600 hover:bg-slate-700 px-3 py-1 rounded text-xs transition">ก่อนหน้า</button>
+        <div class="w-full mt-4 flex justify-between items-center bg-slate-900 p-2.5 rounded-lg border border-white">
+            <button onclick="moveInt(-1)" class="bg-[#b86827] border border-white hover:bg-slate-700 px-3 py-1 rounded text-xs transition">ก่อนหน้า</button>
             <span id="current-mode-badge-int" class="px-3 py-1 bg-slate-700 rounded-full font-bold text-[11px] text-white">โหมด: ลากวางศัพท์</span>
             <div class="flex gap-2">
                 <button onclick="resetQuizInt()" class="bg-rose-950 border border-rose-800 text-rose-300 hover:bg-rose-900 px-3 py-1 rounded text-xs transition">ล้างคำตอบ</button>
                 <button onclick="checkAnswersInt()" class="bg-amber-500 border border-amber-600 text-slate-950 font-bold hover:bg-amber-400 px-4 py-1 rounded text-xs transition shadow-md">ตรวจคำตอบ</button>
             </div>
-            <button onclick="moveInt(1)" class="bg-slate-800 border border-slate-600 hover:bg-slate-700 px-3 py-1 rounded text-xs transition">ถัดไป</button>
+            <button onclick="moveInt(1)" class="bg-[#b86827] border border-white hover:bg-slate-700 px-3 py-1 rounded text-xs transition">ถัดไป</button>
         </div>
     </div>
 </section>
 
 <!-- โมดอล ป๊อปอัพรายงานสถิติแยกต่างหาก -->
-<div id="stats-panel-int" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl bg-slate-900 border border-slate-700 text-slate-100 rounded-xl p-4 shadow-2xl z-[1000] hidden">
-    <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-3">
+<div id="stats-panel-int" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl bg-slate-900 border border-white text-slate-100 rounded-xl p-4 shadow-2xl z-[1000] hidden">
+    <div class="flex justify-between items-center border-b border-white pb-2 mb-3">
         <h3 class="font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-chart-line"></i> รายงานสถิติการเรียนรู้</h3>
         <div class="flex items-center gap-2">
-            <select id="stats-user-filter-int" onchange="renderGroupedStatsInt()" class="bg-slate-800 border border-slate-600 rounded text-xs p-1"></select>
+            <select id="stats-user-filter-int" onchange="renderGroupedStatsInt()" class="bg-[#b86827] border border-white rounded text-xs p-1"></select>
             <button onclick="toggleStatsIntegrated()" class="text-slate-400 hover:text-white text-lg">&times;</button>
         </div>
     </div>
     <div id="stats-content-int" class="max-height-[350px] overflow-y-auto text-xs"></div>
-    <button onclick="clearAllStatsInt()" class="w-full mt-3 p-2 bg-slate-800 hover:bg-slate-700 rounded text-center text-[11px] font-semibold text-rose-400 transition border border-slate-700">ล้างประวัติการทดสอบทั้งหมด</button>
+    <button onclick="clearAllStatsInt()" class="w-full mt-3 p-2 bg-[#b86827] hover:bg-slate-700 rounded text-center text-[11px] font-semibold text-rose-400 transition border border-white">ล้างประวัติการทดสอบทั้งหมด</button>
 </div>
 
 <!-- หน้าต่างเปิดดูคู่มือ PDF แบบเดิมของแอปที่ 2 -->
 <div id="pdf-overlay-int" class="fixed inset-0 bg-black/70 z-[998] hidden" onclick="closeAllModalsInt()"></div>
-<div id="pdf-modal-int" class="fixed top-[5%] left-[5%] w-[90%] h-[90%] bg-slate-950 text-white z-[999] rounded-xl border border-slate-700 overflow-hidden hidden">
-    <div class="bg-slate-900 p-2.5 flex justify-between items-center border-b border-slate-800">
+<div id="pdf-modal-int" class="fixed top-[5%] left-[5%] w-[90%] h-[90%] bg-slate-950 text-white z-[999] rounded-xl border border-white overflow-hidden hidden">
+    <div class="bg-slate-900 p-2.5 flex justify-between items-center border-b border-white">
         <span class="text-xs font-bold text-amber-400"><i class="fa-solid fa-book-open"></i> คำอธิบายไวยากรณ์ (เปิดตามหน้าหนังสือเฉลยอัตโนมัติ)</span>
         <button onclick="closeAllModalsInt()" class="bg-rose-900 border border-rose-700 hover:bg-rose-800 px-2 py-0.5 rounded text-xs transition">ปิด X</button>
     </div>
@@ -1717,7 +1709,7 @@ function changePaliTourStep(stepNum) {
                         <span class="text-xs text-slate-300 font-mono">ไฟล์อ้างอิง: ${quiz.filename}</span>
                     </div>
                     <h3 class="text-base font-bold text-amber-400 mb-2">${quiz.title}</h3>
-                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 text-sm font-medium mb-4">
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-white/50 text-sm font-medium mb-4">
                         <span class="text-rose-400 font-bold">โจทย์:</span> ${quiz.question}
                     </div>
                     <div class="bg-emerald-950/40 p-4 rounded-lg border border-emerald-800/30 text-sm">
@@ -1731,7 +1723,7 @@ function changePaliTourStep(stepNum) {
                 if (idx === (quizNumber - 1)) {
                     btn.className = "quiz-btn flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-900 border border-indigo-500 rounded-lg text-xs font-bold text-amber-300 transition shadow-md";
                 } else {
-                    btn.className = "quiz-btn flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-800 border border-slate-700 rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group";
+                    btn.className = "quiz-btn flex items-center justify-center gap-1.5 py-2 px-3 bg-[#b86827] border border-white rounded-lg hover:bg-indigo-900 hover:border-indigo-500 text-xs font-medium text-slate-200 transition shadow-sm group";
                 }
             });
         }
@@ -2019,19 +2011,19 @@ function renderInt() {
         badge.className = "px-3 py-1 rounded-full font-bold text-[11px] bg-purple-900 text-purple-200 border border-purple-600";
     } else {
         badge.innerText = "โหมด: ลากวางคำศัพท์";
-        badge.className = "px-3 py-1 rounded-full font-bold text-[11px] bg-slate-800 text-slate-300 border border-slate-600";
+        badge.className = "px-3 py-1 rounded-full font-bold text-[11px] bg-[#b86827] text-slate-300 border border-white";
     }
 
     const imgContainer = document.getElementById('q-image-container-int');
     if(item.img_q && item.img_q.trim() !== "") {
-        imgContainer.innerHTML = `<img src="${item.img_q.trim()}" class="max-w-full max-h-[220px] mx-auto rounded-lg shadow border border-slate-700">`;
+        imgContainer.innerHTML = `<img src="${item.img_q.trim()}" class="max-w-full max-h-[220px] mx-auto rounded-lg shadow border border-white">`;
     } else { imgContainer.innerHTML = ""; }
 
     const optionsUi = document.getElementById('options-ui-int');
 
     if(item.type === 'choice') {
         optionsUi.classList.add('hidden');
-        let choiceHeader = `<div class="font-bold text-amber-400 mb-3 bg-slate-900 p-2.5 rounded border border-slate-800">[คำถามไวยากรณ์]: ${item.main_topic}</div>`;
+        let choiceHeader = `<div class="font-bold text-amber-400 mb-3 bg-slate-900 p-2.5 rounded border border-white">[คำถามไวยากรณ์]: ${item.main_topic}</div>`;
         document.getElementById('quiz-ui-int').innerHTML = choiceHeader;
 
         if (lastRenderedQuestionIdInt !== item.id) {
@@ -2063,11 +2055,11 @@ function renderInt() {
         let choiceHTML = `<div class="grid grid-cols-1 gap-2 mt-2">`;
         currentFixedChoicesInt.forEach((choiceText, cIdx) => {
             const isSelected = userAnswersInt[itemKey]['chosen_ans'] === choiceText;
-            const activeClass = isSelected ? 'bg-indigo-900 border-indigo-500 text-white' : 'bg-slate-950 border-slate-800 hover:bg-slate-800 text-slate-300';
+            const activeClass = isSelected ? 'bg-indigo-900 border-indigo-500 text-white' : 'bg-slate-950 border-white hover:bg-[#b86827] text-slate-300';
             const label = ["ก.", "ข.", "ค.", "ง.", "จ."][cIdx];
             choiceHTML += `
                 <button onclick="selectChoiceInt('${choiceText}')" class="w-full text-left p-3 border rounded-lg transition text-xs flex items-center gap-2 font-medium ${activeClass}">
-                    <span class="font-bold text-amber-400 bg-slate-900 border border-slate-700 w-5 h-5 flex items-center justify-center rounded">${label}</span>
+                    <span class="font-bold text-amber-400 bg-slate-900 border border-white w-5 h-5 flex items-center justify-center rounded">${label}</span>
                     <span>${renderContentInt(choiceText)}</span>
                 </button>`;
         });
@@ -2105,8 +2097,8 @@ function renderInt() {
 
         currentShuffledOptionsInt.forEach((word) => {
             const div = document.createElement('div');
-            div.className = 'bg-indigo-950 border border-indigo-700 hover:bg-indigo-900 text-slate-200 px-3 py-1.5 rounded-md text-xs font-medium cursor-grab select-none shadow transition';
-            if (selectedWordToMatchInt === word) div.classList.add('border-amber-400', 'bg-slate-800', 'text-amber-300');
+            div.className = 'bg-indigo-950 border border-white hover:bg-indigo-900 text-slate-200 px-3 py-1.5 rounded-md text-xs font-medium cursor-grab select-none shadow transition';
+            if (selectedWordToMatchInt === word) div.classList.add('border-amber-400', 'bg-[#b86827]', 'text-amber-300');
             div.draggable = true;
             div.innerHTML = renderContentInt(word);
             
@@ -2195,10 +2187,10 @@ function renderGroupedStatsInt() {
         if(!summary[s.topic]) summary[s.topic] = { count: 0, correct: 0, slots: 0 };
         const [c, t] = s.score.split('/').map(Number); summary[s.topic].count++; summary[s.topic].correct += c; summary[s.topic].slots += t;
     });
-    let html = `<table class="w-full border border-slate-700 text-center text-[11px] mb-3"><tr class="bg-slate-800 text-amber-400"><th>หมวดไวยากรณ์</th><th>จำนวนครั้ง</th><th>คะแนนรวม</th><th>เปอร์เซ็นต์</th></tr>`;
-    for(const t in summary) { const d = summary[t]; html += `<tr class="border-b border-slate-800"><td>${t}</td><td>${d.count}</td><td>${d.correct}/${d.slots}</td><td class="text-emerald-400 font-bold">${Math.round((d.correct/d.slots)*100)}%</td></tr>`; }
-    html += `</table><h4 class="font-bold text-slate-300 mt-2 mb-1">📜 ลำดับประวัติล่าสุด</h4><div class="max-h-48 overflow-y-auto"><table class="w-full border border-slate-800">`;
-    data.slice().reverse().forEach(s => { html += `<tr class="border-b border-slate-800 text-[10px]"><td class="text-slate-500">${s.date}</td><td class="text-indigo-400 font-bold">${s.user}</td><td><b>${s.topic}</b></td><td class="text-amber-400">${s.time}</td><td class="font-bold">${s.score}</td></tr>`; });
+    let html = `<table class="w-full border border-white text-center text-[11px] mb-3"><tr class="bg-[#b86827] text-amber-400"><th>หมวดไวยากรณ์</th><th>จำนวนครั้ง</th><th>คะแนนรวม</th><th>เปอร์เซ็นต์</th></tr>`;
+    for(const t in summary) { const d = summary[t]; html += `<tr class="border-b border-white"><td>${t}</td><td>${d.count}</td><td>${d.correct}/${d.slots}</td><td class="text-emerald-400 font-bold">${Math.round((d.correct/d.slots)*100)}%</td></tr>`; }
+    html += `</table><h4 class="font-bold text-slate-300 mt-2 mb-1">📜 ลำดับประวัติล่าสุด</h4><div class="max-h-48 overflow-y-auto"><table class="w-full border border-white">`;
+    data.slice().reverse().forEach(s => { html += `<tr class="border-b border-white text-[10px]"><td class="text-slate-500">${s.date}</td><td class="text-indigo-400 font-bold">${s.user}</td><td><b>${s.topic}</b></td><td class="text-amber-400">${s.time}</td><td class="font-bold">${s.score}</td></tr>`; });
     html += `</table></div>`; document.getElementById('stats-content-int').innerHTML = html;
 }
 function clearAllStatsInt() { if(confirm("ต้องการลบประวัติการเรียนรู้ออกทั้งหมดใช่ไหม?")) { localStorage.removeItem('baliQuizStatsIntegrated'); renderGroupedStatsInt(); } }

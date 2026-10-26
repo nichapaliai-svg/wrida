@@ -128,17 +128,72 @@
             justify-content: space-between;
             color: #777;
         }
+
+        .profile-bar{max-width:1400px;margin:0 auto 18px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:#fffaf0;border:1px solid #e8c9a6;border-radius:10px;padding:12px 16px}
+        .profile-left,.profile-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .profile-bar label{font-size:.9rem;color:var(--primary);font-weight:700}
+        .profile-bar input,.profile-bar select{border:1px solid #d7b99a;border-radius:6px;padding:8px;font:inherit;max-width:100%;background:#fff}
+        .profile-bar input[name="fullName"]{min-width:220px}
+        .admin-btn{background:#704214;padding:9px 13px;white-space:nowrap}
+        .notice{max-width:1400px;margin:0 auto 12px;color:#72512d;font-size:.9rem}
+        .overlay{position:fixed;inset:0;background:rgba(30,20,10,.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}
+        .modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fffaf0;border-radius:12px;padding:22px;box-shadow:0 15px 45px #0003}
+        .modal h2{margin-top:0;color:var(--primary)}
+        .modal input{box-sizing:border-box;width:100%;padding:10px;margin:5px 0 12px;border:1px solid #d7b99a;border-radius:6px;font:inherit}
+        .modal .actions{display:flex;gap:8px;flex-wrap:wrap}
+        .modal .secondary{background:#777}
+        .admin-table-wrap{overflow:auto}
+        .admin-table{width:100%;border-collapse:collapse;background:white;margin-top:12px;font-size:.9rem}
+        .admin-table th,.admin-table td{padding:8px;border:1px solid #eadbc9;text-align:left;white-space:nowrap}
+        .admin-table th{background:#f6e4cc;color:#704214}
+        .status-msg{margin:8px 0;color:#704214;white-space:pre-wrap}
+        @media(max-width:650px){body{padding:10px}.profile-bar{grid-template-columns:1fr}.profile-left,.profile-right{align-items:stretch}.profile-left input[name="fullName"]{min-width:0;width:100%}.profile-right{justify-content:space-between}.header h1{font-size:1.35rem}.game-grid{grid-template-columns:1fr;gap:14px}}
+
     </style>
 </head>
 <body>
 
+    <section class="profile-bar" aria-label="ข้อมูลผู้เรียน">
+      <div class="profile-left">
+        <label for="fullName">ชื่อ-นามสกุล</label>
+        <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="กรอกชื่อ-นามสกุล">
+      </div>
+      <div class="profile-right">
+        <label for="gender">เพศ</label>
+        <select id="gender"><option value="">เลือกเพศ</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="ไม่ระบุ">ไม่ระบุ</option></select>
+        <label for="age">อายุ</label>
+        <input id="age" type="number" min="1" max="120" inputmode="numeric" placeholder="ปี" style="width:78px">
+        <button class="admin-btn" onclick="openAdminLogin()">ผู้ดูแล</button>
+      </div>
+    </section>
     <div class="header">
         <h1>เกมบาลีไวยากรณ์ 15 in 1 (75 คำถาม)</h1>
         <p>ฝึกฝนบาลีไวยากรณ์ครบทุกหมวด เกมละ 5 ข้อ</p>
     </div>
-
+    <div id="cloud-status" class="notice">กรอกชื่อ-นามสกุล เพศ และอายุก่อนเริ่มทำข้อสอบ ระบบจะบันทึกคะแนนออนไลน์เมื่อเชื่อมต่อ Supabase แล้ว</div>
     <div class="game-grid" id="main-grid"></div>
 
+    <div class="overlay" id="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-title">
+      <section class="modal">
+        <h2 id="admin-title">เข้าสู่ระบบผู้ดูแล</h2>
+        <div id="admin-login">
+          <p>เฉพาะบัญชีผู้ดูแลที่ได้รับอนุญาตเท่านั้นจึงจะดูผลสอบได้</p>
+          <label for="admin-email">อีเมลผู้ดูแล</label>
+          <input id="admin-email" type="email" autocomplete="username" placeholder="อีเมลผู้ดูแล">
+          <label for="admin-password">รหัสผ่าน</label>
+          <input id="admin-password" type="password" autocomplete="current-password" placeholder="รหัสผ่าน">
+          <div class="actions"><button onclick="adminLogin()">เข้าสู่ระบบ</button><button class="secondary" onclick="closeAdmin()">ยกเลิก</button></div>
+        </div>
+        <div id="admin-report" style="display:none">
+          <div class="actions"><button onclick="loadAdminResults()">รีเฟรชข้อมูล</button><button class="secondary" onclick="adminLogout()">ออกจากระบบ</button><button class="secondary" onclick="closeAdmin()">ปิด</button></div>
+          <p id="admin-message" class="status-msg"></p>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>วันเวลา</th><th>ชื่อ-นามสกุล</th><th>เพศ</th><th>อายุ</th><th>หมวดเกม</th><th>คะแนน</th></tr></thead><tbody id="admin-results"></tbody></table></div>
+        </div>
+        <p id="login-status" class="status-msg"></p>
+      </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const gamesData = [
             {
@@ -293,8 +348,136 @@
             }
         ];
 
+        // ตั้งค่า Supabase ของคุณในสองบรรทัดนี้ก่อนเผยแพร่เว็บไซต์
+        // ใช้ Project URL และ anon/public key เท่านั้น ห้ามใส่ service_role key ใน HTML
+        const SUPABASE_URL = "https://jyiwohexhmertqvfummt.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_qPPtC5amEHiicevhlmaBaQ_n-YA-5gq";
+        const ADMIN_EMAIL = "nichapaliai@gmail.com".toLowerCase();
+        let supabaseClient = null;
+        let activeAdminSession = false;
+
+        function initSupabase() {
+const configured =
+  SUPABASE_URL.startsWith("https://") &&
+  SUPABASE_ANON_KEY.length > 20;
+            if (configured && window.supabase?.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                document.getElementById("cloud-status").textContent =
+                    "เชื่อมต่อระบบออนไลน์แล้ว เมื่อทำแต่ละหมวดครบ 5 ข้อ คะแนนจะถูกบันทึก";
+            } else {
+                document.getElementById("cloud-status").textContent =
+                    "ยังไม่ได้ตั้งค่า Supabase: เกมเล่นได้ แต่คะแนนจะยังไม่ถูกบันทึกออนไลน์";
+            }
+        }
+        function learnerProfile() {
+            const fullName = document.getElementById("fullName").value.trim();
+            const gender = document.getElementById("gender").value;
+            const age = Number(document.getElementById("age").value);
+            if (!fullName || !gender || !Number.isInteger(age) || age < 1 || age > 120) {
+                alert("กรุณากรอกชื่อ-นามสกุล เลือกเพศ และกรอกอายุให้ถูกต้องก่อนตอบข้อสอบ");
+                return null;
+            }
+            return { full_name: fullName, gender, age };
+        }
+        async function saveGameResult(game, state) {
+            const profile = learnerProfile();
+            if (!profile) return;
+            if (!supabaseClient) {
+                document.getElementById("cloud-status").textContent =
+                    "ยังไม่ได้บันทึกออนไลน์ กรุณาตั้งค่า Supabase URL และ anon key ในไฟล์ HTML";
+                return;
+            }
+            const row = {
+                ...profile,
+                game_id: game.id,
+                game_title: game.title,
+                score: state.score,
+                total_questions: game.questions.length,
+                completed_at: new Date().toISOString()
+            };
+            const { error } = await supabaseClient.from("pali_quiz_results").insert(row);
+            const status = document.getElementById("cloud-status");
+            if (error) {
+                status.textContent = "บันทึกออนไลน์ไม่สำเร็จ: " + error.message;
+            } else {
+                status.textContent = `บันทึกผลหมวด "${game.title}" ออนไลน์แล้ว (${state.score}/${game.questions.length} คะแนน)`;
+            }
+        }
+        function openAdminLogin() {
+            document.getElementById("admin-overlay").style.display = "flex";
+            document.getElementById("login-status").textContent = "";
+        }
+        function closeAdmin() {
+            document.getElementById("admin-overlay").style.display = "none";
+        }
+        async function adminLogin() {
+            const status = document.getElementById("login-status");
+            if (!supabaseClient) {
+                status.textContent = "ยังไม่ได้ตั้งค่า Supabase URL และ anon key ในไฟล์ HTML";
+                return;
+            }
+const email = document.getElementById("admin-email").value.trim().toLowerCase();
+const password = document.getElementById("admin-password").value;
+            if (!email || !password) { status.textContent = "กรุณากรอกอีเมลและรหัสผ่าน"; return; }
+            if (ADMIN_EMAIL.includes("ใส่อีเมล") || email !== ADMIN_EMAIL) {
+                status.textContent = "อีเมลนี้ไม่ได้กำหนดเป็นผู้ดูแลในไฟล์ HTML";
+                return;
+            }
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) { status.textContent = "เข้าสู่ระบบไม่สำเร็จ: " + error.message; return; }
+            if (!data.user || data.user.email?.toLowerCase() !== ADMIN_EMAIL) {
+                await supabaseClient.auth.signOut();
+                status.textContent = "บัญชีนี้ไม่ได้รับอนุญาต";
+                return;
+            }
+            activeAdminSession = true;
+            document.getElementById("admin-login").style.display = "none";
+            document.getElementById("admin-report").style.display = "block";
+            document.getElementById("admin-title").textContent = "รายงานผลสอบสำหรับผู้ดูแล";
+            status.textContent = "";
+            await loadAdminResults();
+        }
+        async function loadAdminResults() {
+            const message = document.getElementById("admin-message");
+            const tbody = document.getElementById("admin-results");
+            if (!activeAdminSession || !supabaseClient) { message.textContent = "กรุณาเข้าสู่ระบบผู้ดูแล"; return; }
+            message.textContent = "กำลังโหลดข้อมูล...";
+            const { data, error } = await supabaseClient.from("pali_quiz_results")
+                .select("full_name,gender,age,game_title,score,total_questions,completed_at")
+                .order("completed_at", { ascending: false }).limit(1000);
+            if (error) {
+                message.textContent = "อ่านข้อมูลไม่สำเร็จ: " + error.message + " (ตรวจสอบนโยบาย RLS และอีเมลผู้ดูแล)";
+                return;
+            }
+            tbody.innerHTML = "";
+            (data || []).forEach(row => {
+                const tr = document.createElement("tr");
+                const values = [
+                    row.completed_at ? new Date(row.completed_at).toLocaleString("th-TH") : "",
+                    row.full_name, row.gender, row.age, row.game_title,
+                    `${row.score}/${row.total_questions}`
+                ];
+                values.forEach(value => {
+                    const td = document.createElement("td");
+                    td.textContent = value ?? "";
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            message.textContent = `พบข้อมูล ${data?.length || 0} รายการ (แสดงล่าสุดไม่เกิน 1,000 รายการ)`;
+        }
+        async function adminLogout() {
+            if (supabaseClient) await supabaseClient.auth.signOut();
+            activeAdminSession = false;
+            document.getElementById("admin-login").style.display = "block";
+            document.getElementById("admin-report").style.display = "none";
+            document.getElementById("admin-title").textContent = "เข้าสู่ระบบผู้ดูแล";
+            document.getElementById("admin-password").value = "";
+            document.getElementById("login-status").textContent = "ออกจากระบบแล้ว";
+        }
+
         // บันทึกสถานะข้อปัจจุบันและคะแนนของแต่ละเกม
-        let gameState = gamesData.map(() => ({ currentQ: 0, score: 0 }));
+        let gameState = gamesData.map(() => ({ currentQ: 0, score: 0, saved: false }));
 
         function renderGames() {
             const grid = document.getElementById('main-grid');
@@ -333,6 +516,7 @@
         }
 
         function checkAnswer(gIdx, selectedIdx) {
+            if (!learnerProfile()) return;
             const game = gamesData[gIdx];
             const state = gameState[gIdx];
             const qData = game.questions[state.currentQ];
@@ -359,6 +543,10 @@
                 feedbackEl.textContent += ` [จบเกม! ได้ ${state.score}/5 คะแนน]`;
                 nextBtn.textContent = "เล่นใหม่อีกครั้ง ↺";
                 nextBtn.style.display = 'block';
+                if (!state.saved) {
+                    state.saved = true;
+                    saveGameResult(game, state);
+                }
             }
         }
 
@@ -372,6 +560,7 @@
                 // รีเซ็ตเกมถ้าเล่นครบ 5 ข้อแล้ว
                 state.currentQ = 0;
                 state.score = 0;
+                state.saved = false;
             }
 
             // โหลดเฉพาะการ์ดเกมนั้นๆ ใหม่
@@ -394,7 +583,7 @@
             scoreBoard.children[1].textContent = `คะแนน: ${state.score}`;
         }
 
-        window.onload = renderGames;
+        window.onload = () => { initSupabase(); renderGames(); };
     </script>
 </body>
 </html>

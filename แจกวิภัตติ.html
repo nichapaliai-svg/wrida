@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บาลีไวยากรณ์ประยุกต์ : ระบบฝึกแจกวิภัตติ (Pali Declension Master)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Charm:wght@700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pali: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            500: '#d97706',
+                            600: '#b45309',
+                            700: '#92400e',
+                            800: '#78350f',
+                            900: '#451a03',
+                            maroon: '#58111a',
+                            darkmaroon: '#3b0a11',
+                            gold: '#d4af37'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                        paliTitle: ['Charm', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+        }
+        .draggable-item {
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+        .draggable-item.dragging {
+            opacity: 0.35;
+        }
+        .draggable-item.used {
+            display: none !important;
+        }
+        .drop-zone {
+            min-height: 48px;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.drag-over {
+            background-color: #fef3c7 !important;
+            border-color: #d97706 !important;
+            transform: scale(1.02);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 min-h-screen text-slate-800 font-sans flex flex-col justify-between">
+
+    <header class="bg-pali-maroon text-amber-100 shadow-xl border-b-4 border-pali-gold sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 text-center md:text-left">
+                <div class="w-11 h-11 rounded-full bg-pali-gold flex items-center justify-center text-pali-maroon text-2xl shadow-inner font-bold border-2 border-amber-200">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                </div>
+                <div>
+                    <h1 class="font-paliTitle text-2xl md:text-3xl font-bold text-pali-gold tracking-wide leading-none">
+                        บาลีไวยากรณ์ประยุกต์ : ระบบฝึกแจกวิภัตติ
+                    </h1>
+                    <p class="text-xs text-amber-200 mt-1">Comprehensive Pali Noun Declension Master App</p>
+                </div>
+            </div>
+
+            <!-- Mode Selector Switcher -->
+            <div class="flex items-center bg-pali-darkmaroon/80 p-1.5 rounded-2xl border border-amber-500/40 shadow-inner">
+                <button id="btn-mode-drag" onclick="setMode('drag')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-pali-gold text-pali-maroon shadow-md">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                    <span>ลากวาง (Drag & Drop)</span>
+                </button>
+                <button id="btn-mode-dropdown" onclick="setMode('dropdown')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-amber-200 hover:text-white">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Dropdown</span>
+                </button>
+                <button id="btn-mode-study" onclick="setMode('study')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-amber-200 hover:text-white">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span>ตารางสรุปเฉลย</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex-grow w-full">
+        
+        <!-- Category Navigation Tabs -->
+        <div class="bg-white rounded-2xl shadow-md border border-amber-200 p-2 mb-6 glass-panel overflow-x-auto no-scrollbar">
+            <div class="flex space-x-2 min-w-max" id="category-tabs">
+                <button onclick="selectCategory('pung')" id="tab-pung" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-pali-maroon text-pali-gold shadow-md">
+                    <i class="fa-solid fa-mars"></i> 1. ปุงลิงก์ (5 การันต์)
+                </button>
+                <button onclick="selectCategory('itthi')" id="tab-itthi" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-slate-700 hover:bg-amber-100/70">
+                    <i class="fa-solid fa-venus"></i> 2. อิตถีลิงก์ (5 การันต์)
+                </button>
+                <button onclick="selectCategory('napung')" id="tab-napung" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-slate-700 hover:bg-amber-100/70">
+                    <i class="fa-solid fa-genderless"></i> 3. นปุงสกลิงก์ (3 การันต์)
+                </button>
+                <button onclick="selectCategory('katipaya')" id="tab-katipaya" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-slate-700 hover:bg-amber-100/70">
+                    <i class="fa-solid fa-star"></i> 4. กติปยศัพท์ (12 ศัพท์หลัก)
+                </button>
+                <button onclick="selectCategory('manogana')" id="tab-manogana" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-slate-700 hover:bg-amber-100/70">
+                    <i class="fa-solid fa-brain"></i> 5. มโนคณศัพท์ (12 ศัพท์)
+                </button>
+            </div>
+        </div>
+
+        <!-- Word Paradigm Selection -->
+        <div class="bg-white rounded-2xl shadow-md border border-amber-200/80 p-5 mb-6 glass-panel">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-pali-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span><i class="fa-solid fa-book-bookmark text-pali-500 mr-1.5"></i> เลือกแม่แบบการันต์ / ศัพท์ประธาน:</span>
+                        <span id="word-counter" class="text-pali-600 font-semibold">(1/5)</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <select id="word-select" onchange="onWordChange()" class="w-full bg-amber-50/60 border-2 border-amber-300 rounded-xl px-4 py-2.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pali-500 shadow-sm cursor-pointer text-base">
+                            <!-- Populated dynamically -->
+                        </select>
+                        <button onclick="randomizeWord()" title="สุ่มคำศัพท์" class="px-4 py-2.5 bg-amber-200 hover:bg-amber-300 text-pali-900 rounded-xl font-bold transition shadow-sm border border-amber-400 active:scale-95 flex items-center justify-center">
+                            <i class="fa-solid fa-shuffle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Word Information Card -->
+                <div class="bg-gradient-to-r from-amber-100/80 to-orange-100/80 p-3.5 rounded-xl border border-amber-300/80 flex items-center justify-between shadow-sm">
+                    <div>
+                        <div class="text-xs text-pali-700 font-bold uppercase tracking-wider">รายละเอียดศัพท์</div>
+                        <div id="word-title" class="text-xl font-extrabold text-pali-900">ปุริส (ผู้ชาย)</div>
+                        <div id="word-desc" class="text-xs font-medium text-amber-900">อ-การันต์ ใน ปุงลิงก์</div>
+                    </div>
+                    <div class="bg-amber-200/90 p-3 rounded-2xl text-pali-800 text-2xl shadow-sm">
+                        <i class="fa-solid fa-vihara"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Draggable Pool Box (Exact 14 Group Cards) -->
+        <div id="drag-pool-container" class="mb-6 bg-gradient-to-r from-pali-darkmaroon to-pali-maroon text-white p-5 rounded-2xl shadow-xl border-2 border-pali-gold">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b border-amber-500/30 pb-2">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-cubes text-pali-gold text-lg"></i>
+                    <h3 class="font-bold text-amber-200 text-base">คลังคำศัพท์วิภัตติ (ลากรูปศัพท์เหล่านี้ไปวางในช่องตาราง):</h3>
+                </div>
+                <div class="text-xs text-amber-300 italic">
+                    * สามารถคลิกเพื่อเลือก แล้วคลิกวางในช่องเป้าหมายได้เช่นกัน
+                </div>
+            </div>
+            
+            <!-- Exact 14 Draggable Cards Pool -->
+            <div id="drag-items-pool" class="flex flex-wrap gap-2.5 pt-2 min-h-[64px] items-center">
+                <!-- 14 Draggable Cards Populated Dynamically -->
+            </div>
+        </div>
+
+        <!-- Declension Interactive Table -->
+        <div class="bg-white rounded-2xl shadow-xl border border-amber-200 overflow-hidden mb-6">
+            <div class="bg-pali-maroon text-amber-100 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-2 border-b-2 border-pali-gold">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-table-cells text-pali-gold text-lg"></i>
+                    <h2 class="text-lg font-bold tracking-wide">ตารางแจกวิภัตติสัตตมี (1-7) และ อาลาปนะ</h2>
+                </div>
+                <div id="score-badge" class="hidden px-4 py-1.5 bg-pali-gold text-pali-maroon font-bold rounded-full text-sm shadow border border-amber-200">
+                    คะแนน: <span id="score-text">0 / 14</span> (<span id="score-percent">0</span>%)
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[720px]">
+                    <thead>
+                        <tr class="bg-amber-100/90 text-pali-900 border-b border-amber-200 text-sm font-bold">
+                            <th class="py-3.5 px-4 w-1/3 text-center border-r border-amber-200">วิภัตติ & คำแปลอายตนิบาต</th>
+                            <th class="py-3.5 px-4 w-1/3 text-center border-r border-amber-200">
+                                <span class="text-pali-900 font-extrabold">เอกวจนะ (Singular)</span>
+                            </th>
+                            <th class="py-3.5 px-4 w-1/3 text-center">
+                                <span class="text-pali-900 font-extrabold">พหุวจนะ (Plural)</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="declension-table-body" class="divide-y divide-amber-100 text-sm font-medium">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div id="action-bar" class="flex flex-wrap items-center justify-between gap-4 bg-white/90 p-4 rounded-2xl border border-amber-200 glass-panel shadow-sm">
+            <div class="flex items-center gap-2">
+                <button onclick="resetExercise()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition shadow-sm border border-slate-300 active:scale-95">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>รีเซ็ต (Reset 14 คำ)</span>
+                </button>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="showAnswers()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-pali-800 font-bold transition shadow-sm border border-amber-300 active:scale-95">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>แสดงเฉลย</span>
+                </button>
+                <button id="btn-check-answers" onclick="checkAnswers()" class="flex items-center gap-2 px-7 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-pali-700 hover:from-amber-700 hover:to-pali-800 text-white font-bold transition shadow-md active:scale-95">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>ตรวจคำตอบ</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Score Modal Popup -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full mx-4 shadow-2xl border-4 border-pali-gold p-6 text-center transform scale-95 transition-transform duration-300">
+            <div id="modal-icon" class="w-16 h-16 bg-amber-100 text-pali-700 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border-2 border-pali-gold shadow-inner">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold text-pali-900 mb-2 font-paliTitle">ผลการทดสอบวิภัตติ</h3>
+            <p id="modal-message" class="text-slate-600 mb-6 text-sm">คุณทำแบบฝึกหัดเสร็จเรียบร้อยแล้ว!</p>
+            
+            <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 mb-6 flex justify-around items-center">
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">ถูกต้อง</div>
+                    <div id="modal-score" class="text-2xl font-black text-emerald-600">0 / 14</div>
+                </div>
+                <div class="h-8 w-px bg-amber-200"></div>
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">คิดเป็น</div>
+                    <div id="modal-percentage" class="text-2xl font-black text-pali-700">0%</div>
+                </div>
+            </div>
+
+            <button onclick="closeModal()" class="w-full py-3 bg-pali-maroon hover:bg-pali-darkmaroon text-pali-gold font-bold rounded-xl shadow-lg transition active:scale-95">
+                ตกลง / ปิดหน้าต่าง
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Thai Case Order Indicators & Ayatanipata Translations
+         */
+        const caseTranslations = [
+            { name: "1. ปฐมาวิภัตติ", meaning: "(อันว่า...)" },
+            { name: "2. ทุติยาวิภัตติ", meaning: "(ซึ่ง..., สู่..., ยัง..., สิ้น..., ตลอด...)" },
+            { name: "3. ตติยาวิภัตติ", meaning: "(ด้วย..., โดย..., อัน..., ตาม..., เพราะ...)" },
+            { name: "4. จตุตถีวิภัตติ", meaning: "(แก่..., เพื่อ..., ต่อ...)" },
+            { name: "5. ปัญจมีวิภัตติ", meaning: "(แต่..., จาก..., กว่า..., เหตุ...)" },
+            { name: "6. ฉัฏฐีวิภัตติ", meaning: "(แห่ง..., ของ..., เมื่อ...)" },
+            { name: "7. สัตตมีวิภัตติ", meaning: "(ใน..., บน..., ที่..., ใกล้...)" },
+            { name: "8. อาลาปนะ", meaning: "(แน่ะ..., ดูกร..., ข้าแต่...)" }
+        ];
+
+        /**
+         * COMPLETE GRAMMAR DATA
+         * Exact 14 card slots containing full variation groups for each box
+         */
+        const grammarData = {
+            // 1. ปุงลิงก์ (Masculine)
+            pung: {
+                title: "ปุงลิงก์ (Masculine)",
+                words: [
+                    {
+                        id: "purisa",
+                        name: "ปุริส (ผู้ชาย)",
+                        karanta: "อ-การันต์ ใน ปุงลิงก์",
+                        paradigm: [
+                            { sing: "ปุริโส", plur: "ปุริสา" },
+                            { sing: "ปุริสํ", plur: "ปุริเส" },
+                            { sing: "ปุริเสนะ", plur: "ปุริเสหิ, ปุริเสภิ" },
+                            { sing: "ปุริสัสสะ, ปุริสายะ, ปุริสัตถํ", plur: "ปุริสานํ" },
+                            { sing: "ปุริสัสสมา, ปุริสัมหา, ปุริสา", plur: "ปุริเสหิ, ปุริเสภิ" },
+                            { sing: "ปุริสัสสะ", plur: "ปุริสานํ" },
+                            { sing: "ปุริสัสสมึ, ปุริสัมหิ, ปุริเส", plur: "ปุริเสสุ" },
+                            { sing: "ปุริสะ, ปุริสา", plur: "ปุริสา" }
+                        ]
+                    },
+                    {
+                        id: "muni",
+                        name: "มุนิ (ผู้รู้/ผู้สงบ)",
+                        karanta: "อิ-การันต์ ใน ปุงลิงก์",
+                        paradigm: [
+                            { sing: "มุนิ", plur: "มุนโย, มุนี" },
+                            { sing: "มุนึ", plur: "มุนโย, มุนี" },
+                            { sing: "มุนินา", plur: "มุนีหิ, มุนีภิ" },
+                            { sing: "มุนิสสะ, มุนิโน", plur: "มุนีนํ" },
+                            { sing: "มุนิสสมา, มุนิมหา", plur: "มุนีหิ, มุนีภิ" },
+                            { sing: "มุนิสสะ, มุนิโน", plur: "มุนีนํ" },
+                            { sing: "มุนิสสมึ, มุนิมหิ", plur: "มุนีสุ" },
+                            { sing: "มุนิ", plur: "มุนโย, มุนี" }
+                        ]
+                    },
+                    {
+                        id: "setthi",
+                        name: "เสฏฐี (เศรษฐี)",
+                        karanta: "อี-การันต์ ใน ปุงลิงก์",
+                        paradigm: [
+                            { sing: "เสฏฐี", plur: "เสฏฐิโน, เสฏฐี" },
+                            { sing: "เสฏฐึ, เสฏฐินํ", plur: "เสฏฐิโน, เสฏฐี" },
+                            { sing: "เสฏฐินา", plur: "เสฏฐีหิ, เสฏฐีภิ" },
+                            { sing: "เสฏฐิสสะ, เสฏฐิโน", plur: "เสฏฐีนํ" },
+                            { sing: "เสฏฐิสสมา, เสฏฐิมหา", plur: "เสฏฐีหิ, เสฏฐีภิ" },
+                            { sing: "เสฏฐิสสะ, เสฏฐิโน", plur: "เสฏฐีนํ" },
+                            { sing: "เสฏฐิสสมึ, เสฏฐิมหิ", plur: "เสฏฐีสุ" },
+                            { sing: "เสฏฐิ", plur: "เสฏฐิโน, เสฏฐี" }
+                        ]
+                    },
+                    {
+                        id: "garu",
+                        name: "ครุ (ครู)",
+                        karanta: "อุ-การันต์ ใน ปุงลิงก์",
+                        paradigm: [
+                            { sing: "ครุ", plur: "ครโว, ครู" },
+                            { sing: "ครุํ", plur: "ครโว, ครู" },
+                            { sing: "ครุนา", plur: "ครูหิ, ครูภิ" },
+                            { sing: "ครุสสะ, ครุโน", plur: "ครูนํ" },
+                            { sing: "ครุสสมา, ครุมหา", plur: "ครูหิ, ครูภิ" },
+                            { sing: "ครุสสะ, ครุโน", plur: "ครูนํ" },
+                            { sing: "ครุสสมึ, ครุมหิ", plur: "ครูสุ" },
+                            { sing: "ครุ", plur: "ครเว, ครโว" }
+                        ]
+                    },
+                    {
+                        id: "vinnyu",
+                        name: "วิญญู (ผู้รู้แจ้ง)",
+                        karanta: "อู-การันต์ ใน ปุงลิงก์",
+                        paradigm: [
+                            { sing: "วิญญู", plur: "วิญญุโน, วิญญู" },
+                            { sing: "วิญญุํ", plur: "วิญญุโน, วิญญู" },
+                            { sing: "วิญญุนา", plur: "วิญญูหิ, วิญญูภิ" },
+                            { sing: "วิญญุสสะ, วิญญุโน", plur: "วิญญูนํ" },
+                            { sing: "วิญญุสสมา, วิญญุมหา", plur: "วิญญูหิ, วิญญูภิ" },
+                            { sing: "วิญญุสสะ, วิญญุโน", plur: "วิญญูนํ" },
+                            { sing: "วิญญุสสมึ, วิญญุมหิ", plur: "วิญญูสุ" },
+                            { sing: "วิญญุ", plur: "วิญญุโน, วิญญู" }
+                        ]
+                    }
+                ]
+            },
+
+            // 2. อิตถีลิงก์ (Feminine)
+            itthi: {
+                title: "อิตถีลิงก์ (Feminine)",
+                words: [
+                    {
+                        id: "kanya",
+                        name: "กัญญา (นางสาวน้อย)",
+                        karanta: "อาการันต์ ใน อิตถีลิงก์",
+                        paradigm: [
+                            { sing: "กัญญา", plur: "กัญญายะ, กัญญา" },
+                            { sing: "กัญญํ", plur: "กัญญายะ, กัญญา" },
+                            { sing: "กัญญายะ", plur: "กัญญาหิ, กัญญาภิ" },
+                            { sing: "กัญญายะ", plur: "กัญญานํ" },
+                            { sing: "กัญญายะ", plur: "กัญญาหิ, กัญญาภิ" },
+                            { sing: "กัญญายะ", plur: "กัญญานํ" },
+                            { sing: "กัญญายํ, กัญญายะ", plur: "กัญญาสุ" },
+                            { sing: "กัญเญ", plur: "กัญญายะ, กัญญา" }
+                        ]
+                    },
+                    {
+                        id: "ratti",
+                        name: "รตติ / รัตติ (ราตรี/กลางคืน)",
+                        karanta: "อิ-การันต์ ใน อิตถีลิงก์",
+                        paradigm: [
+                            { sing: "รตติ", plur: "รตติโย, รตตี" },
+                            { sing: "รตตึ", plur: "รตติโย, รตตี" },
+                            { sing: "รตติยา", plur: "รตตีหิ, รตตีภิ" },
+                            { sing: "รตติยา", plur: "รตตีนํ" },
+                            { sing: "รตติยา", plur: "รตตีหิ, รตตีภิ" },
+                            { sing: "รตติยา", plur: "รตตีนํ" },
+                            { sing: "รตติยํ, รตติยา", plur: "รตตีสุ" },
+                            { sing: "รตติ", plur: "รตติโย, รตตี" }
+                        ]
+                    },
+                    {
+                        id: "nari",
+                        name: "นารี (นาง/ผู้หญิง)",
+                        karanta: "อี-การันต์ ใน อิตถีลิงก์",
+                        paradigm: [
+                            { sing: "นารี", plur: "นาริโย, นารี" },
+                            { sing: "นารึ, นาริยํ", plur: "นาริโย, นารี" },
+                            { sing: "นาริยา", plur: "นารีหิ, นารีภิ" },
+                            { sing: "นาริยา", plur: "นารีนํ" },
+                            { sing: "นาริยา", plur: "นารีหิ, นารีภิ" },
+                            { sing: "นาริยา", plur: "นารีนํ" },
+                            { sing: "นาริยํ, นาริยา", plur: "นารีสุ" },
+                            { sing: "นาริ", plur: "นาริโย, นารี" }
+                        ]
+                    },
+                    {
+                        id: "yagu",
+                        name: "ยาคุ (ข้าวต้ม)",
+                        karanta: "อุ-การันต์ ใน อิตถีลิงก์",
+                        paradigm: [
+                            { sing: "ยาคุ", plur: "ยาคุโย, ยาคู" },
+                            { sing: "ยาคุํ", plur: "ยาคุโย, ยาคู" },
+                            { sing: "ยาคุยา", plur: "ยาคูหิ, ยาคูภิ" },
+                            { sing: "ยาคุยา", plur: "ยาคูนํ" },
+                            { sing: "ยาคุยา", plur: "ยาคูหิ, ยาคูภิ" },
+                            { sing: "ยาคุยา", plur: "ยาคูนํ" },
+                            { sing: "ยาคุยํ, ยาคุยา", plur: "ยาคูสุ" },
+                            { sing: "ยาคุ", plur: "ยาคุโย, ยาคู" }
+                        ]
+                    },
+                    {
+                        id: "vadhu",
+                        name: "วธู (เจ้าสาว/หญิงสะใภ้)",
+                        karanta: "อู-การันต์ ใน อิตถีลิงก์",
+                        paradigm: [
+                            { sing: "วธู", plur: "วธุโย, วธู" },
+                            { sing: "วธุง", plur: "วธุโย, วธู" },
+                            { sing: "วธุยา", plur: "วธูหิ, วธูภิ" },
+                            { sing: "วธุยา", plur: "วธูนํ" },
+                            { sing: "วธุยา", plur: "วธูหิ, วธูภิ" },
+                            { sing: "วธุยา", plur: "วธูนํ" },
+                            { sing: "วธุยํ, วธุยา", plur: "วธูสุ" },
+                            { sing: "วธุ", plur: "วธุโย, วธู" }
+                        ]
+                    }
+                ]
+            },
+
+            // 3. นปุงสกลิงก์ (Neuter)
+            napung: {
+                title: "นปุงสกลิงก์ (Neuter)",
+                words: [
+                    {
+                        id: "citta",
+                        name: "จิตต (จิต/ใจ)",
+                        karanta: "อ-การันต์ ใน นปุงสกลิงก์",
+                        paradigm: [
+                            { sing: "จิตตํ", plur: "จิตตานิ" },
+                            { sing: "จิตตํ", plur: "จิตเต" },
+                            { sing: "จิตเตนะ", plur: "จิตเตหิ, จิตเตภิ" },
+                            { sing: "จิตตัสสะ", plur: "จิตตานํ" },
+                            { sing: "จิตตัสสมา, จิตตัมหา, จิตตา", plur: "จิตเตหิ, จิตเตภิ" },
+                            { sing: "จิตตัสสะ", plur: "จิตตานํ" },
+                            { sing: "จิตตัสสมึ, จิตตัมหิ, จิตเต", plur: "จิตเตสุ" },
+                            { sing: "จิตตะ", plur: "จิตตานิ" }
+                        ]
+                    },
+                    {
+                        id: "akkhi",
+                        name: "อกฺขิ / อักขิ (นัยน์ตา)",
+                        karanta: "อิ-การันต์ ใน นปุงสกลิงก์",
+                        paradigm: [
+                            { sing: "อกฺขิ", plur: "อกฺขีนิ, อกฺขี" },
+                            { sing: "อกฺขึ", plur: "อกฺขีนิ, อกฺขี" },
+                            { sing: "อกฺขินา", plur: "อกฺขีหิ, อกฺขีภิ" },
+                            { sing: "อกฺขิสสะ, อกฺขิโน", plur: "อกฺขีนํ" },
+                            { sing: "อกฺขิสสมา, อกฺขิมหา", plur: "อกฺขีหิ, อกฺขีภิ" },
+                            { sing: "อกฺขิสสะ, อกฺขิโน", plur: "อกฺขีนํ" },
+                            { sing: "อกฺขิสสมึ, อกฺขิมหิ", plur: "อกฺขีสุ" },
+                            { sing: "อกฺขิ", plur: "อกฺขีนิ, อกฺขี" }
+                        ]
+                    },
+                    {
+                        id: "vatthu",
+                        name: "วตฺถุ / วัตถุ (วัตถุ/เรื่อง)",
+                        karanta: "อุ-การันต์ ใน นปุงสกลิงก์",
+                        paradigm: [
+                            { sing: "วตฺถุ", plur: "วตฺถูนิ, วตฺถู" },
+                            { sing: "วตฺถุํ", plur: "วตฺถูนิ, วตฺถู" },
+                            { sing: "วตฺถุนา", plur: "วตฺถูหิ, วตฺถูภิ" },
+                            { sing: "วตฺถุสสะ, วตฺถุโน", plur: "วตฺถูนํ" },
+                            { sing: "วตฺถุสสมา, วตฺถุมหา", plur: "วตฺถูหิ, วตฺถูภิ" },
+                            { sing: "วตฺถุสสะ, วตฺถุโน", plur: "วตฺถูนํ" },
+                            { sing: "วตฺถุสสมึ, วตฺถุมหิ", plur: "วตฺถูสุ" },
+                            { sing: "วตฺถุ", plur: "วตฺถูนิ, วตฺถู" }
+                        ]
+                    }
+                ]
+            },
+
+            // 4. กติปยศัพท์ (Katipaya Words)
+            katipaya: {
+                title: "กติปยศัพท์ (12 ศัพท์หลัก)",
+                words: [
+                    {
+                        id: "atta",
+                        name: "อตฺต / อัตต (ตน)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "อตฺตา", plur: "อตฺตาโน" },
+                            { sing: "อตฺตานํ, อตฺตํ", plur: "อตฺตาโน" },
+                            { sing: "อตฺตนา", plur: "อตฺตเนหิ, อตฺตเนภิ" },
+                            { sing: "อตฺตโน", plur: "อตฺตนานํ" },
+                            { sing: "อตฺตนา", plur: "อตฺตเนหิ, อตฺตเนภิ" },
+                            { sing: "อตฺตโน", plur: "อตฺตนานํ" },
+                            { sing: "อตฺตนิ", plur: "อตฺตเนสุ" },
+                            { sing: "อตฺตะ", plur: "อตฺตาโน" }
+                        ]
+                    },
+                    {
+                        id: "raja",
+                        name: "ราช (พระราชา)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "ราชา", plur: "ราชาโน" },
+                            { sing: "ราชานํ", plur: "ราชาโน" },
+                            { sing: "ราชินา, รญฺญา", plur: "ราชาูหิ, ราชูภิ" },
+                            { sing: "รญฺโญ, ราชิโน", plur: "ราชูนํ, รญฺญํ" },
+                            { sing: "รญฺญา, ราชมหา", plur: "ราชูหิ, ราชูภิ" },
+                            { sing: "รญฺโญ, ราชิโน", plur: "ราชูนํ, รญฺญํ" },
+                            { sing: "รญฺเญ, ราชินิ", plur: "ราชูสุ" },
+                            { sing: "ราชา", plur: "ราชาโน" }
+                        ]
+                    },
+                    {
+                        id: "satthu",
+                        name: "สตฺถุ / สัตถุ (พระศาสดา)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "สตฺถา", plur: "สตฺถาโร" },
+                            { sing: "สตฺธารํ", plur: "สตฺถาโร, สตฺถาเร" },
+                            { sing: "สตฺถารา, สตฺถุนา", plur: "สตฺถาเรหิ, สตฺถาเรภิ" },
+                            { sing: "สตฺถุ, สตฺถุโน, สตฺธุสสะ", plur: "สตฺถารานํ, สตฺธานํ" },
+                            { sing: "สตฺถารา", plur: "สตฺถาเรหิ, สตฺถาเรภิ" },
+                            { sing: "สตฺถุ, สตฺถุโน, สตฺธุสสะ", plur: "สตฺถารานํ, สตฺธานํ" },
+                            { sing: "สตฺถาริ", plur: "สตฺถาเรสุ" },
+                            { sing: "สตฺถา, สตฺเถ", plur: "สตฺถาโร" }
+                        ]
+                    },
+                    {
+                        id: "pitu",
+                        name: "ปิตุ (บิดา)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "ปิตา", plur: "ปิตาโร" },
+                            { sing: "ปิตารํ", plur: "ปิตาโร, ปิตาเร" },
+                            { sing: "ปิตารา, ปิตุนา", plur: "ปิตุหิ, ปิตุภิ, ปิตาเรหิ" },
+                            { sing: "ปิตุ, ปิตุโน, ปิตุสสะ", plur: "ปิตูนํ, ปิตารานํ" },
+                            { sing: "ปิตารา", plur: "ปิตุหิ, ปิตุภิ, ปิตาเรหิ" },
+                            { sing: "ปิตุ, ปิตุโน, ปิตุสสะ", plur: "ปิตูนํ, ปิตารานํ" },
+                            { sing: "ปิตาริ", plur: "ปิตูสุ, ปิตาเรสุ" },
+                            { sing: "ปิตา", plur: "ปิตาโร" }
+                        ]
+                    },
+                    {
+                        id: "matu",
+                        name: "มาตุ (มารดา)",
+                        karanta: "กติปยศัพท์ (อิตถีลิงก์)",
+                        paradigm: [
+                            { sing: "มาตา", plur: "มาตาโร" },
+                            { sing: "มาตารํ", plur: "มาตาโร, มาตาเร" },
+                            { sing: "มาตุยา, มาตรา", plur: "มาตุหิ, มาตุภิ, มาตารูหิ" },
+                            { sing: "มาตุ, มาตุยา", plur: "มาตูนํ, มาตารานํ, มาตานํ" },
+                            { sing: "มาตุยา", plur: "มาตุหิ, มาตุภิ, มาตารูหิ" },
+                            { sing: "มาตุ, มาตุยา", plur: "มาตูนํ, มาตารานํ, มาตานํ" },
+                            { sing: "มาตุยํ, มาตุยา", plur: "มาตูสุ, มาตาเรสุ" },
+                            { sing: "มาตา", plur: "มาตาโร" }
+                        ]
+                    },
+                    {
+                        id: "brahma",
+                        name: "พฺรหฺม / พรหม (พระพรหม)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "พฺรหฺมา", plur: "พฺรหฺมาโน" },
+                            { sing: "พฺรหฺมานํ", plur: "พฺรหฺมาโน" },
+                            { sing: "พฺรหฺมุนา", plur: "พฺรหฺเมหิ, พฺรหฺเมภิ" },
+                            { sing: "พฺรหฺมุโน", plur: "พฺรหฺมานํ" },
+                            { sing: "พฺรหฺมุนา", plur: "พฺรหฺเมหิ, พฺรหฺเมภิ" },
+                            { sing: "พฺรหฺมุโน", plur: "พฺรหฺมานํ" },
+                            { sing: "พฺรหฺมนิ", plur: "พฺรหฺเมสุ" },
+                            { sing: "พฺรหฺเม", plur: "พฺรหฺมาโน" }
+                        ]
+                    },
+                    {
+                        id: "attha",
+                        name: "อตฺถ / อัตถ (ประโยชน์/ความหมาย)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "อตฺโถ", plur: "อตฺถา" },
+                            { sing: "อตฺถํ", plur: "อตฺเถ" },
+                            { sing: "อตฺเถนะ", plur: "อตฺเถหิ, อตฺเถภิ" },
+                            { sing: "อตฺถัสสะ, อตฺถายะ", plur: "อตฺถานํ" },
+                            { sing: "อตฺถัสสมา, อตฺถามหา", plur: "อตฺเถหิ, อตฺเถภิ" },
+                            { sing: "อตฺถัสสะ", plur: "อตฺถานํ" },
+                            { sing: "อตฺถัสสมึ, อตฺเถ", plur: "อตฺเถสุ" },
+                            { sing: "อตฺถ", plur: "อตฺถา" }
+                        ]
+                    },
+                    {
+                        id: "kamma",
+                        name: "กมฺม / กัมม (กรรม/การกระทำ)",
+                        karanta: "กติปยศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "กมฺมํ", plur: "กมฺมานิ, กมฺมา" },
+                            { sing: "กมฺมํ", plur: "กมฺมานิ, กมฺเม" },
+                            { sing: "กมฺมุนา, กมฺเมนะ", plur: "กมฺเมหิ, กมฺเมภิ" },
+                            { sing: "กมฺมุโน, กมฺมัสสะ", plur: "กมฺมานํ" },
+                            { sing: "กมฺมุนา, กมฺมสมา", plur: "กมฺเมหิ, กมฺเมภิ" },
+                            { sing: "กมฺมุโน, กมฺมัสสะ", plur: "กมฺมานํ" },
+                            { sing: "กมฺมนิ, กมฺมัสสมึ", plur: "กมฺเมสุ" },
+                            { sing: "กมฺม", plur: "กมฺมานิ, กมฺมา" }
+                        ]
+                    },
+                    {
+                        id: "go",
+                        name: "โค (โค/วัว)",
+                        karanta: "กติปยศัพท์ (ปุง/อิตถีลิงก์)",
+                        paradigm: [
+                            { sing: "โค", plur: "คาโว, คาโว" },
+                            { sing: "กาวํ, คาพุํ", plur: "คาโว, คาโว" },
+                            { sing: "คาเวนะ, คาเวนา", plur: "โคหิ, โคภิ" },
+                            { sing: "คาวัสสะ, คุสสะ", plur: "คุนฺนํ, โคนํ" },
+                            { sing: "คาวัสสมา, คาวมหา", plur: "โคหิ, โคภิ" },
+                            { sing: "คาวัสสะ, คุสสะ", plur: "คุนฺนํ, โคนํ" },
+                            { sing: "คาเว, คาวมัสมึ", plur: "โคสุ" },
+                            { sing: "โค", plur: "คาโว" }
+                        ]
+                    },
+                    {
+                        id: "bhagavantu",
+                        name: "ภควนฺตุ / ภควันต์ (พระผู้มีพระภาค)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "ภควา", plur: "ภควนฺโต, ภควนฺตา" },
+                            { sing: "ภควนฺตํ", plur: "ภควนฺเต" },
+                            { sing: "ภควตา, ภควนฺเตนะ", plur: "ภควนฺเตหิ, ภควนฺเตภิ" },
+                            { sing: "ภควโต, ภควนฺตัสสะ", plur: "ภควตํ, ภควนฺตานํ" },
+                            { sing: "ภควตา", plur: "ภควนฺเตหิ, ภควนฺเตภิ" },
+                            { sing: "ภควโต, ภควนฺตัสสะ", plur: "ภควตํ, ภควนฺตานํ" },
+                            { sing: "ภควติ, ภควนฺเต", plur: "ภควนฺเตสุ" },
+                            { sing: "ภควํ, ภควา", plur: "ภควนฺโต, ภควนฺตา" }
+                        ]
+                    },
+                    {
+                        id: "ayasmantu",
+                        name: "อายสฺมนฺตุ / อายัสมันต์ (ผู้มีอายุ)",
+                        karanta: "กติปยศัพท์ (ปุงลิงก์)",
+                        paradigm: [
+                            { sing: "อายสฺมา", plur: "อายสฺมนฺโต" },
+                            { sing: "อายสฺมนฺตํ", plur: "อายสฺมนฺเต" },
+                            { sing: "อายสฺมตา", plur: "อายสฺมนฺเตหิ" },
+                            { sing: "อายสฺมโต", plur: "อายสฺมตํ, อายสฺมนฺตานํ" },
+                            { sing: "อายสฺมตา", plur: "อายสฺมนฺเตหิ" },
+                            { sing: "อายสฺมโต", plur: "อายสฺมตํ, อายสฺมนฺตานํ" },
+                            { sing: "อายสฺมติ", plur: "อายสฺมนฺเตสุ" },
+                            { sing: "อายสฺมํ, อายสฺมา", plur: "อายสฺมนฺโต" }
+                        ]
+                    },
+                    {
+                        id: "kim",
+                        name: "กิม (อะไร/ผู้ใด)",
+                        karanta: "กติปยศัพท์ (สรรพนาม)",
+                        paradigm: [
+                            { sing: "โก", plur: "เก" },
+                            { sing: "กํ", plur: "เก" },
+                            { sing: "เกนะ", plur: "เกหิ, เกภิ" },
+                            { sing: "กัสสะ, กิสสะ", plur: "เกสํ, เกสานํ" },
+                            { sing: "กัสสมา, กัมหา", plur: "เกหิ, เกภิ" },
+                            { sing: "กัสสะ, กิสสะ", plur: "เกสํ, เกสานํ" },
+                            { sing: "กัสสมึ, กิมหิ, กิสฺมึ", plur: "เกสุ" },
+                            { sing: "กิม", plur: "เก" }
+                        ]
+                    }
+                ]
+            },
+
+            // 5. มโนคณศัพท์ (Manogana - 12 Words Complete)
+            manogana: {
+                title: "มโนคณศัพท์ (12 ศัพท์)",
+                words: [
+                    {
+                        id: "mana_mg",
+                        name: "1. มน (ใจ)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "มโน", plur: "มนา" },
+                            { sing: "มโน, มนํ", plur: "มเน" },
+                            { sing: "มนสา, มเนนะ", plur: "มเนหิ, มเนภิ" },
+                            { sing: "มนโส, มนัสสะ", plur: "มนานํ" },
+                            { sing: "มนสา, มนสมา", plur: "มเนหิ, มเนภิ" },
+                            { sing: "มนโส, มนัสสะ", plur: "มนานํ" },
+                            { sing: "มนสิ, มนสมึ", plur: "มเนสุ" },
+                            { sing: "มน, มนา", plur: "มนา" }
+                        ]
+                    },
+                    {
+                        id: "vaca",
+                        name: "2. วจ (วาจา/คำพูด)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "วโจ", plur: "วจา" },
+                            { sing: "วโจ, วจํ", plur: "วเจ" },
+                            { sing: "วจสา, วเจนะ", plur: "วเจหิ, วเจภิ" },
+                            { sing: "วจโส, วจัสสะ", plur: "วจานํ" },
+                            { sing: "วจสา, วจสมา", plur: "วเจหิ, วเจภิ" },
+                            { sing: "วจโส, วจัสสะ", plur: "วจานํ" },
+                            { sing: "วจสิ, วจสมึ", plur: "วเจสุ" },
+                            { sing: "วจ, วจา", plur: "วจา" }
+                        ]
+                    },
+                    {
+                        id: "ceta",
+                        name: "3. เจต (ใจ/ความคิด)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "เจโต", plur: "เจตา" },
+                            { sing: "เจโต, เจตํ", plur: "เจเต" },
+                            { sing: "เจตสา, เจเตนะ", plur: "เจเตหิ, เจเตภิ" },
+                            { sing: "เจตโส, เจตัสสะ", plur: "เจตานํ" },
+                            { sing: "เจตสา, เจตสมา", plur: "เจเตหิ, เจเตภิ" },
+                            { sing: "เจตโส, เจตัสสะ", plur: "เจตานํ" },
+                            { sing: "เจตสิ, เจตสมึ", plur: "เจเตสุ" },
+                            { sing: "เจต, เจตา", plur: "เจตา" }
+                        ]
+                    },
+                    {
+                        id: "yasa",
+                        name: "4. ยส (ยศ/บริวาร)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "ยโส", plur: "ยสา" },
+                            { sing: "ยโส, ยสํ", plur: "ยเส" },
+                            { sing: "ยสสา, ยเสนะ", plur: "ยเสหิ, ยเสภิ" },
+                            { sing: "ยสโส, ยสัสสะ", plur: "ยสานํ" },
+                            { sing: "ยสสา, ยสสมา", plur: "ยเสหิ, ยเสภิ" },
+                            { sing: "ยสโส, ยสัสสะ", plur: "ยสานํ" },
+                            { sing: "ยสสิ, ยสสมึ", plur: "ยเสสุ" },
+                            { sing: "ยส, ยสา", plur: "ยสา" }
+                        ]
+                    },
+                    {
+                        id: "tapa",
+                        name: "5. ตป (ตบะ/ความเพียร)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "ตโป", plur: "ตปา" },
+                            { sing: "ตโป, ตปํ", plur: "ตเป" },
+                            { sing: "ตปสา, ตเปนะ", plur: "ตเปหิ, ตเปภิ" },
+                            { sing: "ตปโส, ตปัสสะ", plur: "ตปานํ" },
+                            { sing: "ตปสา, ตปสมา", plur: "ตเปหิ, ตเปภิ" },
+                            { sing: "ตปโส, ตปัสสะ", plur: "ตปานํ" },
+                            { sing: "ตปสิ, ตปสมึ", plur: "ตเปสุ" },
+                            { sing: "ตป, ตปา", plur: "ตปา" }
+                        ]
+                    },
+                    {
+                        id: "siri",
+                        name: "6. สิริ (สิริ/มงคล)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "สิโร", plur: "สิรา" },
+                            { sing: "สิโร, สิรํ", plur: "สิเร" },
+                            { sing: "สิรสา, สิเรนะ", plur: "สิเรหิ, สิเรภิ" },
+                            { sing: "สิรโส, สิรัสสะ", plur: "สิรานํ" },
+                            { sing: "สิรสา, สิรสมา", plur: "สิเรหิ, สิเรภิ" },
+                            { sing: "สิรโส, สิรัสสะ", plur: "สิรานํ" },
+                            { sing: "สิรสิ, สิรสมึ", plur: "สิเรสุ" },
+                            { sing: "สิร, สิรา", plur: "สิรา" }
+                        ]
+                    },
+                    {
+                        id: "teja",
+                        name: "7. เตช (เดช/อำนาจ)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "เตโช", plur: "เตชา" },
+                            { sing: "เตโช, เตชํ", plur: "เตเช" },
+                            { sing: "เตชสา, เตเชนะ", plur: "เตเชหิ, เตเชภิ" },
+                            { sing: "เตชโส, เตชัสสะ", plur: "เตชานํ" },
+                            { sing: "เตชสา, เตชสมา", plur: "เตเชหิ, เตเชภิ" },
+                            { sing: "เตชโส, เตชัสสะ", plur: "เตชานํ" },
+                            { sing: "เตชสิ, เตชสมึ", plur: "เตเชสุ" },
+                            { sing: "เตช, เตชา", plur: "เตชา" }
+                        ]
+                    },
+                    {
+                        id: "vaya",
+                        name: "8. วย (วัย/อายุ)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "วโย", plur: "วยา" },
+                            { sing: "วโย, วยํ", plur: "วเย" },
+                            { sing: "วยสา, วเยนะ", plur: "วเยหิ, วเยภิ" },
+                            { sing: "วยโส, วยัสสะ", plur: "วยานํ" },
+                            { sing: "วยสา, วยสมา", plur: "วเยหิ, วเยภิ" },
+                            { sing: "วยโส, วยัสสะ", plur: "วยานํ" },
+                            { sing: "วยสิ, วยสมึ", plur: "วเยสุ" },
+                            { sing: "วย, วยา", plur: "วยา" }
+                        ]
+                    },
+                    {
+                        id: "ayu",
+                        name: "9. อายฺ / อายุกาล",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "อาโย", plur: "อายา" },
+                            { sing: "อาโย, อยํ", plur: "อเย" },
+                            { sing: "อยสา, อเยนะ", plur: "อเยหิ, อเยภิ" },
+                            { sing: "อยโส, อยัสสะ", plur: "อายานํ" },
+                            { sing: "อยสา, อยสมา", plur: "อเยหิ, อเยภิ" },
+                            { sing: "อยโส, อยัสสะ", plur: "อายานํ" },
+                            { sing: "อยสิ, อยสมึ", plur: "อเยสุ" },
+                            { sing: "อย, อายา", plur: "อายา" }
+                        ]
+                    },
+                    {
+                        id: "payo",
+                        name: "10. ปย (น้ำนม/น้ำ)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "ปโย", plur: "ปยา" },
+                            { sing: "ปโย, ปยํ", plur: "ปเย" },
+                            { sing: "ปยสา, ปเยนะ", plur: "ปเยหิ, ปเยภิ" },
+                            { sing: "ปยโส, ปยัสสะ", plur: "ปยานํ" },
+                            { sing: "ปยสา, ปยสมา", plur: "ปเยหิ, ปเยภิ" },
+                            { sing: "ปยโส, ปยัสสะ", plur: "ปยานํ" },
+                            { sing: "ปยสิ, ปยสมึ", plur: "ปเยสุ" },
+                            { sing: "ปย, ปยา", plur: "ปยา" }
+                        ]
+                    },
+                    {
+                        id: "sira_mg",
+                        name: "11. สิโร (ยอด/ศีรษะ)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "สิโร", plur: "สิรา" },
+                            { sing: "สิโร, สิรํ", plur: "สิเร" },
+                            { sing: "สิรสา, สิเรนะ", plur: "สิเรหิ, สิเรภิ" },
+                            { sing: "สิรโส, สิรัสสะ", plur: "สิรานํ" },
+                            { sing: "สิรสา, สิรสมา", plur: "สิเรหิ, สิเรภิ" },
+                            { sing: "สิรโส, สิรัสสะ", plur: "สิรานํ" },
+                            { sing: "สิรสิ, สิรสมึ", plur: "สิเรสุ" },
+                            { sing: "สิร, สิรา", plur: "สิรา" }
+                        ]
+                    },
+                    {
+                        id: "raho",
+                        name: "12. รโห (ที่ลับ/ความสงัด)",
+                        karanta: "มโนคณศัพท์ (นปุงสกลิงก์)",
+                        paradigm: [
+                            { sing: "รโห", plur: "รหา" },
+                            { sing: "รโห, รหํ", plur: "รเห" },
+                            { sing: "รหสา, รเหนะ", plur: "รเหหิ, รเหภิ" },
+                            { sing: "รหโส, รหัสสะ", plur: "รหานํ" },
+                            { sing: "รหสา, รหสมา", plur: "รเหหิ, รเหภิ" },
+                            { sing: "รหโส, รหัสสะ", plur: "รหานํ" },
+                            { sing: "รหสิ, รหสมึ", plur: "รเหสุ" },
+                            { sing: "รห, รหา", plur: "รหา" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // State Machine Variables
+        let currentCategory = 'pung';
+        let currentWordIndex = 0;
+        let currentMode = 'drag'; // Default Drag & Drop
+        let selectedDragCard = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            selectCategory('pung');
+        });
+
+        function selectCategory(catKey) {
+            currentCategory = catKey;
+            currentWordIndex = 0;
+
+            const tabs = ['pung', 'itthi', 'napung', 'katipaya', 'manogana'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`tab-${tab}`);
+                if (tab === catKey) {
+                    btn.className = "flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-pali-maroon text-pali-gold shadow-md border-2 border-pali-gold";
+                } else {
+                    btn.className = "flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-slate-700 hover:bg-amber-100/70 border border-transparent";
+                }
+            });
+
+            populateWordSelect();
+            renderApp();
+        }
+
+        function populateWordSelect() {
+            const wordSelect = document.getElementById('word-select');
+            wordSelect.innerHTML = '';
+            const categoryData = grammarData[currentCategory];
+
+            categoryData.words.forEach((wordObj, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = `${wordObj.name} - [${wordObj.karanta}]`;
+                wordSelect.appendChild(opt);
+            });
+
+            wordSelect.value = currentWordIndex;
+            document.getElementById('word-counter').textContent = `(${currentWordIndex + 1}/${categoryData.words.length})`;
+        }
+
+        function onWordChange() {
+            currentWordIndex = parseInt(document.getElementById('word-select').value);
+            document.getElementById('word-counter').textContent = `(${currentWordIndex + 1}/${grammarData[currentCategory].words.length})`;
+            renderApp();
+        }
+
+        function randomizeWord() {
+            const wordsList = grammarData[currentCategory].words;
+            const randIdx = Math.floor(Math.random() * wordsList.length);
+            currentWordIndex = randIdx;
+            document.getElementById('word-select').value = randIdx;
+            document.getElementById('word-counter').textContent = `(${currentWordIndex + 1}/${wordsList.length})`;
+            renderApp();
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            const btnDropdown = document.getElementById('btn-mode-dropdown');
+            const btnDrag = document.getElementById('btn-mode-drag');
+            const btnStudy = document.getElementById('btn-mode-study');
+            const dragPoolContainer = document.getElementById('drag-pool-container');
+            const actionBar = document.getElementById('action-bar');
+
+            btnDropdown.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-amber-200 hover:text-white";
+            btnDrag.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-amber-200 hover:text-white";
+            btnStudy.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-amber-200 hover:text-white";
+
+            if (mode === 'dropdown') {
+                btnDropdown.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-pali-gold text-pali-maroon shadow-md";
+                dragPoolContainer.classList.add('hidden');
+                actionBar.classList.remove('hidden');
+            } else if (mode === 'drag') {
+                btnDrag.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-pali-gold text-pali-maroon shadow-md";
+                dragPoolContainer.classList.remove('hidden');
+                actionBar.classList.remove('hidden');
+            } else if (mode === 'study') {
+                btnStudy.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-pali-gold text-pali-maroon shadow-md";
+                dragPoolContainer.classList.add('hidden');
+                actionBar.classList.add('hidden');
+            }
+
+            renderApp();
+        }
+
+        function renderApp() {
+            const wordObj = grammarData[currentCategory].words[currentWordIndex];
+            
+            document.getElementById('word-title').textContent = wordObj.name;
+            document.getElementById('word-desc').textContent = `${wordObj.karanta} | ${grammarData[currentCategory].title}`;
+            document.getElementById('score-badge').classList.add('hidden');
+
+            const tbody = document.getElementById('declension-table-body');
+            tbody.innerHTML = '';
+
+            // Generate EXACTLY 14 Group Cards (1 card per table cell)
+            const exact14Cards = [];
+            wordObj.paradigm.forEach((pRow, idx) => {
+                exact14Cards.push({ id: `card-sing-${idx}`, value: pRow.sing, caseIdx: idx, type: 'sing' });
+                exact14Cards.push({ id: `card-plur-${idx}`, value: pRow.plur, caseIdx: idx, type: 'plur' });
+            });
+
+            // Shuffle 14 cards pool
+            const shuffled14Pool = [...exact14Cards].sort(() => Math.random() - 0.5);
+
+            if (currentMode === 'drag') {
+                renderDragPool14(shuffled14Pool);
+            }
+
+            // Build 8 Table Rows (14 Slots Total)
+            wordObj.paradigm.forEach((pRow, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = idx % 2 === 0 ? "bg-white hover:bg-amber-50/40" : "bg-amber-50/20 hover:bg-amber-50/60";
+
+                const tdCase = document.createElement('td');
+                tdCase.className = "py-3.5 px-4 font-bold text-pali-900 border-r border-amber-200 text-center bg-amber-50/60";
+                tdCase.innerHTML = `
+                    <div class="text-sm font-bold text-pali-900">${caseTranslations[idx].name}</div>
+                    <div class="text-xs font-normal text-amber-800/80 mt-0.5">${caseTranslations[idx].meaning}</div>
+                `;
+
+                const tdSingular = document.createElement('td');
+                tdSingular.className = "py-3 px-4 border-r border-amber-200 text-center";
+                tdSingular.appendChild(createSlotElement(`sing-${idx}`, pRow.sing, shuffled14Pool));
+
+                const tdPlural = document.createElement('td');
+                tdPlural.className = "py-3 px-4 text-center";
+                tdPlural.appendChild(createSlotElement(`plur-${idx}`, pRow.plur, shuffled14Pool));
+
+                tr.appendChild(tdCase);
+                tr.appendChild(tdSingular);
+                tr.appendChild(tdPlural);
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render EXACT 14 Cards in Top Pool
+        function renderDragPool14(items14) {
+            const pool = document.getElementById('drag-items-pool');
+            pool.innerHTML = '';
+
+            items14.forEach((cardObj) => {
+                const card = document.createElement('div');
+                card.id = cardObj.id;
+                card.className = "draggable-item bg-amber-100 text-pali-900 border-2 border-pali-gold hover:bg-pali-gold hover:text-pali-maroon font-extrabold px-3.5 py-2 rounded-xl shadow text-sm transition-all flex items-center gap-1.5 cursor-grab";
+                card.draggable = true;
+                card.textContent = cardObj.value;
+                card.dataset.id = cardObj.id;
+                card.dataset.value = cardObj.value;
+
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+                card.addEventListener('click', () => handleCardClick(card));
+
+                pool.appendChild(card);
+            });
+        }
+
+        function createSlotElement(id, correctAnswer, poolOptions) {
+            const container = document.createElement('div');
+            container.className = "relative flex flex-col items-center justify-center min-h-[48px]";
+
+            if (currentMode === 'dropdown') {
+                const select = document.createElement('select');
+                select.id = id;
+                select.dataset.answer = correctAnswer;
+                select.className = "w-full max-w-md bg-amber-50/70 border-2 border-amber-300 rounded-xl px-3 py-2 text-center font-bold text-pali-900 focus:outline-none focus:border-pali-500 shadow-sm transition text-xs sm:text-sm";
+
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = "";
+                defaultOpt.textContent = "-- เลือกรูปวิภัตติ --";
+                select.appendChild(defaultOpt);
+
+                // Distinct choices
+                const uniqueValues = Array.from(new Set(poolOptions.map(o => o.value)));
+                uniqueValues.forEach(optVal => {
+                    const opt = document.createElement('option');
+                    opt.value = optVal;
+                    opt.textContent = optVal;
+                    select.appendChild(opt);
+                });
+
+                container.appendChild(select);
+
+            } else if (currentMode === 'drag') {
+                const dropZone = document.createElement('div');
+                dropZone.id = id;
+                dropZone.dataset.answer = correctAnswer;
+                dropZone.dataset.filled = "false";
+                dropZone.dataset.placedCardId = "";
+                dropZone.className = "drop-zone w-full max-w-md border-2 border-dashed border-amber-300 rounded-xl bg-amber-50/40 p-2 flex items-center justify-center font-bold text-pali-900 cursor-pointer shadow-inner min-h-[48px] transition-all";
+                dropZone.innerHTML = '<span class="text-xs text-amber-500/80 font-semibold italic">วางคำตอบที่นี่</span>';
+
+                dropZone.addEventListener('dragover', handleDragOver);
+                dropZone.addEventListener('dragleave', handleDragLeave);
+                dropZone.addEventListener('drop', handleDrop);
+                dropZone.addEventListener('click', handleSlotClick);
+
+                container.appendChild(dropZone);
+
+            } else if (currentMode === 'study') {
+                const badge = document.createElement('div');
+                badge.className = "w-full max-w-md px-3.5 py-2 bg-amber-100/90 border border-pali-gold text-pali-900 font-extrabold rounded-xl text-center shadow-sm text-sm sm:text-base";
+                badge.textContent = correctAnswer;
+                container.appendChild(badge);
+            }
+
+            return container;
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                id: e.target.dataset.id,
+                value: e.target.dataset.value
+            }));
+            e.target.classList.add('dragging');
+            selectedDragCard = e.target;
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropZone = e.currentTarget;
+            dropZone.classList.remove('drag-over');
+
+            const rawData = e.dataTransfer.getData('text/plain');
+            if (rawData) {
+                try {
+                    const data = JSON.parse(rawData);
+                    fillSlotWithCard(dropZone, data.id, data.value);
+                } catch(err) {}
+            }
+        }
+
+        function handleCardClick(card) {
+            if (selectedDragCard === card) {
+                card.classList.remove('ring-4', 'ring-pali-gold');
+                selectedDragCard = null;
+            } else {
+                if (selectedDragCard) {
+                    selectedDragCard.classList.remove('ring-4', 'ring-pali-gold');
+                }
+                selectedDragCard = card;
+                card.classList.add('ring-4', 'ring-pali-gold');
+            }
+        }
+
+        function handleSlotClick(e) {
+            const dropZone = e.currentTarget;
+
+            if (selectedDragCard) {
+                fillSlotWithCard(dropZone, selectedDragCard.dataset.id, selectedDragCard.dataset.value);
+                selectedDragCard.classList.remove('ring-4', 'ring-pali-gold');
+                selectedDragCard = null;
+            } else if (dropZone.dataset.filled === "true") {
+                returnCardToPool(dropZone);
+            }
+        }
+
+        // Fill Slot and Immediately Hide Card from Top Pool
+        function fillSlotWithCard(dropZone, cardId, cardValue) {
+            if (dropZone.dataset.filled === "true") {
+                returnCardToPool(dropZone, false);
+            }
+
+            // HIDE CARD FROM TOP POOL IMMEDIATELY
+            const poolCard = document.getElementById(cardId);
+            if (poolCard) {
+                poolCard.classList.add('used');
+            }
+
+            dropZone.innerHTML = `
+                <div class="flex items-center justify-between w-full px-3 py-1.5 bg-amber-200 text-pali-900 rounded-lg shadow-sm border border-pali-gold font-bold text-xs sm:text-sm">
+                    <span>${cardValue}</span>
+                    <i class="fa-solid fa-circle-xmark text-sm text-amber-800 hover:text-rose-600 ml-2" title="ดึงกลับคืนคลังศัพท์"></i>
+                </div>`;
+            dropZone.dataset.filled = "true";
+            dropZone.dataset.currentValue = cardValue;
+            dropZone.dataset.placedCardId = cardId;
+            dropZone.className = "drop-zone w-full max-w-md border-2 border-solid border-pali-gold rounded-xl bg-amber-100/90 p-1 flex items-center justify-center font-bold text-pali-900 cursor-pointer shadow-sm min-h-[48px] transition-all";
+        }
+
+        // Return Card Back to Top Pool
+        function returnCardToPool(dropZone, resetSlotUI = true) {
+            const placedCardId = dropZone.dataset.placedCardId;
+            if (placedCardId) {
+                const poolCard = document.getElementById(placedCardId);
+                if (poolCard) {
+                    poolCard.classList.remove('used');
+                }
+            }
+
+            if (resetSlotUI) {
+                dropZone.innerHTML = '<span class="text-xs text-amber-500/80 font-semibold italic">วางคำตอบที่นี่</span>';
+                dropZone.dataset.filled = "false";
+                dropZone.dataset.currentValue = "";
+                dropZone.dataset.placedCardId = "";
+                dropZone.className = "drop-zone w-full max-w-md border-2 border-dashed border-amber-300 rounded-xl bg-amber-50/40 p-2 flex items-center justify-center font-bold text-pali-900 cursor-pointer shadow-inner min-h-[48px] transition-all";
+            }
+        }
+
+        function checkAnswers() {
+            const wordObj = grammarData[currentCategory].words[currentWordIndex];
+            let correctCount = 0;
+            const total = 14;
+
+            wordObj.paradigm.forEach((pRow, idx) => {
+                if (validateSlot(`sing-${idx}`)) correctCount++;
+                if (validateSlot(`plur-${idx}`)) correctCount++;
+            });
+
+            const percentage = Math.round((correctCount / total) * 100);
+
+            document.getElementById('score-badge').classList.remove('hidden');
+            document.getElementById('score-text').textContent = `${correctCount} / ${total}`;
+            document.getElementById('score-percent').textContent = percentage;
+
+            showResultModal(correctCount, total, percentage);
+        }
+
+        function validateSlot(id) {
+            const element = document.getElementById(id);
+            if (!element) return false;
+
+            const expected = element.dataset.answer;
+            let userVal = "";
+
+            if (currentMode === 'dropdown') {
+                userVal = element.value;
+                if (userVal === expected) {
+                    element.className = "w-full max-w-md bg-emerald-100 border-2 border-emerald-500 rounded-xl px-3 py-2 text-center font-bold text-emerald-900 shadow-sm transition text-xs sm:text-sm";
+                    return true;
+                } else {
+                    element.className = "w-full max-w-md bg-rose-100 border-2 border-rose-500 rounded-xl px-3 py-2 text-center font-bold text-rose-900 shadow-sm transition text-xs sm:text-sm";
+                    return false;
+                }
+            } else if (currentMode === 'drag') {
+                userVal = element.dataset.currentValue || "";
+                if (userVal === expected) {
+                    element.className = "drop-zone w-full max-w-md border-2 border-emerald-500 rounded-xl bg-emerald-100/90 p-1 flex items-center justify-center font-bold text-emerald-900 shadow-sm min-h-[48px]";
+                    return true;
+                } else {
+                    element.className = "drop-zone w-full max-w-md border-2 border-rose-500 rounded-xl bg-rose-100/90 p-1 flex items-center justify-center font-bold text-rose-900 shadow-sm min-h-[48px]";
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function showAnswers() {
+            const wordObj = grammarData[currentCategory].words[currentWordIndex];
+
+            wordObj.paradigm.forEach((pRow, idx) => {
+                if (currentMode === 'dropdown') {
+                    const singElem = document.getElementById(`sing-${idx}`);
+                    const plurElem = document.getElementById(`plur-${idx}`);
+                    if (singElem) {
+                        singElem.value = pRow.sing;
+                        singElem.className = "w-full max-w-md bg-amber-100 border-2 border-pali-gold rounded-xl px-3 py-2 text-center font-bold text-pali-900 shadow-sm text-xs sm:text-sm";
+                    }
+                    if (plurElem) {
+                        plurElem.value = pRow.plur;
+                        plurElem.className = "w-full max-w-md bg-amber-100 border-2 border-pali-gold rounded-xl px-3 py-2 text-center font-bold text-pali-900 shadow-sm text-xs sm:text-sm";
+                    }
+                } else if (currentMode === 'drag') {
+                    const singElem = document.getElementById(`sing-${idx}`);
+                    const plurElem = document.getElementById(`plur-${idx}`);
+                    if (singElem) fillSlotWithCard(singElem, `card-sing-${idx}`, pRow.sing);
+                    if (plurElem) fillSlotWithCard(plurElem, `card-plur-${idx}`, pRow.plur);
+                }
+            });
+        }
+
+        function resetExercise() {
+            renderApp();
+        }
+
+        function showResultModal(score, total, percent) {
+            const modal = document.getElementById('result-modal');
+            const title = document.getElementById('modal-title');
+            const msg = document.getElementById('modal-message');
+            const icon = document.getElementById('modal-icon');
+
+            document.getElementById('modal-score').textContent = `${score} / ${total}`;
+            document.getElementById('modal-percentage').textContent = `${percent}%`;
+
+            if (percent === 100) {
+                title.textContent = "ถูกต้องทั้งหมด! (สาธุ)";
+                msg.textContent = "คุณตอบถูกต้องครบถ้วนทั้ง 14 ช่องวิภัตติ แม่นยำหลักไวยากรณ์บาลีอย่างยิ่ง!";
+                icon.className = "w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border-2 border-emerald-400 shadow-inner";
+            } else if (percent >= 70) {
+                title.textContent = "เก่งมาก!";
+                msg.textContent = "คุณทำได้ดีมาก ลองทบทวนวิภัตติที่ผิดเล็กน้อยแล้วทดสอบอีกครั้งนะ";
+                icon.className = "w-16 h-16 bg-amber-100 text-pali-700 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border-2 border-pali-gold shadow-inner";
+            } else {
+                title.textContent = "พยายามอีกนิด!";
+                msg.textContent = "ยังสามารถพัฒนาได้อีก ลองกดปุ่ม 'แสดงเฉลย' หรือดูในตารางคู่มือเรียนนะ";
+                icon.className = "w-16 h-16 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border-2 border-orange-400 shadow-inner";
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('result-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>

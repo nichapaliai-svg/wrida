@@ -1,0 +1,309 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DHAMMA LEARNING AI V6 — แก้ปุ่มหน้าหลัก</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f0e8;color:#332b26;font-family:system-ui,"Noto Sans Thai",sans-serif}header{background:linear-gradient(135deg,#4e342e,#8d6e63);color:white;text-align:center;padding:20px}h1{margin:0;font-size:27px}.wrap{max-width:1100px;margin:auto;padding:14px}.tabs{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:14px}button{border:0;border-radius:10px;padding:10px;font-weight:700;cursor:pointer}.tab{background:#fff;color:#5d4037}.active,.btn{background:#795548;color:#fff}.green{background:#587d62!important}.gold{background:#ad8032!important}.light{background:#eee3da;color:#5d4037}.hidden{display:none}.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 3px 12px #0001}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.stat{text-align:center;background:#faf7f2;padding:12px;border-radius:12px}.num{font-size:25px;font-weight:800;color:#795548}.center{text-align:center}.big{font-size:42px;font-weight:800;color:#795548}.question{font-size:22px;font-weight:800;text-align:center;padding:15px}.answer{display:none;background:#faf5ed;border-radius:12px;padding:14px;text-align:center;font-size:22px}.choice{display:block;width:100%;text-align:left;border:2px solid #eadfd6;background:#fff;margin:7px 0}.correct{background:#edf6ef!important;border-color:#587d62!important}.wrong{background:#faeeee!important;border-color:#aa5d5d!important}input,select,textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:9px;font-size:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.item{padding:11px;border-bottom:1px solid #eee}.pill{display:inline-block;background:#eee3da;padding:4px 9px;border-radius:20px;margin:2px;font-size:13px}.barbg{height:14px;background:#eee;border-radius:99px;overflow:hidden}.bar{height:100%;background:#795548}.mini{font-size:13px;color:#75695f}.plan{display:grid;grid-template-columns:55px 1fr 100px;gap:8px;align-items:center;padding:10px;border-bottom:1px solid #eee}.badge{border-radius:9px;padding:5px;text-align:center;background:#eee3da;font-size:13px}@media(max-width:800px){.tabs{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.plan{grid-template-columns:45px 1fr 80px}}@media(max-width:450px){.tabs{grid-template-columns:repeat(3,1fr)}}
+</style>
+<style>
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
+.subject-btn{border:2px solid #ddd;border-radius:14px;background:#fff;padding:12px;cursor:pointer;font-weight:700}
+.subject-btn.active{border-color:#6b4fbb;background:#f4efff}
+.mode-box{border-left:5px solid #6b4fbb;background:#f7f4ff;padding:12px;border-radius:10px;margin:10px 0}
+.tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#eee;margin:3px;font-size:12px}
+textarea,input,select{max-width:100%;box-sizing:border-box}
+.word-list{max-height:260px;overflow:auto}
+.word-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;border-bottom:1px solid #eee;padding:7px 0}
+.small{font-size:12px;color:#666}
+</style>
+
+<style>
+.v6dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.v6stat{background:#fafafa;border:1px solid #ddd;border-radius:14px;padding:12px;text-align:center}
+.v6stat b{font-size:24px}
+.v6weak{border-left:5px solid #b55;background:#fff7f5;padding:12px;border-radius:10px;margin:8px 0}
+.v6good{border-left:5px solid #4a8;background:#f4fff9;padding:12px;border-radius:10px;margin:8px 0}
+.v6choice{display:inline-block;margin:5px;padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer}
+.v6choice:hover{background:#f4efff}
+.v6progress{height:12px;background:#eee;border-radius:99px;overflow:hidden}.v6progress>div{height:100%;background:#7654bd}
+</style>
+</head><body>
+<header><h1>🧠 DHAMMA LEARNING AI V6</h1><div>ธรรมช่วยเรียน • รู้จักผู้เรียน • ฝึกตรงจุด • จำให้แม่น</div></header>
+<div class="wrap"><nav class="tabs">
+<button class="tab active" onclick="show('home',this)">🏠 หน้าแรก</button><button class="tab" onclick="show('mind',this)">🧘 สติ</button><button class="tab" onclick="show('learn',this)">📖 เรียน</button><button class="tab" onclick="show('memory',this)">🧠 จำ</button><button class="tab" onclick="show('review',this)">🔄 ทบทวน</button><button class="tab" onclick="show('quiz',this)">📝 ทดสอบ</button><button class="tab" onclick="show('progress',this)">📊 วิเคราะห์</button><button class="tab" onclick="show('data',this)">📚 ข้อมูล</button>
+</nav>
+<section id="home"><div class="card center"><h2>🌱 แผนฝึกวันนี้</h2><p id="goalshow">ตั้งเป้าหมายก่อนเริ่มได้เลย</p><div id="todayPlan"></div><button class="btn green" onclick="show('mind',document.querySelectorAll('.tab')[1])">เริ่มฝึก</button></div>
+<div class="card"><h3>📊 ภาพรวม</h3><div class="grid"><div class="stat">จำได้<div class="num" id="mem">0%</div></div><div class="stat">เข้าใจ<div class="num" id="under">0%</div></div><div class="stat">นำไปใช้<div class="num" id="use">0%</div></div><div class="stat">สม่ำเสมอ<div class="num" id="days">0</div></div></div></div>
+<div class="card"><h3>หลักธรรมที่ระบบนำมาใช้</h3><span class="pill">สติ</span><span class="pill">สมาธิ</span><span class="pill">โยนิโสมนสิการ</span><span class="pill">อิทธิบาท 4</span><span class="pill">อัปปมาทะ</span></div></section>
+<section id="mind" class="hidden"><div class="card center"><h2>🧘 สติก่อนเรียน</h2><div id="phase">พร้อมแล้ว</div><div class="big" id="timer">30</div><button class="btn green" onclick="mind()">เริ่ม 30 วินาที</button></div><div class="card"><h3>🎯 เป้าหมายวันนี้</h3><input id="goal" placeholder="เช่น จำธาตุ 10 ธาตุและทำแบบทดสอบให้ได้ 80%"><button class="btn" onclick="setGoal()">บันทึก</button></div></section>
+<section id="learn" class="hidden"><div class="card"><h2>📖 เรียน 4 ขั้น</h2><select id="cat" onchange="lesson()"></select><div id="lesson" style="line-height:1.8;margin-top:12px"></div><div id="four"></div></div></section>
+<section id="memory" class="hidden"><div class="card"><h2>🧠 ฝึกจำแบบปรับตามตัวเอง</h2><div id="mq"></div><button class="btn gold" onclick="document.getElementById('ans').style.display='block'">👁 เฉลย</button><button class="btn green" onclick="rate('know')">✓ จำได้</button><button class="light" onclick="rate('no')">× ยังจำไม่ได้</button><div id="fb"></div></div></section>
+<section id="review" class="hidden"><div class="card"><h2>🔄 ทบทวนตามความเร่งด่วน</h2><div id="rl"></div></div></section>
+<section id="quiz" class="hidden"><div class="card"><h2>📝 ทดสอบ</h2><div id="qb"></div></div></section>
+<section id="progress" class="hidden"><div class="card"><h2>📊 วิเคราะห์ผู้เรียน</h2><div id="analysis"></div><h3>อิทธิบาท 4</h3><div id="iddhi"></div></div></section>
+<section id="data" class="hidden"><div class="card"><h2>📚 ฐานข้อมูล</h2><div class="row"><input id="cq" placeholder="คำถาม"><input id="ca" placeholder="คำตอบ"><input id="cc" placeholder="หมวด"><input id="cw" placeholder="คำอธิบาย"></div><button class="btn" onclick="add()">＋ เพิ่ม</button><h3>นำเข้า JSON</h3><textarea id="json" rows="7" placeholder='[{"category":"ธาตุ","q":"...","a":"...","why":"..."}]'></textarea><button class="btn" onclick="imp()">นำเข้า</button><button class="light" onclick="exp()">ส่งออก JSON</button><div id="dl"></div></div></section>
+</div><script>
+const base=[["บาลี","นรศัพท์ ปฐมาวิภัตติ เอกวจนะ คืออะไร?","นโร","รูปปฐมาวิภัตติ เอกวจนะของนรศัพท์ คือ นโร"],["บาลี","นรศัพท์ ทุติยาวิภัตติ เอกวจนะ คืออะไร?","นรํ","รูปทุติยาวิภัตติ เอกวจนะ คือ นรํ"],["บาลี","นโร หมายถึงอะไร?","คน / บุรุษ","นร แปลว่า คน หรือ บุรุษ"],["ธรรมกับการเรียน","สติช่วยการเรียนอย่างไร?","รู้ตัวและจดจ่อกับสิ่งที่กำลังเรียน","สติช่วยให้รู้ตัวและกลับมาสู่บทเรียนเมื่อวอกแวก"],["ธรรมกับการเรียน","โยนิโสมนสิการคืออะไร?","พิจารณาอย่างแยบคาย ไม่จำอย่างเดียว","พิจารณาเหตุ ผล ความสัมพันธ์ และการนำไปใช้"],["ธรรมกับการเรียน","อิทธิบาท 4 มีอะไรบ้าง?","ฉันทะ วิริยะ จิตตะ วิมังสา","ใช้เป็นกรอบสร้างความสนใจ ความเพียร ความจดจ่อ และการตรวจสอบ"]];
+let d=JSON.parse(localStorage.dhl3||"null")||base.map(x=>({category:x[0],q:x[1],a:x[2],why:x[3]}));
+let s=JSON.parse(localStorage.dhs3||"null")||{attempt:0,known:0,under:0,use:0,miss:[],level:{},days:0,goal:"",qt:0,qc:0,lastDay:""};
+let i=0,qi=0,running=0;
+function save(){localStorage.dhl3=JSON.stringify(d);localStorage.dhs3=JSON.stringify(s);update()}
+function show(id,e){
+ const mainSections=["home","mind","learn","memory","review","quiz","progress","data"];
+ mainSections.forEach(k=>{
+   const el=document.getElementById(k);
+   if(el) el.classList.toggle("hidden",k!==id);
+ });
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+ if(e)e.classList.add("active");
+ if(id=="learn")topics();
+ if(id=="memory")memory();
+ if(id=="review")review();
+ if(id=="quiz")quiz();
+ if(id=="progress")analysis();
+ if(id=="data")list();
+ update();
+}
+function mind(){if(running)return;running=1;let t=30;timer.textContent=t;let z=setInterval(()=>{t--;timer.textContent=t;phase.textContent=t%4<2?"หายใจเข้า... รู้ตัว":"หายใจออก... ผ่อนคลาย";if(t<=0){clearInterval(z);running=0;s.days++;phase.textContent="พร้อมเรียนแล้ว — เริ่มด้วยสติ";save()}},1000)}
+function setGoal(){s.goal=goal.value.trim();save()}
+function topics(){cat.innerHTML=[...new Set(d.map(x=>x.category))].map(x=>"<option>"+x+"</option>").join("");lesson()}
+function lesson(){let x=d.find(z=>z.category==cat.value)||d[0];document.getElementById("lesson").innerHTML="<b>1 จำ:</b> "+x.q+"<br><b>2 เข้าใจ:</b> "+x.a+"<br><b>3 เชื่อมโยง:</b> "+x.why+"<br><b>4 ใช้:</b> ลองอธิบายด้วยคำของตนเอง";document.getElementById("four").innerHTML="<div class='item'>โยนิโสมนสิการ: <b>คืออะไร → ทำไม → เกี่ยวข้องอย่างไร → ใช้อย่างไร</b></div>"}
+function nextIndex(){let candidates=d.map((x,n)=>n).sort((a,b)=>priority(b)-priority(a));return candidates[0]||0}
+function priority(n){let lv=s.level[n]||0;if(s.miss.includes(n))return 100-lv*8;return 60-lv*10}
+function memory(){i=nextIndex();let x=d[i];mq.innerHTML="<div class='question'>"+x.q+"</div><div id='ans' class='answer'>"+x.a+"</div><p class='mini center'>นึกเองก่อนดูเฉลย • ถ้าจำไม่ได้ ระบบจะเพิ่มความถี่ในการทบทวน</p>";fb.innerHTML=""}
+function rate(type){let x=d[i];s.attempt++;if(type=="know"){s.known++;s.level[i]=Math.min(5,(s.level[i]||0)+1);s.miss=s.miss.filter(n=>n!=i);fb.innerHTML="<div class='card'>✓ ดีมาก — รอบถัดไปจะเว้นช่วงให้ยาวขึ้น</div>"}else{s.level[i]=0;if(!s.miss.includes(i))s.miss.push(i);fb.innerHTML="<div class='card'>↻ ข้อนี้จะถูกนำกลับมาทบทวนเร็วขึ้น</div>"}save();setTimeout(memory,700)}
+function review(){let a=[...s.miss].sort((x,y)=>priority(y)-priority(x));rl.innerHTML=a.length?a.map(n=>"<div class='item'><span class='pill'>เร่งด่วน</span><b>"+d[n].q+"</b><br>เฉลย: "+d[n].a+"<br><button class='light' onclick='clearM("+n+")'>✓ จำได้แล้ว</button></div>").join(""):"<div class='center'>🎉 ไม่มีรายการเร่งด่วน</div>"}
+function clearM(n){s.miss=s.miss.filter(x=>x!=n);s.level[n]=Math.min(5,(s.level[n]||0)+1);save();review()}
+function quiz(){let x=d[qi%d.length],o=[x.a];while(o.length<4){let z=d[Math.floor(Math.random()*d.length)].a;if(!o.includes(z))o.push(z)}o.sort(()=>Math.random()-.5);qb.innerHTML="<div class='question'>"+x.q+"</div>"+o.map(z=>'<button class="choice" onclick="qa(this,'+JSON.stringify(z)+','+JSON.stringify(x.a)+')">'+z+"</button>").join("")}
+function qa(b,a,r){document.querySelectorAll(".choice").forEach(x=>x.disabled=true);s.qt++;if(a==r){b.classList.add("correct");s.qc++;s.under++}else{b.classList.add("wrong");document.querySelectorAll(".choice").forEach(x=>{if(x.textContent==r)x.classList.add("correct")})}save();setTimeout(()=>{qi++;quiz()},800)}
+function analysis(){let m=s.attempt?Math.round(s.known/s.attempt*100):0,u=s.qt?Math.round(s.qc/s.qt*100):0,use=s.attempt?Math.min(100,Math.round((s.known+s.under+s.use)/(s.attempt*3)*100)):0;analysis.innerHTML="<p><b>🧠 จำ:</b> "+m+"%</p><div class='barbg'><div class='bar' style='width:"+m+"%'></div></div><p><b>💡 เข้าใจ:</b> "+u+"%</p><div class='barbg'><div class='bar' style='width:"+u+"%'></div></div><p><b>🛠 นำไปใช้:</b> "+use+"%</p><div class='barbg'><div class='bar' style='width:"+use+"%'></div></div><hr><b>คำแนะนำ:</b> "+(s.miss.length?"ควรเริ่มจากข้อที่ยังจำไม่ได้":"สามารถเพิ่มโจทย์ประยุกต์ได้");iddhi.innerHTML=["ฉันทะ","วิริยะ","จิตตะ","วิมังสา"].map((x,n)=>{let vals=[s.goal?70:30,Math.min(100,s.attempt*5),m,u];let v=Math.round(vals[n]);return "<div class=\'item\'><b>"+x+"</b><div class=\'barbg\'><div class=\'bar\' style=\'width:"+v+"%\'></div></div></div>"}).join("")}
+function add(){if(!cq.value||!ca.value)return;d.push({category:cc.value||"ทั่วไป",q:cq.value,a:ca.value,why:cw.value||"ฝึกนึกเองและทบทวน"});cq.value=ca.value=cc.value=cw.value="";save();list()}
+function imp(){try{let x=JSON.parse(json.value);x.forEach(z=>{if(z.q&&z.a)d.push(z)});json.value="";save();list();alert("นำเข้าแล้ว")}catch(e){alert("JSON ไม่ถูกต้อง")}}
+function exp(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="DHAMMA_LEARNING_DATA_V3.json";a.click()}
+function list(){dl.innerHTML=d.map(x=>"<div class='item'><span class='pill'>"+x.category+"</span> "+x.q+" → "+x.a+"</div>").join("")}
+function update(){let m=s.attempt?Math.round(s.known/s.attempt*100):0,u=s.qt?Math.round(s.qc/s.qt*100):0;mem.textContent=m+"%";under.textContent=u+"%";use.textContent=Math.min(100,Math.round((m+u)/2))+"%";days.textContent=s.days;goalshow.textContent=s.goal?"🎯 "+s.goal:"ตั้งเป้าหมายก่อนเริ่มได้เลย";if(document.getElementById("goal"))goal.value=s.goal;todayPlan.innerHTML="<div class='plan'><b>01</b><span>ฝึกสติ</span><span class='badge'>30 วินาที</span></div><div class='plan'><b>02</b><span>ฝึกข้อที่เร่งด่วน</span><span class='badge'>"+s.miss.length+" ข้อ</span></div><div class='plan'><b>03</b><span>ทำแบบทดสอบ</span><span class='badge'>10 ข้อ</span></div>"}
+update();topics();
+</script>
+<section class="card" id="v4-subjects">
+<h2>🎓 V4 ห้องเรียนรวมทุกวิชา</h2>
+<p>เลือกวิชา แล้วระบบจะเปลี่ยนวิธีฝึกให้เหมาะกับลักษณะของวิชานั้น</p>
+<div class="subject-grid" id="subjectGrid"></div>
+<div class="mode-box" id="subjectMode"></div>
+</section>
+
+<section class="card">
+<h2>📚 เพิ่มคำศัพท์ / เนื้อหา</h2>
+<p class="small">เพิ่มได้ทีละรายการ หรือหลายรายการพร้อมกัน โดยข้อมูลจะเก็บไว้ในเครื่องนี้</p>
+<div class="row">
+<label>วิชา
+<select id="addSubject">
+<option>ภาษาไทย</option><option>คณิตศาสตร์</option><option>วิทยาศาสตร์</option>
+<option>สังคมศึกษา</option><option>ภาษาอังกฤษ</option><option>สุขศึกษา</option>
+<option>พระพุทธศาสนา</option><option>ภาษาบาลี</option><option>อื่นๆ</option>
+</select></label>
+<label>หัวข้อ/คำถาม<br><input id="addFront" placeholder="เช่น 12 × 8 = ?"></label>
+<label>คำตอบ/คำอธิบาย<br><input id="addBack" placeholder="เช่น 96"></label>
+<button onclick="addV4Item()">➕ เพิ่ม</button>
+</div>
+<hr>
+<label>นำเข้าหลายรายการแบบ CSV/ข้อความ<br>
+<textarea id="bulkInput" rows="5" placeholder="วิชา|คำถาม|คำตอบ
+คณิตศาสตร์|12 × 8 = ?|96
+ภาษาไทย|คำราชาศัพท์ของ กิน|เสวย"></textarea></label>
+<button onclick="importV4Bulk()">📥 เพิ่มหลายรายการ</button>
+<button onclick="exportV4()">📤 ส่งออกข้อมูล</button>
+</section>
+
+<section class="card">
+<h2>🧠 ห้องฝึกตามธรรมชาติของวิชา</h2>
+<div id="practiceArea"></div>
+</section>
+
+<section class="card">
+<h2>📋 รายการข้อมูลของฉัน</h2>
+<div id="v4List" class="word-list"></div>
+</section>
+
+<script>
+(function(){
+const KEY='dhl_v4_items';
+const STATE='dhl_v4_state';
+const subjects={
+"ภาษาไทย":{icon:"📝",mode:"อ่าน → เข้าใจ → จำ → อธิบาย",desc:"เน้นคำศัพท์ หลักภาษา การอ่านจับใจความ และการอธิบายด้วยภาษาของตนเอง",q:["คำนี้หมายถึงอะไร?","อธิบายหลักนี้ด้วยคำของตัวเอง","ยกตัวอย่างให้ดู"]},
+"คณิตศาสตร์":{icon:"➗",mode:"เข้าใจหลัก → ทำโจทย์ → ตรวจวิธีคิด → ทำซ้ำ",desc:"ไม่เน้นท่องคำตอบ แต่ฝึกขั้นตอนและตรวจข้อผิดพลาด",q:["ข้อนี้ใช้หลักอะไร?","ทำทีละขั้น","ตรงไหนที่มักผิด?"]},
+"วิทยาศาสตร์":{icon:"🔬",mode:"สังเกต → ตั้งเหตุผล → ทดลอง/อธิบาย → ประยุกต์",desc:"ฝึกเชื่อมเหตุและผล มากกว่าท่องจำอย่างเดียว",q:["เกิดอะไรขึ้น?","เพราะอะไร?","ถ้าเปลี่ยนเงื่อนไขจะเกิดอะไร?"]},
+"สังคมศึกษา":{icon:"🌏",mode:"จำข้อมูล → เชื่อมเหตุผล → เปรียบเทียบ → นำไปใช้",desc:"ฝึกจำบุคคล เหตุการณ์ หน้าที่ กฎหมาย และความสัมพันธ์ของเหตุการณ์",q:["คืออะไร?","เหตุใดจึงเกิด?","เกี่ยวข้องกับอะไร?"]},
+"ภาษาอังกฤษ":{icon:"🇬🇧",mode:"เห็นคำ → อ่านออกเสียง → จำความหมาย → ใช้เป็นประโยค",desc:"ฝึกคำศัพท์ ไวยากรณ์ อ่าน และใช้จริง",q:["คำนี้แปลว่าอะไร?","อ่านอย่างไร?","ใช้ในประโยคใด?"]},
+"สุขศึกษา":{icon:"❤️",mode:"รู้ → เข้าใจ → ตัดสินใจ → ปฏิบัติ",desc:"เน้นความเข้าใจและการนำความรู้ไปใช้ในชีวิตประจำวัน",q:["คืออะไร?","ทำไมจึงสำคัญ?","ในชีวิตจริงควรทำอย่างไร?"]},
+"พระพุทธศาสนา":{icon:"🪷",mode:"ฟัง/อ่าน → พิจารณา → จำหลัก → นำไปใช้",desc:"ใช้สติ สมาธิ โยนิโสมนสิการ อิทธิบาท 4 และการทบทวน",q:["หลักธรรมนี้คืออะไร?","เหตุผลคืออะไร?","นำไปใช้กับชีวิตอย่างไร?"]},
+"ภาษาบาลี":{icon:"📜",mode:"ศัพท์ → รูปศัพท์ → หลักไวยากรณ์ → แต่ง/แปล",desc:"ฝึกศัพท์ รูปศัพท์ วิภัตติ ธาตุ และการนำไปใช้ตามหลักไวยากรณ์",q:["ศัพท์นี้แปลว่าอะไร?","รูปนี้มาจากอะไร?","ใช้หลักไวยากรณ์ข้อใด?"]},
+"อื่นๆ":{icon:"📚",mode:"รู้ → เข้าใจ → นึกเอง → อธิบาย → ใช้",desc:"ใช้ระบบกลาง แล้วปรับตามลักษณะของเนื้อหา",q:["คืออะไร?","อธิบายเองได้ไหม?","ใช้ได้อย่างไร?"]}
+};
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
+let items=load();
+let selected=localStorage.getItem(STATE)||"ภาษาไทย";
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function renderSubjects(){
+ const g=document.getElementById('subjectGrid');
+ g.innerHTML=Object.entries(subjects).map(([s,o])=>`<button class="subject-btn ${s===selected?'active':''}" onclick="selectSubject('${s}')">${o.icon}<br>${s}</button>`).join('');
+ const o=subjects[selected];
+ document.getElementById('subjectMode').innerHTML=`<b>${o.icon} ${selected}</b><br><span class="tag">${o.mode}</span><br>${o.desc}`;
+ document.getElementById('addSubject').value=selected;
+ renderPractice(); renderList();
+}
+window.selectSubject=function(s){selected=s;localStorage.setItem(STATE,s);renderSubjects()};
+
+function renderPractice(){
+ const o=subjects[selected];
+ const pool=items.filter(x=>x.subject===selected);
+ let x=pool.length?pool[Math.floor(Math.random()*pool.length)]:null;
+ document.getElementById('practiceArea').innerHTML=`
+ <div class="mode-box">
+ <b>🎯 วันนี้ฝึก ${selected}</b><br>${o.mode}
+ <div style="margin-top:10px">${o.q.map((q,i)=>`<span class="tag">${i+1}. ${q}</span>`).join('')}</div>
+ </div>
+ ${x?`<div id="v4card" class="mode-box"><b>คำถาม</b><p style="font-size:20px">${esc(x.front)}</p>
+ <button onclick="document.getElementById('v4ans').style.display='block'">🧠 นึกเองก่อนดูเฉลย</button>
+ <div id="v4ans" style="display:none;margin-top:12px"><b>เฉลย</b><p>${esc(x.back)}</p>
+ <button onclick="rateV4(true)">✓ จำได้</button> <button onclick="rateV4(false)">× ยังไม่แม่น</button></div></div>`
+ :`<p>ยังไม่มีข้อมูลของวิชานี้ครับ ให้เพิ่มข้อมูลด้านบนก่อน แล้วเริ่มฝึกได้ทันที`}`;
+}
+window.rateV4=function(ok){
+ let a=load(), id=document.querySelector('#v4card p')?.textContent;
+ let x=a.find(z=>z.subject===selected&&z.front===id);
+ if(x){x.correct=(x.correct||0)+(ok?1:0);x.wrong=(x.wrong||0)+(ok?0:1);x.last=Date.now();save(a)}
+ renderPractice();renderList();
+}
+window.addV4Item=function(){
+ const sub=document.getElementById('addSubject').value, f=document.getElementById('addFront').value.trim(), b=document.getElementById('addBack').value.trim();
+ if(!f||!b){alert('กรุณาใส่คำถามและคำตอบ');return}
+ items=load();items.push({id:Date.now()+Math.random(),subject:sub,front:f,back:b,correct:0,wrong:0});save(items);
+ selected=sub;localStorage.setItem(STATE,selected);document.getElementById('addFront').value='';document.getElementById('addBack').value='';renderSubjects();
+}
+window.importV4Bulk=function(){
+ const raw=document.getElementById('bulkInput').value.trim(); if(!raw)return;
+ const a=load();
+ raw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).forEach(line=>{
+  let p=line.split('|'); if(p.length<3)p=line.split(',');
+  if(p.length>=3){let [subject,front,...rest]=p;let back=rest.join('|').trim();if(subject!=='วิชา')a.push({id:Date.now()+Math.random(),subject:subject.trim(),front:front.trim(),back,correct:0,wrong:0})}
+ });
+ save(a);items=a;renderSubjects();alert('เพิ่มข้อมูลเรียบร้อยแล้ว');
+}
+window.exportV4=function(){
+ const blob=new Blob([JSON.stringify(load(),null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='DHAMMA_LEARNING_AI_V6_DATA.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+window.delV4=function(id){if(!confirm('ลบรายการนี้หรือไม่?'))return;let a=load().filter(x=>x.id!=id);save(a);items=a;renderList();renderPractice()}
+function renderList(){
+ const a=load().filter(x=>x.subject===selected);
+ document.getElementById('v4List').innerHTML=a.length?a.map(x=>`<div class="word-row"><div><b>${esc(x.front)}</b><div class="small">${esc(x.back)}</div></div><div class="small">✓${x.correct||0} / ×${x.wrong||0}</div><button onclick="delV4(${x.id})">ลบ</button></div>`).join(''):`ยังไม่มีข้อมูลในวิชา ${selected}`;
+}
+renderSubjects();
+})();
+</script>
+<script>
+(function(){
+const seed=[{"subject":"ภาษาไทย","front":"คำนามคืออะไร","back":"คำที่ใช้เรียกคน สัตว์ สิ่งของ สถานที่ หรือสิ่งต่าง ๆ","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำกริยาคืออะไร","back":"คำที่แสดงอาการหรือการกระทำ","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำวิเศษณ์คืออะไร","back":"คำที่ใช้ขยายคำอื่นให้มีความหมายชัดเจนขึ้น","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำสรรพนามคืออะไร","back":"คำที่ใช้แทนคำนาม","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำบุพบทคืออะไร","back":"คำที่แสดงความสัมพันธ์ระหว่างคำ","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำสันธานคืออะไร","back":"คำที่ใช้เชื่อมคำ กลุ่มคำ หรือประโยค","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำอุทานคืออะไร","back":"คำที่แสดงอารมณ์หรือความรู้สึก","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"ประโยคคืออะไร","back":"ข้อความที่มีใจความสมบูรณ์","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"ใจความสำคัญคืออะไร","back":"สาระหลักที่ผู้เขียนต้องการสื่อ","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"พยัญชนะไทยมีกี่ตัว","back":"44 ตัว","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"วรรณยุกต์ไทยมีกี่รูป","back":"4 รูป","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำเป็นคืออะไร","back":"คำที่มีลักษณะตามหลักเสียงซึ่งจัดเป็นคำเป็น","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"คำตายคืออะไร","back":"คำที่มีลักษณะตามหลักเสียงซึ่งจัดเป็นคำตาย","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"การจับใจความควรทำอย่างไร","back":"อ่านให้เข้าใจแล้วสรุปสาระสำคัญด้วยภาษาของตนเอง","correct":0,"wrong":0},{"subject":"ภาษาไทย","front":"การอ่านออกเสียงที่ดีควรเป็นอย่างไร","back":"อ่านถูกต้อง ชัดเจน และเหมาะกับความหมาย","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"7 + 8 = ?","back":"15","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"12 × 8 = ?","back":"96","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"81 ÷ 9 = ?","back":"9","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"15 − 7 = ?","back":"8","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"ครึ่งหนึ่งของ 100 คือเท่าไร","back":"50","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"25% ของ 200 เท่ากับเท่าไร","back":"50","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"สามเหลี่ยมมีมุมภายในรวมกี่องศา","back":"180 องศา","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"สี่เหลี่ยมมีมุมภายในรวมกี่องศา","back":"360 องศา","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"พื้นที่สี่เหลี่ยมผืนผ้าหาอย่างไร","back":"กว้าง × ยาว","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"พื้นที่สามเหลี่ยมหาอย่างไร","back":"1/2 × ฐาน × สูง","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"เส้นรอบรูปสี่เหลี่ยมจัตุรัสหาอย่างไร","back":"4 × ความยาวด้าน","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"1 เมตรเท่ากับกี่เซนติเมตร","back":"100 เซนติเมตร","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"1 กิโลกรัมเท่ากับกี่กรัม","back":"1,000 กรัม","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"เศษส่วน 1/2 เท่ากับทศนิยมเท่าไร","back":"0.5","correct":0,"wrong":0},{"subject":"คณิตศาสตร์","front":"ถ้าไม่แน่ใจคำตอบควรทำอย่างไร","back":"ตรวจขั้นตอนการคำนวณทีละขั้น","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"สิ่งมีชีวิตต้องการอะไรในการดำรงชีวิต","back":"พลังงาน น้ำ อากาศ และปัจจัยที่เหมาะสม","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"พืชสร้างอาหารด้วยกระบวนการใด","back":"การสังเคราะห์ด้วยแสง","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"ก๊าซที่มนุษย์ใช้หายใจคืออะไร","back":"ออกซิเจน","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"น้ำเดือดที่ความดันบรรยากาศปกติประมาณกี่องศา","back":"100 องศาเซลเซียส","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"น้ำแข็งเปลี่ยนเป็นน้ำเรียกว่าอะไร","back":"การหลอมเหลว","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"น้ำเปลี่ยนเป็นไอเรียกว่าอะไร","back":"การระเหย","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"แรงโน้มถ่วงคืออะไร","back":"แรงที่ดึงวัตถุเข้าหากัน โดยโลกดึงวัตถุเข้าสู่พื้นโลก","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"โลกหมุนรอบตัวเองใช้เวลาประมาณเท่าไร","back":"24 ชั่วโมง","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"โลกโคจรรอบดวงอาทิตย์ใช้เวลาประมาณเท่าไร","back":"1 ปี","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"ดวงอาทิตย์เป็นอะไร","back":"ดาวฤกษ์","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"ระบบสุริยะมีดาวเคราะห์กี่ดวง","back":"8 ดวง","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"วงจรไฟฟ้าจะทำงานได้เมื่อใด","back":"เมื่อวงจรเป็นวงจรปิดและมีแหล่งพลังงาน","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"การทดลองที่ดีควรทำอย่างไร","back":"กำหนดตัวแปร สังเกต บันทึก และสรุปจากหลักฐาน","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"สมมติฐานคืออะไร","back":"คำอธิบายหรือคำคาดคะเนที่ตรวจสอบได้","correct":0,"wrong":0},{"subject":"วิทยาศาสตร์","front":"เมื่อผลทดลองไม่ตรงสมมติฐานควรทำอย่างไร","back":"ตรวจสอบวิธีทดลองและพิจารณาหลักฐานใหม่","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"ครอบครัวมีหน้าที่สำคัญอย่างไร","back":"ดูแลสมาชิกและส่งเสริมการอยู่ร่วมกัน","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"หน้าที่ของพลเมืองคืออะไร","back":"ปฏิบัติตามกฎหมายและรับผิดชอบต่อสังคม","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"สิทธิหมายถึงอะไร","back":"สิ่งที่บุคคลพึงได้รับหรือพึงมีตามกฎหมายและหลักที่เกี่ยวข้อง","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"หน้าที่หมายถึงอะไร","back":"สิ่งที่บุคคลควรปฏิบัติ","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"ประชาธิปไตยคืออะไร","back":"การปกครองที่ประชาชนมีส่วนร่วมตามหลักและกติกาที่กำหนด","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"กฎหมายมีไว้เพื่ออะไร","back":"กำหนดกติกาและรักษาความเป็นระเบียบของสังคม","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"เศรษฐศาสตร์ศึกษาสิ่งใด","back":"การใช้ทรัพยากรที่มีจำกัดเพื่อสนองความต้องการ","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"อุปสงค์คืออะไร","back":"ความต้องการซื้อสินค้าหรือบริการที่มีความสามารถและความเต็มใจจะซื้อ","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"อุปทานคืออะไร","back":"ปริมาณสินค้าหรือบริการที่ผู้ขายพร้อมเสนอขาย","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"ภูมิศาสตร์ศึกษาเรื่องใด","back":"ลักษณะพื้นที่ คน และความสัมพันธ์ระหว่างมนุษย์กับสิ่งแวดล้อม","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"แผนที่ใช้ทำอะไร","back":"แสดงตำแหน่ง ลักษณะ และความสัมพันธ์ของพื้นที่","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"วัฒนธรรมคืออะไร","back":"แบบแผนความคิด ความเชื่อ และการดำเนินชีวิตที่สังคมเรียนรู้ร่วมกัน","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"การอนุรักษ์สิ่งแวดล้อมทำอย่างไร","back":"ใช้ทรัพยากรอย่างคุ้มค่า ลดขยะ และรักษาธรรมชาติ","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"การอยู่ร่วมกันอย่างสันติควรทำอย่างไร","back":"เคารพสิทธิ รับฟัง และแก้ความขัดแย้งด้วยเหตุผล","correct":0,"wrong":0},{"subject":"สังคมศึกษา","front":"การเรียนประวัติศาสตร์ควรทำอย่างไร","back":"ตรวจสอบหลักฐานและเชื่อมโยงเหตุการณ์ตามลำดับเวลา","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"apple แปลว่าอะไร","back":"แอปเปิล","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"book แปลว่าอะไร","back":"หนังสือ","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"school แปลว่าอะไร","back":"โรงเรียน","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"water แปลว่าอะไร","back":"น้ำ","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"friend แปลว่าอะไร","back":"เพื่อน","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"happy แปลว่าอะไร","back":"มีความสุข","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"beautiful แปลว่าอะไร","back":"สวยงาม","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"go แปลว่าอะไร","back":"ไป","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"eat แปลว่าอะไร","back":"กิน","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"What is your name? แปลว่าอะไร","back":"คุณชื่ออะไร","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"Good morning แปลว่าอะไร","back":"สวัสดีตอนเช้า","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"Thank you แปลว่าอะไร","back":"ขอบคุณ","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"I am a student. แปลว่าอะไร","back":"ฉันเป็นนักเรียน","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"She is happy. แปลว่าอะไร","back":"เธอมีความสุข","correct":0,"wrong":0},{"subject":"ภาษาอังกฤษ","front":"What are you doing? แปลว่าอะไร","back":"คุณกำลังทำอะไร","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"อาหารครบ 5 หมู่มีประโยชน์อย่างไร","back":"ช่วยให้ร่างกายได้รับสารอาหารหลากหลายและเพียงพอ","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"ทำไมต้องล้างมือ","back":"เพื่อลดเชื้อโรคและป้องกันการติดเชื้อ","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"ควรนอนหลับให้เพียงพอเพื่ออะไร","back":"เพื่อให้ร่างกายและสมองได้พักฟื้น","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การออกกำลังกายมีประโยชน์อย่างไร","back":"ช่วยเสริมสมรรถภาพร่างกายและสุขภาพโดยรวม","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"เมื่อรู้สึกเครียดควรทำอย่างไร","back":"หยุดพัก หายใจช้า ๆ และพูดคุยกับคนที่ไว้ใจได้","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การปฐมพยาบาลคืออะไร","back":"การช่วยเหลือเบื้องต้นก่อนถึงการรักษาที่เหมาะสม","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"ทำไมต้องดื่มน้ำให้เพียงพอ","back":"เพื่อช่วยรักษาสมดุลน้ำและการทำงานของร่างกาย","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การกินหวานมากเกินไปอาจเกิดผลอย่างไร","back":"เพิ่มความเสี่ยงต่อปัญหาสุขภาพหลายด้าน","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การอ่านฉลากอาหารช่วยอะไร","back":"ช่วยรู้ข้อมูลโภชนาการและเลือกอาหารได้เหมาะสม","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การดูแลฟันควรทำอย่างไร","back":"แปรงฟันอย่างเหมาะสมและดูแลสุขภาพช่องปากสม่ำเสมอ","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การล้างมือควรทำเมื่อใด","back":"เช่น ก่อนกินอาหารและหลังเข้าห้องน้ำ","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"ความปลอดภัยบนถนนควรทำอย่างไร","back":"ปฏิบัติตามกฎจราจรและใช้ทางข้ามที่เหมาะสม","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"สุขภาพจิตคืออะไร","back":"ภาวะความเป็นอยู่ด้านอารมณ์ ความคิด และการปรับตัว","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"เมื่อมีปัญหาสุขภาพควรทำอย่างไร","back":"สังเกตอาการและขอคำแนะนำจากผู้ปกครองหรือบุคลากรสุขภาพ","correct":0,"wrong":0},{"subject":"สุขศึกษา","front":"การพักผ่อนมีความสำคัญอย่างไร","back":"ช่วยฟื้นฟูร่างกายและสมอง","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"สติคืออะไร","back":"ความระลึกรู้ ไม่ปล่อยใจให้เผลอ","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"สมาธิคืออะไร","back":"ความตั้งมั่นของจิต","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"โยนิโสมนสิการคืออะไร","back":"การพิจารณาโดยแยบคาย","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"อิทธิบาท 4 มีอะไรบ้าง","back":"ฉันทะ วิริยะ จิตตะ วิมังสา","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"ฉันทะหมายถึงอะไร","back":"ความพอใจและความรักในสิ่งที่ทำ","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"วิริยะหมายถึงอะไร","back":"ความเพียรพยายาม","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"จิตตะหมายถึงอะไร","back":"ความเอาใจใส่ฝักใฝ่ในสิ่งที่ทำ","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"วิมังสาหมายถึงอะไร","back":"การพิจารณาไตร่ตรองตรวจสอบ","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"อัปปมาทะหมายถึงอะไร","back":"ความไม่ประมาท","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"ขันติหมายถึงอะไร","back":"ความอดทน","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"เมตตาหมายถึงอะไร","back":"ความปรารถนาให้ผู้อื่นเป็นสุข","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"กรุณาหมายถึงอะไร","back":"ความปรารถนาให้ผู้อื่นพ้นจากทุกข์","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"อริยสัจ 4 มีอะไรบ้าง","back":"ทุกข์ สมุทัย นิโรธ มรรค","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"การเรียนด้วยสติทำอย่างไร","back":"รู้ตัวขณะเรียนและกลับมาที่สิ่งที่กำลังเรียนเมื่อใจเผลอ","correct":0,"wrong":0},{"subject":"พระพุทธศาสนา","front":"ธรรมะนำมาใช้ในการเรียนได้อย่างไร","back":"ใช้สติ สมาธิ ความเพียร และการพิจารณาเพื่อเรียนอย่างมีระบบ","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"นร แปลว่าอะไร","back":"คน, บุรุษ","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"นรศัพท์เป็นปุงลิงค์หรือไม่","back":"เป็นปุงลิงค์","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"ปฐมา วิภัตติใช้บอกอะไร","back":"ใช้บอกประธานหรือผู้ทำในโครงสร้างที่กำหนด","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"ทุติยา วิภัตติใช้บอกอะไร","back":"มักใช้บอกกรรมหรือสิ่งที่ถูกกระทำ","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"เอกวจนะหมายถึงอะไร","back":"จำนวนหนึ่ง","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"พหุวจนะหมายถึงอะไร","back":"จำนวนมากกว่าหนึ่ง","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"วิภัตติคืออะไร","back":"เครื่องกำหนดหน้าที่และรูปของคำนามตามหลักไวยากรณ์","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"ธาตุคืออะไร","back":"รากศัพท์ที่ใช้สร้างรูปคำกริยาตามหลักไวยากรณ์","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"อาขยาตคืออะไร","back":"หมวดไวยากรณ์ว่าด้วยรูปกริยา","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"สนธิคืออะไร","back":"การต่อคำหรือเสียงให้เนื่องกันตามกฎ","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"สมาสคืออะไร","back":"การย่อหรือรวมคำตามหลักสมาส","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"ตัทธิตคืออะไร","back":"การสร้างคำโดยอาศัยปัจจัยตามหลักตัทธิต","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"กิตก์คืออะไร","back":"การสร้างคำจากธาตุด้วยปัจจัยกิตก์","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"อ. ในคำแปลหมายถึงอะไร","back":"อันว่า","correct":0,"wrong":0},{"subject":"ภาษาบาลี","front":"ท. ในคำแปลหมายถึงอะไร","back":"ทั้งหลาย","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"เป้าหมายการเรียนคืออะไร","back":"สิ่งที่ผู้เรียนกำหนดว่าจะเรียนรู้หรือทำให้สำเร็จ","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การทบทวนคืออะไร","back":"การกลับมาฝึกสิ่งที่เคยเรียนเพื่อให้จำได้ดีขึ้น","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การนึกเองก่อนดูเฉลยมีประโยชน์อย่างไร","back":"ช่วยฝึกการดึงความรู้จากความจำ","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การจดบันทึกช่วยอย่างไร","back":"ช่วยจัดระเบียบและทบทวนข้อมูล","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การแบ่งเรื่องใหญ่เป็นส่วนเล็กช่วยอะไร","back":"ทำให้เริ่มเรียนและทบทวนได้ง่ายขึ้น","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การเรียนสม่ำเสมอสำคัญอย่างไร","back":"ช่วยสร้างความต่อเนื่องและลดการลืม","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"สมาธิในการเรียนคืออะไร","back":"การตั้งใจอยู่กับงานที่กำลังทำ","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"ข้อผิดพลาดมีประโยชน์อย่างไร","back":"ช่วยให้รู้จุดที่ต้องปรับปรุง","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การตั้งคำถามช่วยอะไร","back":"ช่วยกระตุ้นความเข้าใจและการคิด","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การอธิบายให้คนอื่นฟังช่วยอะไร","back":"ช่วยตรวจว่าตนเองเข้าใจจริงหรือไม่","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การพักระหว่างเรียนมีประโยชน์อย่างไร","back":"ช่วยลดความล้าและรักษาคุณภาพการเรียน","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การตั้งเป้าหมายที่ดีควรเป็นอย่างไร","back":"ชัดเจนและเหมาะสมกับเวลาที่มี","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การทบทวนแบบเว้นระยะคืออะไร","back":"ทบทวนซ้ำโดยเว้นช่วงเวลาอย่างเหมาะสม","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"การเรียนแบบลงมือทำคืออะไร","back":"เรียนรู้ผ่านการปฏิบัติและตรวจผล","correct":0,"wrong":0},{"subject":"อื่นๆ","front":"เมื่อจำไม่ได้ควรทำอย่างไร","back":"นึกเองก่อน แล้วดูคำตอบและกลับมาทบทวนอีกครั้ง","correct":0,"wrong":0}];
+try{
+ const key='dhl_v4_items';
+ let a=JSON.parse(localStorage.getItem(key)||'[]');
+ const have=new Set(a.map(x=>(x.subject||'')+'|'+(x.front||'')));
+ seed.forEach(x=>{const k=x.subject+'|'+x.front;if(!have.has(k)){a.push({...x,id:Date.now()+Math.random()});have.add(k);}});
+ localStorage.setItem(key,JSON.stringify(a));
+}catch(e){console.error(e);}
+})();
+</script>
+
+<section class="card" id="v6-coach">
+<h2>🤖 V6 ครูส่วนตัวตามจุดอ่อน</h2>
+<p>ระบบจะดูจากคำตอบของผู้เรียน แล้วเลือกสิ่งที่ควรฝึกก่อน ไม่ใช่ให้ทำทุกข้อเท่ากัน</p>
+<div class="v6dash" id="v6stats"></div>
+<div id="v6recommend"></div>
+</section>
+
+<section class="card">
+<h2>🎯 ฝึกวันนี้</h2>
+<div id="v6practice"></div>
+</section>
+
+<section class="card">
+<h2>🧭 วิธีเรียนที่ระบบเลือกให้</h2>
+<div id="v6method"></div>
+</section>
+
+<script>
+(function(){
+const KEY='dhl_v4_items';
+function get(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+const methods={
+"ภาษาไทย":["นึกเอง","อธิบายความหมาย","ยกตัวอย่าง","ทบทวน"],
+"คณิตศาสตร์":["ดูหลักการ","ทำทีละขั้น","ตรวจจุดผิด","โจทย์ซ้ำ"],
+"วิทยาศาสตร์":["สังเกต","หาเหตุผล","อธิบายเหตุและผล","ประยุกต์"],
+"สังคมศึกษา":["จำข้อมูล","เรียงเหตุการณ์","เชื่อมเหตุผล","เปรียบเทียบ"],
+"ภาษาอังกฤษ":["จำศัพท์","อ่านออกเสียง","เติมคำ","แต่งประโยค"],
+"สุขศึกษา":["รู้หลัก","เข้าใจเหตุผล","สถานการณ์จำลอง","นำไปใช้"],
+"พระพุทธศาสนา":["สติ","พิจารณา","นึกหลักธรรม","นำไปใช้"],
+"ภาษาบาลี":["จำศัพท์","ดูรูปศัพท์","วิเคราะห์ไวยากรณ์","แปล"],
+"อื่นๆ":["นึกเอง","อธิบาย","ทบทวน","นำไปใช้"]
+};
+let current=null;
+
+function stats(){
+ const a=get(), total=a.length, attempts=a.reduce((n,x)=>n+(x.correct||0)+(x.wrong||0),0);
+ const wrong=a.reduce((n,x)=>n+(x.wrong||0),0), known=a.reduce((n,x)=>n+(x.correct||0),0);
+ const weak=[...a].sort((x,y)=>(y.wrong||0)-(x.wrong||0));
+ document.getElementById('v6stats').innerHTML=
+ `<div class="v6stat"><b>${total}</b><br>ข้อทั้งหมด</div>
+ <div class="v6stat"><b>${attempts}</b><br>ครั้งที่ฝึก</div>
+ <div class="v6stat"><b>${known}</b><br>ตอบได้</div>
+ <div class="v6stat"><b>${wrong}</b><br>ยังไม่แม่น</div>`;
+ const rec=weak.filter(x=>(x.wrong||0)>0).slice(0,5);
+ document.getElementById('v6recommend').innerHTML=rec.length?
+ `<h3>🔎 จุดที่ควรฝึกก่อน</h3>`+rec.map(x=>`<div class="v6weak"><b>${esc(x.subject)}</b> — ${esc(x.front)}<br><span>ผิด ${x.wrong||0} ครั้ง / ถูก ${x.correct||0} ครั้ง</span></div>`).join(''):
+ `<div class="v6good">🎉 ยังไม่มีข้อที่ถูกบันทึกว่าผิด เริ่มฝึกได้เลย</div>`;
+}
+
+function choose(){
+ const a=get();
+ if(!a.length){document.getElementById('v6practice').innerHTML='ยังไม่มีข้อมูล';return}
+ // prioritize wrong answers, then unseen, then least recently practiced
+ a.sort((x,y)=>{
+   const wx=y.wrong-x.wrong;if(wx)return wx;
+   const ux=(x.correct+x.wrong)-(y.correct+y.wrong);if(ux)return ux;
+   return (x.last||0)-(y.last||0);
+ });
+ current=a[0];
+ render();
+}
+function render(){
+ if(!current)return;
+ const m=methods[current.subject]||methods["อื่นๆ"];
+ document.getElementById('v6practice').innerHTML=`
+ <div class="mode-box">
+ <span class="tag">${esc(current.subject)}</span>
+ <h3>คำถาม</h3><div style="font-size:21px;margin:12px 0">${esc(current.front)}</div>
+ <button onclick="v6show()">🧠 นึกเองก่อน</button>
+ <div id="v6answer" style="display:none;margin-top:12px">
+ <div class="v6good"><b>เฉลย</b><br>${esc(current.back)}</div>
+ <button onclick="v6rate(true)">✓ จำได้</button>
+ <button onclick="v6rate(false)">× ยังไม่แม่น</button>
+ </div>
+ </div>`;
+ document.getElementById('v6method').innerHTML=
+ `<b>${esc(current.subject)}</b><br>`+
+ m.map((x,i)=>`<span class="tag">${i+1}. ${esc(x)}</span>`).join('')+
+ `<div class="v6progress" style="margin-top:12px"><div style="width:${Math.min(100,((current.correct||0)/Math.max(1,(current.correct||0)+(current.wrong||0)))*100)}%"></div></div>`;
+}
+window.v6show=function(){document.getElementById('v6answer').style.display='block'};
+window.v6rate=function(ok){
+ let a=get(), x=a.find(z=>z.id===current.id);
+ if(!x)return;
+ if(ok)x.correct=(x.correct||0)+1;else x.wrong=(x.wrong||0)+1;
+ x.last=Date.now();
+ localStorage.setItem(KEY,JSON.stringify(a));
+ stats(); choose();
+};
+stats();choose();
+})();
+</script>
+</body></html>
