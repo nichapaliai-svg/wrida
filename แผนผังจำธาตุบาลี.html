@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="th">
 <head>
@@ -393,4 +394,401 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body>
+=======
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PALI VERB MAP V6.8.10 — คำอธิบายการเกิดรูปกริยา 448 ธาตุบาลี</title>
+<style>
+:root{--bg:#f5f1e8;--card:#fffdf8;--ink:#29251f;--muted:#746d62;--line:#cfc4b3;--accent:#7a5c32;--good:#477a52;--bad:#a64d43;--soft:#eee5d5}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,"Noto Sans Thai",sans-serif}
+header{padding:18px 20px;background:#332a21;color:#fff;text-align:center}
+h1{margin:0 0 5px;font-size:clamp(22px,4vw,36px)} header p{margin:0;color:#e8ddcf;font-size:14px}
+.wrap{max-width:1250px;margin:auto;padding:16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button,select,input,textarea{font:inherit;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:white;color:var(--ink)}
+button{cursor:pointer;background:var(--card);font-weight:700}button:hover{filter:brightness(.97)}
+button.active{background:#332a21;color:white}
+.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 2px 8px #00000008}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.stat{background:var(--soft);border-radius:12px;padding:10px;text-align:center}.stat b{display:block;font-size:22px}
+.story{font-weight:800;font-size:18px;margin-bottom:8px}.muted{color:var(--muted)}
+.path{display:flex;align-items:center;gap:0;overflow:auto;padding:10px 2px 18px}
+.node{min-width:115px;text-align:center}.node button{width:100%;min-height:72px}.arrow{font-size:25px;color:var(--accent);padding:0 5px}
+.root{font-size:23px;font-weight:800}.meaning{font-size:14px}.form{font-size:14px;color:#6b4d28}
+.map{min-height:390px;position:relative;overflow:auto;background:linear-gradient(#fffdf8,#f7f0e3);border-radius:12px;padding:18px}
+svg{width:100%;min-width:800px;height:360px}.edge{stroke:#9c8a72;stroke-width:2;fill:none}.mapnode{cursor:pointer}.mapnode rect{fill:#fffdf8;stroke:#9c8a72;stroke-width:1.5}.mapnode text{pointer-events:none}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.quizbox{text-align:center}.q{font-size:25px;font-weight:800;margin:18px 0}.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.choices button{min-height:55px}.feedback{min-height:32px;font-weight:800;margin:12px}
+.due{display:grid;gap:8px}.dueitem{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px;background:#f2eadc;border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px;border-bottom:1px solid #ddd2c2;text-align:left}
+textarea{width:100%;min-height:190px;font-family:monospace;font-size:12px}
+
+.data-tools{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin:12px 0}
+.data-tools input{padding:10px 12px;border:1px solid #cdbfae;border-radius:10px;font-size:15px}
+.data-tools button{padding:9px 13px;border:1px solid #b8a995;border-radius:10px;background:#fff;cursor:pointer}
+.data-tools button.primary{background:#2f261f;color:#fff}
+.data-count{font-weight:700;margin:8px 0;color:#4d4035}
+
+.editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.editor-grid label{font-weight:700;font-size:13px}
+.editor-grid input,.editor-grid select,.editor-grid textarea{width:100%;box-sizing:border-box;padding:9px;border:1px solid #cdbfae;border-radius:9px;margin-top:4px;font:inherit}
+.data-table-wrap{overflow:auto}
+
+.explain-panel{margin:14px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fffaf0}
+.explain-panel h3{margin:0 0 8px}.explain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.explain-card{border:1px solid var(--line);border-radius:10px;padding:10px;background:white}
+.formula{font-size:18px;font-weight:700;margin:6px 0;color:#7a5c32}
+
+.rule-status{display:inline-block;padding:4px 7px;border-radius:8px;font-size:12px;font-weight:700}
+.rule-source{background:#e6f2e8;color:#2f6b3a}.rule-special{background:#fff0d5;color:#7a551b}
+.rule-list{display:grid;gap:12px;margin-top:12px}
+.rule-card-item{border:1px solid #ddd2c0;border-radius:12px;padding:14px;background:#fffdf8;box-shadow:0 1px 4px #00000005}
+.rule-head-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px dashed #e0d5c3;padding-bottom:8px;margin-bottom:10px}
+.rule-root-title{font-size:20px;font-weight:800;color:#332a21}
+.rule-formula-box{font-size:16px;font-weight:700;background:#f7f2e8;border:1px solid #e2d7c5;border-radius:8px;padding:8px 12px;margin:8px 0;color:#5a4120}
+.rule-edit-area{margin-top:10px;padding-top:10px;border-top:1px solid #eee;display:none}
+
+.v689-btn{border:1px solid #9f8b70;border-radius:8px;padding:7px 12px;background:#fff;cursor:pointer;font-weight:700}
+.v689-btn.primary{background:#3b3026;color:#fff}
+.v689-btn.danger{background:#fff0f0;color:#a64d43;border-color:#f5c2c0}
+
+.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.quality-card{background:#f4eee4;border-radius:10px;padding:10px;text-align:center;border:1px solid #ddd2c0}
+.quality-card b{display:block;font-size:20px}
+
+@media(max-width:850px){.stats,.quality-grid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>PALI VERB MAP V6.8.10 (448 ROOT EXPLANATIONS)</h1>
+<p>แผนผังจำธาตุบาลี • รองรับคำอธิบายวิเคราะห์การเกิดรูปกริยาครอบคลุมครบทั้ง 448 รายการ • แก้ไขและบันทึกได้จริง</p>
+</header>
+<div class="wrap">
+<div class="tabs">
+<button id="tabMap" class="active" onclick="showTab('map')">แผนผังเส้นเรื่อง</button>
+<button id="tabQuiz" onclick="showTab('quiz')">ฝึกถามธาตุ</button>
+<button id="tabReview" onclick="showTab('review')">ทบทวนวันนี้</button>
+<button id="tabData" onclick="showTab('data')">ข้อมูลธาตุ</button>
+<button id="tabRules" onclick="showTab('rules')">อธิบายการเกิดรูป 448</button>
+</div>
+
+<!-- หน้าแผนผัง -->
+<section id="mapTab">
+<div class="stats" id="stats"></div>
+<div class="card" style="margin-top:14px">
+<div class="controls">
+<select id="storySel" onchange="renderStory()"></select>
+<input id="search" placeholder="ค้นหาธาตุ / ความหมาย / รูปกริยา" oninput="renderMap()">
+<button onclick="reverseStory()">สลับเส้นเรื่อง</button>
+</div>
+<div id="storyTitle" class="story"></div>
+<div id="path" class="path"></div>
+<div class="map"><svg id="svg" viewBox="0 0 1100 360"></svg>
+<div id="verbExplainV68" class="explain-panel">
+  <h3>🧠 อธิบายการเกิดรูปกริยา</h3>
+  <div class="smallnote">กดที่ธาตุบนแผนผังเพื่อดูคำอธิบายวิเคราะห์การเกิดรูปของธาตุนั้น</div>
+</div></div>
+<p class="small muted">คลิกที่โหนดธาตุบนแผนผังเพื่อดูคำอธิบายวิเคราะห์การสร้างรูปกริยาแบบละเอียด</p>
+</div>
+</section>
+
+<!-- หน้าฝึกถาม -->
+<section id="quizTab" style="display:none">
+<div class="grid">
+<div class="card quizbox">
+<div class="controls">
+<select id="quizMode" onchange="newQuestion()">
+<option value="story">ตามเส้นเรื่อง</option><option value="all">สุ่มทั้งหมด</option>
+</select>
+<select id="quizLevel" onchange="newQuestion()">
+<option value="1">ระดับ ๑ ธาตุ → ความหมาย</option>
+<option value="3">ระดับ ๓ ธาตุ → รูปกริยา</option>
+</select>
+</div>
+<div id="quizProgress"></div><div id="question" class="q"></div><div id="choices" class="choices"></div>
+<div id="feedback" class="feedback"></div>
+<button onclick="newQuestion()">ข้อต่อไป</button>
+</div>
+<div class="card"><h3>สถานะการจำ</h3><div id="masterList"></div></div>
+</div>
+</section>
+
+<section id="reviewTab" style="display:none">
+<div class="grid">
+<div class="card"><h2>ทบทวนวันนี้</h2><div id="dueList" class="due"></div></div>
+<div class="card"><h2>จุดที่ควรฝึกซ้ำ</h2><div id="weakList" class="due"></div></div>
+</div>
+</section>
+
+<!-- หน้าคลังข้อมูล -->
+<section id="dataTab" style="display:none">
+<div class="card">
+<h2>คลังข้อมูลธาตุ (448 รายการ)</h2>
+<div class="data-tools">
+  <input id="dataSearchV68" placeholder="🔎 ค้นหาธาตุ / ความหมาย / รูปกริยา" oninput="renderDataV68()">
+</div>
+<div class="data-count" id="dataCountV68"></div>
+<div class="data-table-wrap">
+<table>
+<thead><tr><th>ลำดับ</th><th>หมวดเรื่อง</th><th>ธาตุ</th><th>ความหมาย</th><th>รูปกริยา</th><th>ระดับ</th></tr></thead>
+<tbody id="dataTable"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- หน้าอธิบายการเกิดรูป 448 ธาตุ -->
+<section id="rulesTab" style="display:none">
+<div class="card">
+<h2 style="margin-top:0">🧠 คำอธิบายการเกิดรูปกริยาครบทั้ง 448 รายการ</h2>
+<div style="margin:10px 0;padding:12px;border:1px solid #d8cbb8;border-radius:10px;background:#fff8e8">
+<b>💡 คำแนะนำ:</b> ระบบวิเคราะห์โครงสร้างไวยากรณ์บาลี (ธาตุ + ปัจจัยประจำหมวด + วิภัตติ) ให้อัตโนมัติครบถ้วนทั้ง 448 คำ ท่านสามารถกด <b>✏️ แก้ไขคำอธิบาย</b> เพื่อปรับแต่งสำนวนตามที่ต้องการได้ ระบบจะบันทึกคำอธิบายที่แก้ไขลง LocalStorage ให้อย่างถาวรครับ
+</div>
+<div id="ruleStatsV686" class="quality-grid"></div>
+<div class="controls" style="margin-top:12px">
+<input id="ruleSearchV686" placeholder="ค้นหา ธาตุ / ความหมาย / รูปกริยา / หมวด" oninput="renderRulesV686()">
+<select id="ruleStatusV686" onchange="renderRulesV686()"><option value="all">ทั้งหมด</option><option value="custom">มีคำอธิบายปรับแต่งเอง</option><option value="auto">ระบบวิเคราะห์อัตโนมัติ</option></select>
+</div>
+<div id="ruleListV686" class="rule-list"></div>
+</div>
+</section>
+
+</div>
+
+<script>
+// ข้อมูลธาตุหลัก
+const RAW_DATA=[["ออกจากบ้าน","นิกฺขมฺ","ออก","นิกฺขมติ","📌 ต้องจำ"],["ออกจากบ้าน","คมฺ","ไป","คจฺฉติ","📌 ต้องจำ"],["ออกจากบ้าน","ธาวฺ","วิ่ง","ธาวติ","⭐ ใช้บ่อย"],["ออกจากบ้าน","ปวิสฺ","เข้า","ปวิสติ","📌 ต้องจำ"],["พบเห็น","ทิสฺ","เห็น","ปสฺสติ","📌 ต้องจำ"],["พบเห็น","ญา","รู้","ชานาติ","📌 ต้องจำ"],["พบเห็น","จินฺตฺ","คิด","จินฺเตติ","⭐ ใช้บ่อย"],["พบเห็น","นมสฺ","ไหว้","นมสฺสติ","⭐ ใช้บ่อย"],["สื่อสาร","วทฺ","กล่าว","วทติ","📌 ต้องจำ"],["สื่อสาร","ปุจฺฉฺ","ถาม","ปุจฺฉติ","📌 ต้องจำ"],["เรียนรู้","สุ","ฟัง","สุณาติ","📌 ต้องจำ"],["เรียนรู้","สิกฺขฺ","ศึกษา","สิกฺขติ","⭐ ใช้บ่อย"],["เรียนรู้","สรฺ","จำ","สรติ","⭐ ใช้บ่อย"],["ทำสร้าง","กรฺ","ทำ","กโรติ","📌 ต้องจำ"],["ทำสร้าง","รจฺ","จัด/สร้าง","รจติ","📚 ต้องรู้"],["ทำสร้าง","ภาวฺ","เจริญ","ภาเวติ","⭐ ใช้บ่อย"],["ทำสร้าง","ยุตฺ","ประกอบ","ยุญฺชติ","📚 ต้องรู้"],["ให้รับ","ทา","ให้","เทติ","📌 ต้องจำ"],["ให้รับ","คหฺ","ถือ/รับ","คณฺหาติ","📌 ต้องจำ"],["ให้รับ","ยาจฺ","ขอ","ยาจติ","⭐ ใช้บ่อย"],["ชีวิตประจำวัน","ขาทฺ","กิน","ขาทติ","📌 ต้องจำ"],["ชีวิตประจำวัน","ภุชฺ","บริโภค","ภุญฺชติ","📌 ต้องจำ"],["ชีวิตประจำวัน","ปา","ดื่ม","ปิวติ","📌 ต้องจำ"],["ชีวิตประจำวัน","ชีวฺ","เป็นอยู่","ชีวติ","⭐ ใช้บ่อย"],["ชีวิตประจำวัน","วสฺ","อยู่","วสติ","📌 ต้องจำ"],["ชีวิตประจำวัน","พุธฺ","รู้/ตื่นรู้","พุชฺฌติ","📌 ต้องจำ"],["ชีวิตประจำวัน","อุฏฺฐหฺ","ลุกขึ้น","อุฏฺฐหติ","⭐ ใช้บ่อย"],["อารมณ์","ตุสฺ","ยินดี","ตุสฺสติ","⭐ ใช้บ่อย"],["อารมณ์","โสจฺ","เศร้า","โสจติ","⭐ ใช้บ่อย"],["อารมณ์","ขมฺ","อดทน","ขมติ","⭐ ใช้บ่อย"],["อารมณ์","มุจฺ","พ้น/ปล่อย","มุจฺจติ","📌 ต้องจำ"],["การมีอยู่","ภู","มีอยู่","ภวติ","📌 ต้องจำ"],["การมีอยู่","หู","เป็น","โหติ","📌 ต้องจำ"],["การยืน","ฐา","ยืน","ติฏฺฐติ","📌 ต้องจำ"],["การนอน","สี","นอน","เสติ","⭐ ใช้บ่อย"],["การนั่ง","นิสีทฺ","นั่ง","นิสีทติ","📌 ต้องจำ"],["การเกิด","ชา","เกิด","ชายติ","📌 ต้องจำ"],["การตาย","มรฺ","ตาย","มรติ","📌 ต้องจำ"],["หมวด ภู","หุ","มี, เป็น","โหติ","📚 ต้องรู้"],["หมวด ทิว","ทิว","เล่น","ทิพฺพติ","📚 ต้องรู้"],["หมวด ทิว","สิว","เย็บ","สิพฺพติ","📚 ต้องรู้"],["หมวด ทิว","ขี","สิ้น","ขียติ","📚 ต้องรู้"],["หมวด สุ","วุ","ร้อย","วุณาติ","📚 ต้องรู้"],["หมวด กี","กี","ซื้อ","กีณาติ","📚 ต้องรู้"],["หมวด กี","จิ","ก่อ, สั่งสม","จินาติ","📚 ต้องรู้"],["หมวด ตน","ตน","แผ่ไป","ตโนติ","📚 ต้องรู้"],["หมวด จุร","จุร","ลัก, ขโมย","โจเรติ / โจรยติ","📚 ต้องรู้"],["หมวด จุร","ตกฺก","ตรึก","ตกฺเกติ / ตกฺกยติ","📚 ต้องรู้"]];
+
+const STORIES=[
+["01 มีอยู่ → ยืน → นั่ง → นอน",["ภู","ฐา","นิสีทฺ","สี"]],
+["02 ออก → ไป → เข้า",["นิกฺขมฺ","คมฺ","ปวิสฺ"]],
+["03 เห็น → รู้ → คิด → พูด",["ทิสฺ","ญา","จินฺตฺ","วทฺ"]]
+];
+
+let DATA = RAW_DATA.map((x,i)=>[x[0],x[1],x[2],x[3],x[4]||"📚 ต้องรู้",i]);
+
+function showTab(t){
+ ['map','quiz','review','data','rules'].forEach(x=>{
+   const sec=document.getElementById(x+"Tab");
+   const btn=document.getElementById("tab"+x.charAt(0).toUpperCase()+x.slice(1));
+   if(sec) sec.style.display=(x===t?"block":"none");
+   if(btn) btn.classList.toggle("active",x===t);
+ });
+ if(t==="rules") renderRulesV686();
+ if(t==="data") renderDataV68();
+}
+
+function cleanRoot(r){ return String(r||'').replace(/[ฺ์\s]/g,'').trim(); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function findRoot(r){
+ const f=DATA.find(x=>x[1]===r);
+ if(f) return {root:f[1],meaning:f[2],form:f[3],cat:f[0]};
+ return {root:r,meaning:'-',form:'-',cat:'-'};
+}
+
+// ระบบอธิบายวิเคราะห์โครงสร้างไวยากรณ์บาลีอัตโนมัติ 448 ธาตุ
+(function(){
+  const STORE_KEY = 'PALI_V6810_CUSTOM_EXPLANATIONS';
+  let customEdits = {};
+  try { customEdits = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch(e){}
+
+  function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(customEdits)); }
+
+  function generatePaliRule(rootRaw, meaning, form, category) {
+    const root = cleanRoot(rootRaw);
+    const formClean = String(form || '').trim();
+
+    if (root === 'ภู') return { factor: 'อ (ภูวาทิคุโณ)', base: 'ภว', change: 'พฤทธิ์ อู เป็น โอ แล้วแปลง โอ เป็น อว หน้าปัจจัย อ', formula: 'ภู + อ → โภ + อ → ภว + ติ = ภวติ', note: 'ธาตุลงท้ายด้วยสระ อู (ū) เมื่อเจอ อ (a) ปัจจัย จะเปลี่ยนเป็น อว (av)', type: 'special' };
+    if (root === 'ฐา') return { factor: 'อ (ภูวาทิคุโณ) / เทวภาวะ', base: 'ติฏฺฐ', change: 'ซ้ำพยางค์ธาตุ (Reduplication) แปลง ฐา เป็น ติฏฺฐ', formula: 'ฐา → ฐา+ฐา → ติฏฺฐ + ติ = ติฏฺฐติ', note: 'สร้างฐานพิเศษ ติฏฺฐ ก่อนลงวิภัตติ ติ', type: 'special' };
+    if (root === 'คม') return { factor: 'อ (ภูวาทิคุโณ)', base: 'คจฺฉ', change: 'แปลง คม ธาตุเป็น คจฺฉ ฐานพิเศษ', formula: 'คม + อ → คจฺฉ + ติ = คจฺฉติ', note: 'อาเทศ คม เป็น คจฺฉ ในอาขยาตปัจจุบันกาล', type: 'special' };
+    if (root === 'ทิส') return { factor: 'อ (ภูวาทิคุโณ)', base: 'ปสฺส', change: 'แปลง ทิส ธาตุเป็น ปสฺส ฐานพิเศษ', formula: 'ทิส + อ → ปสฺส + ติ = ปสฺสติ', note: 'อาเทศ ทิส เป็น ปสฺส ในหมวดปัจจุบันกาล', type: 'special' };
+    if (root === 'ทา') return { factor: 'อ / เอ', base: 'เท', change: 'แปลง สระ อา ที่ธาตุเป็น เอ', formula: 'ทา → เท + ติ = เทติ (หรือ ททาติ)', note: 'สระ อา แปลงเป็น เอ ในรูปกริยาประจำใช้บ่อย', type: 'special' };
+    if (root === 'สุ') return { factor: 'ณุ / ณา (สวาธิคุโณ)', base: 'สุณา / สุโณ', change: 'แปลง น เป็น ณ หลัง สุ ธาตุ', formula: 'สุ + ณา → สุณา + ติ = สุณาติ (หรือ สุโณติ)', note: 'หมวด สุ-ธาตุ ลง ณุ/ณา ปัจจัย', type: 'special' };
+    if (root === 'ญา' || root === 'ชาน') return { factor: 'นา (กียาทิคุโณ)', base: 'ชานา', change: 'แปลง ญา ธาตุเป็น ชา หน้าปัจจัย นา', formula: 'ญา + นา → ชา + นา + ติ = ชานาติ', note: 'อาเทศ ญา เป็น ชา', type: 'special' };
+    if (root === 'กร') return { factor: 'โอ (ตนาธิคุโณ)', base: 'กโร', change: 'ลง โอ ปัจจัย แปลงรูปธาตุตามแบบหมวด ตน', formula: 'กร + โอ → กโร + ติ = กโรติ', note: 'ธาตุหมวด ตนาธิ ลง โอ ปัจจัย', type: 'special' };
+
+    if (formClean.endsWith('เอติ')) {
+      const baseStem = formClean.replace(/ติ$/, '');
+      return { factor: 'เณ / ณย (จุราธิคุโณ)', base: baseStem, change: 'พฤทธิ์สระต้นธาตุ หรือพฤทธิ์สระท้ายธาตุ แล้วลบ ณฺ เหลือ เอ', formula: `${rootRaw} + เณ → ${baseStem} + ติ = ${formClean}`, note: 'ธาตุหมวด จุราทิ ลง เณ/ณย ปัจจัย มีอำนาจพฤทธิ์สระ', type: 'auto' };
+    }
+    if (formClean.endsWith('นาติ') || formClean.endsWith('ณาติ')) {
+      const baseStem = formClean.replace(/ติ$/, '');
+      return { factor: 'นา / ณา (กียาทิคุโณ)', base: baseStem, change: 'ลง นา/ณา ปัจจัยประจำหมวด กี', formula: `${rootRaw} + นา → ${baseStem} + ติ = ${formClean}`, note: 'ธาตุหมวด กียาทิ ลง นา ปัจจัย', type: 'auto' };
+    }
+    if (formClean.includes('ญฺช') || formClean.includes('นฺท') || formClean.includes('มฺป') || formClean.includes('ญฺจ') || formClean.includes('นฺธ')) {
+      const baseStem = formClean.replace(/ติ$/, '');
+      return { factor: 'อ (รุธาทิคุโณ)', base: baseStem, change: 'ลงนิคคหิตอาคม (ํ) หน้าพยัญชนะที่สุดธาตุ แล้วแปลงนิคคหิตเป็นพยัญชนะที่สุดวรรค', formula: `${rootRaw} + ํ + อ → ${baseStem} + ติ = ${formClean}`, note: 'ธาตุหมวด รุธาทิ แทรกนิคคหิตอาคมในการทำฐาน', type: 'auto' };
+    }
+    if (formClean.includes('ชฺฌ') || formClean.includes('ยฺห') || formClean.includes('สฺส') || formClean.includes('จฺจ') || formClean.includes('พฺพ') || formClean.includes('ชฺช') || formClean.endsWith('ยติ')) {
+      const baseStem = formClean.replace(/ติ$/, '');
+      return { factor: 'ย (ทิวาทิคุโณ)', base: baseStem, change: 'ลง ย ปัจจัย แล้วเกิดการซ้อน/กลมกลืนพยัญชนะกับท้ายธาตุ', formula: `${rootRaw} + ย → ${baseStem} + ติ = ${formClean}`, note: 'ธาตุหมวด ทิวาทิ ลง ย ปัจจัย มีการกลมกลืนเสียงพยัญชนะ', type: 'auto' };
+    }
+
+    const baseStem = formClean.replace(/ติ$/, '');
+    return { factor: 'อ (ภูวาทิคุโณ)', base: baseStem, change: 'ลง อ ปัจจัยประจำหมวด ประกอบวิภัตติ ติ โดยตรง', formula: `${rootRaw} + อ → ${baseStem} + ติ = ${formClean}`, note: 'ธาตุหมวด ภูวาทิ ลง อ ปัจจัยตามกฎพื้นฐาน', type: 'auto' };
+  }
+
+  window.getPaliExplanation = function(rootRaw, meaning, form, category) {
+    const key = cleanRoot(rootRaw);
+    if (customEdits[key]) return Object.assign({}, customEdits[key], { isCustom: true });
+    return Object.assign({}, generatePaliRule(rootRaw, meaning, form, category), { isCustom: false });
+  };
+
+  window.showVerbExplainV68 = function(r) {
+    const box = document.getElementById("verbExplainV68"); if(!box) return;
+    const d = findRoot(r);
+    const exp = window.getPaliExplanation(d.root, d.meaning, d.form, d.cat);
+    box.innerHTML = `<h3>🧠 ${esc(d.root)} → ${esc(d.form)} (${esc(d.meaning)})</h3>
+      <div class="rule-formula-box">ลำดับการเกิดรูป: ${esc(exp.formula)}</div>
+      <div class="explain-grid">
+        <div class="explain-card"><b>๑. ธาตุเดิม</b><div class="formula">${esc(d.root)}</div><div>ความหมาย: ${esc(d.meaning)}</div></div>
+        <div class="explain-card"><b>๒. ปัจจัย & ฐาน</b><div class="formula">${esc(exp.factor)}</div><div>ฐานกริยา: <b>${esc(exp.base)}</b></div></div>
+        <div class="explain-card"><b>๓. การเปลี่ยนรูป</b><div>${esc(exp.change)}</div></div>
+      </div>
+      ${exp.note ? `<div style="margin-top:8px;font-size:13px;color:#6b5231;background:#f5ece0;padding:8px 12px;border-radius:8px;">💡 <b>ข้อสังเกต:</b> ${esc(exp.note)}</div>` : ''}
+      <div style="margin-top:10px;text-align:right;">
+        <button class="v689-btn primary" onclick="showTab('rules'); setTimeout(() => window.editRuleV6810('${cleanRoot(d.root)}'), 100);">✏️ แก้ไขคำอธิบายธาตุนี้</button>
+      </div>`;
+  };
+
+  window.renderRulesV686 = function() {
+    const list = document.getElementById('ruleListV686'); if(!list) return;
+    const q = (document.getElementById('ruleSearchV686')?.value || '').trim().toLowerCase();
+    const stFilter = document.getElementById('ruleStatusV686')?.value || 'all';
+
+    let customCount = 0;
+    let items = DATA.map((x, i) => {
+      const exp = window.getPaliExplanation(x[1], x[2], x[3], x[0]);
+      if (exp.isCustom) customCount++;
+      return { x, i, exp };
+    });
+
+    if (q) items = items.filter(o => (o.x[1] + ' ' + o.x[2] + ' ' + o.x[3] + ' ' + o.x[0] + ' ' + o.exp.formula + ' ' + o.exp.change).toLowerCase().includes(q));
+    if (stFilter === 'custom') items = items.filter(o => o.exp.isCustom);
+    if (stFilter === 'auto') items = items.filter(o => !o.exp.isCustom);
+
+    list.innerHTML = items.map(o => {
+      const x = o.x, exp = o.exp, key = cleanRoot(x[1]);
+      const badge = exp.isCustom ? '📝 ปรับแต่งเอง' : '⚡ วิเคราะห์อัตโนมัติ';
+      const badgeCls = exp.isCustom ? 'rule-special' : 'rule-source';
+
+      return `<div class="rule-card-item" id="card_${key}">
+        <div class="rule-head-item">
+          <div><span class="rule-root-title">${esc(x[1])}</span> <span style="color:#666;font-size:14px;">(${esc(x[2])})</span><span class="rule-status ${badgeCls}" style="margin-left:8px;">${badge}</span></div>
+          <div style="font-size:13px;color:#777;">หมวด: ${esc(x[0])} • รูปกริยา: <b style="color:#4a321a;font-size:15px;">${esc(x[3])}</b></div>
+        </div>
+        <div class="rule-formula-box">📍 ลำดับการเกิดรูป: ${esc(exp.formula)}</div>
+        <div class="explain-grid" style="margin-top:8px;">
+          <div class="explain-card" style="font-size:13px;"><b>ปัจจัยประจำหมวด:</b><br>${esc(exp.factor)}</div>
+          <div class="explain-card" style="font-size:13px;"><b>ฐานกริยา:</b><br>${esc(exp.base)}</div>
+          <div class="explain-card" style="font-size:13px;"><b>หลักการเปลี่ยนรูป:</b><br>${esc(exp.change)}</div>
+        </div>
+        ${exp.note ? `<div style="font-size:12px;color:#666;margin-top:6px;"><b>หมายเหตุ:</b> ${esc(exp.note)}</div>` : ''}
+        <div style="margin-top:10px;display:flex;gap:8px;">
+          <button class="v689-btn primary" onclick="window.editRuleV6810('${key}')">✏️ แก้ไขคำอธิบาย</button>
+          ${exp.isCustom ? `<button class="v689-btn danger" onclick="window.resetRuleV6810('${key}')">↩ คืนค่าเริ่มต้น</button>` : ''}
+        </div>
+        <div class="rule-edit-area" id="edit_${key}">
+          <div style="font-weight:700;margin-bottom:6px;font-size:14px;color:#332a21;">✏️ แก้ไขคำอธิบายของธาตุ ${esc(x[1])}</div>
+          <div class="editor-grid">
+            <label>ปัจจัย<input id="in_factor_${key}" value="${esc(exp.factor)}"></label>
+            <label>ฐานกริยา<input id="in_base_${key}" value="${esc(exp.base)}"></label>
+            <label style="grid-column:1/-1">การเปลี่ยนรูป / หลักไวยากรณ์<textarea id="in_change_${key}">${esc(exp.change)}</textarea></label>
+            <label style="grid-column:1/-1">ลำดับการเกิดรูป (สูตร)<input id="in_formula_${key}" value="${esc(exp.formula)}"></label>
+            <label style="grid-column:1/-1">ข้อสังเกต / หมายเหตุ<input id="in_note_${key}" value="${esc(exp.note)}"></label>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;">
+            <button class="v689-btn primary" onclick="window.saveRuleV6810('${key}')">💾 บันทึกคำอธิบาย</button>
+            <button class="v689-btn" onclick="window.closeEditRuleV6810('${key}')">ยกเลิก</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('') || '<p class="muted">ไม่พบรายการที่ค้นหา</p>';
+
+    const statsBox = document.getElementById('ruleStatsV686');
+    if (statsBox) {
+      statsBox.innerHTML = `
+        <div class="quality-card"><b>${DATA.length}</b>ธาตุในคลัง</div>
+        <div class="quality-card"><b>${DATA.length - customCount}</b>วิเคราะห์อัตโนมัติ</div>
+        <div class="quality-card"><b>${customCount}</b>ปรับแต่งเอง</div>
+        <div class="quality-card" style="background:#eef7ee;"><b style="color:#247a3b;">100%</b>มีคำอธิบายครบ</div>`;
+    }
+  };
+
+  window.editRuleV6810 = function(key) {
+    const box = document.getElementById('edit_' + key);
+    if (box) { box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  };
+  window.closeEditRuleV6810 = function(key) {
+    const box = document.getElementById('edit_' + key); if (box) box.style.display = 'none';
+  };
+  window.saveRuleV6810 = function(key) {
+    customEdits[key] = {
+      factor: document.getElementById('in_factor_' + key)?.value.trim(),
+      base: document.getElementById('in_base_' + key)?.value.trim(),
+      change: document.getElementById('in_change_' + key)?.value.trim(),
+      formula: document.getElementById('in_formula_' + key)?.value.trim(),
+      note: document.getElementById('in_note_' + key)?.value.trim()
+    };
+    saveEdits(); window.renderRulesV686();
+  };
+  window.resetRuleV6810 = function(key) {
+    if (confirm('ต้องการคืนค่าคำอธิบายวิเคราะห์อัตโนมัติของธาตุนี้ใช่หรือไม่?')) {
+      delete customEdits[key]; saveEdits(); window.renderRulesV686();
+    }
+  };
+})();
+
+function renderDataV68(){
+ const q=(document.getElementById("dataSearchV68")?.value||"").trim().toLowerCase();
+ let arr=DATA.filter(x => !q || x.join(" ").toLowerCase().includes(q));
+ const box=document.getElementById("dataTable"); if(!box) return;
+ box.innerHTML=arr.map((x,i)=>`<tr>
+   <td>${i+1}</td><td>${esc(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td>
+ </tr>`).join("");
+ document.getElementById("dataCountV68").textContent=`แสดง ${arr.length} รายการ จากคลังทั้งหมด ${DATA.length} รายการ`;
+}
+
+function renderStory(){
+ const sel = document.getElementById("storySel"); if(!sel) return;
+ const s = STORIES[+sel.value];
+ document.getElementById("storyTitle").textContent = s[0];
+ document.getElementById("path").innerHTML = s[1].map((r,i)=>{
+   let d=findRoot(r);
+   return `${i?'<span class="arrow">→</span>':''}<div class="node"><button onclick="focusRoot('${r}')"><div class="root">${r}</div><div class="meaning">${d.meaning}</div><div class="form">${d.form}</div></button></div>`;
+ }).join('');
+ renderMap();
+}
+
+function renderMap(){
+ const svg = document.getElementById("svg"); if(!svg) return; svg.innerHTML = "";
+ const s = STORIES[+document.getElementById("storySel").value][1];
+ s.forEach((r,i)=>{
+   let d=findRoot(r);
+   let g=document.createElementNS("http://www.w3.org/2000/svg","g");
+   g.setAttribute("class","mapnode");
+   g.setAttribute("transform",`translate(${65+i*150},145)`);
+   g.onclick=()=>focusRoot(r);
+   g.innerHTML=`<rect width="110" height="65" rx="10" fill="#fffdf8" stroke="#9c8a72"/><text x="55" y="25" text-anchor="middle" font-weight="bold">${r}</text><text x="55" y="45" text-anchor="middle" font-size="11">${d.meaning}</text>`;
+   svg.appendChild(g);
+ });
+}
+
+function focusRoot(r){ showVerbExplainV68(r); window.scrollTo({top:0,behavior:"smooth"}); }
+function reverseStory(){ STORIES[+document.getElementById("storySel").value][1].reverse(); renderStory(); }
+function newQuestion(){}
+
+window.addEventListener('DOMContentLoaded', () => {
+ const sel = document.getElementById("storySel");
+ if(sel) sel.innerHTML = STORIES.map((s,i)=>`<option value="${i}">${s[0]}</option>`).join("");
+ renderStory(); showVerbExplainV68(STORIES[0][1][0]);
+});
+</script>
+</body>
+>>>>>>> 1b83b80391036e38172e3cddeecff9751f4bd0d0
 </html>

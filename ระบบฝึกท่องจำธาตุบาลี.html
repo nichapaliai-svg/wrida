@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -985,4 +986,993 @@
         }
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แอปฝึกจำธาตุและคำศัพท์บาลี</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (XLSX) สำหรับอ่านไฟล์ Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font (Sarabun & Prompt) -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header / Navbar -->
+    <header class="bg-indigo-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-book-journal-whills text-3xl text-amber-300"></i>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">ระบบฝึกท่องจำธาตุบาลี</h1>
+                    <p class="text-xs text-indigo-200">แบบฝึกหัดทบทวนไวยากรณ์บาลี (หมวดธาตุและปัจจัย)</p>
+                </div>
+            </div>
+            
+            <!-- Category Filter & File Import -->
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <select id="categoryFilter" onchange="filterCategory()" class="bg-indigo-900 text-sm text-amber-200 border border-indigo-700 rounded-lg px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-amber-300">
+                    <option value="ALL">-- ทุกหมวดธาตุ --</option>
+                </select>
+                <label for="excelInput" class="bg-indigo-700 hover:bg-indigo-600 text-white text-xs py-2 px-3 rounded-lg cursor-pointer flex items-center gap-1 shrink-0 transition" title="นำเข้าไฟล์ Excel เพิ่มเติม">
+                    <i class="fa-solid fa-file-excel text-green-400"></i>
+                    <span>นำเข้า</span>
+                    <input type="file" id="excelInput" accept=".xlsx, .xls" class="hidden" onchange="importExcel(event)">
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 flex justify-around sm:justify-center sm:gap-8">
+            <button onclick="switchTab('learn')" id="tab-learn" class="tab-btn py-3 px-4 text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600 flex items-center gap-2">
+                <i class="fa-solid fa-list-check"></i> <span>รายการศัพท์</span>
+            </button>
+            <button onclick="switchTab('flashcard')" id="tab-flashcard" class="tab-btn py-3 px-4 text-sm font-semibold text-slate-500 hover:text-indigo-600 flex items-center gap-2">
+                <i class="fa-solid fa-clone"></i> <span>การ์ดคำศัพท์</span>
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn py-3 px-4 text-sm font-semibold text-slate-500 hover:text-indigo-600 flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap"></i> <span>แบบทดสอบ</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-1 w-full">
+
+        <!-- TAB 1: LEARN / LIST -->
+        <section id="sec-learn" class="space-y-4">
+            <div class="flex justify-between items-center bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                <div>
+                    <span id="listCount" class="text-sm font-semibold text-indigo-900">กำลังแสดง 0 รายการ</span>
+                </div>
+                <div class="relative w-48 sm:w-64">
+                    <input type="text" id="searchInput" oninput="searchVocab()" placeholder="ค้นหาธาตุ, คำแปล..." class="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- Table List -->
+            <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3 w-12 text-center">#</th>
+                            <th class="p-3">หมวดธาตุ</th>
+                            <th class="p-3">ธาตุ + ปัจจัย</th>
+                            <th class="p-3">รูปแปลง</th>
+                            <th class="p-3">คำแปล</th>
+                            <th class="p-3">ตัวอย่างกิริยา</th>
+                            <th class="p-3">วิธีท่องจำ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vocabTableBody" class="divide-y divide-slate-100">
+                        <!-- Data inserted by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 2: FLASHCARD -->
+        <section id="sec-flashcard" class="hidden space-y-6">
+            <div class="max-w-md mx-auto">
+                <!-- Progress -->
+                <div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
+                    <span id="cardProgress">การ์ดใบที่ 1 / 1</span>
+                    <span id="cardCategory" class="text-indigo-600 font-semibold">หมวด...</span>
+                </div>
+
+                <!-- Flip Card Container -->
+                <div id="flashcard" onclick="flipCard()" class="perspective-1000 w-full h-80 cursor-pointer">
+                    <div id="cardInner" class="relative w-full h-full duration-500 transform-style-3d shadow-xl rounded-2xl border border-slate-200 bg-white">
+                        
+                        <!-- Front Card -->
+                        <div class="absolute inset-0 w-full h-full backface-hidden rounded-2xl p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-indigo-50 to-white">
+                            <span class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-medium">คำถาม / ธาตุ</span>
+                            <div class="space-y-2">
+                                <h2 id="cardFrontRoot" class="text-3xl font-bold text-indigo-900">ภู ธาตุ</h2>
+                                <p id="cardFrontSuffix" class="text-slate-500 text-lg">+ อ ปัจจัย</p>
+                            </div>
+                            <span class="text-xs text-slate-400 flex items-center gap-1">
+                                <i class="fa-solid fa-rotate"></i> แตะเพื่อดูคำตอบ
+                            </span>
+                        </div>
+
+                        <!-- Back Card -->
+                        <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-2xl p-6 flex flex-col justify-between items-center text-center bg-indigo-900 text-white">
+                            <span class="text-xs bg-indigo-800 text-amber-300 px-3 py-1 rounded-full font-medium">เฉลย / คำแปล</span>
+                            <div class="space-y-2">
+                                <p id="cardBackForm" class="text-xl font-semibold text-amber-300">เป็น ภว</p>
+                                <h3 id="cardBackMeaning" class="text-2xl font-bold">แปลว่า มี, เป็น</h3>
+                                <p id="cardBackExample" class="text-sm text-indigo-200 italic bg-indigo-800/50 py-1 px-3 rounded-lg">เช่น ภวติ ย่อมมี, ย่อมเป็น</p>
+                            </div>
+                            <p id="cardBackNote" class="text-xs text-indigo-300 bg-indigo-950 p-2 rounded-lg w-full line-clamp-2">ท่อง: ...</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Card Controls -->
+                <div class="flex justify-between items-center mt-6 gap-4">
+                    <button onclick="prevCard()" class="flex-1 py-3 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl font-semibold shadow-sm transition flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> ก่อนหน้า
+                    </button>
+                    <button onclick="nextCard()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-md transition flex justify-center items-center gap-2">
+                        ถัดไป <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: QUIZ -->
+        <section id="sec-quiz" class="hidden space-y-6">
+            <div class="max-w-xl mx-auto bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <!-- Quiz Header -->
+                <div class="flex justify-between items-center border-b pb-4 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">แบบทดสอบความจำ</h2>
+                        <p class="text-xs text-slate-500">เลือกคำตอบหรือพิมพ์ตอบที่ถูกต้อง</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="quizScore" class="text-lg font-bold text-indigo-600">คะแนน: 0 / 0</span>
+                    </div>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="flex gap-2 mb-6">
+                    <button onclick="setQuizMode('mcq')" id="btn-mode-mcq" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow">ปรนัย (4 ตัวเลือก)</button>
+                    <button onclick="setQuizMode('write')" id="btn-mode-write" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600">อัตนัย (พิมพ์ตอบ)</button>
+                </div>
+
+                <!-- Quiz Question Box -->
+                <div id="quizBox" class="space-y-6">
+                    <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100 text-center">
+                        <span id="quizQuestionCategory" class="text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">หมวด...</span>
+                        <h3 id="quizQuestionText" class="text-xl font-bold text-indigo-950 mt-3">คำถามจะแสดงตรงนี้</h3>
+                    </div>
+
+                    <!-- MCQ Options -->
+                    <div id="quizOptions" class="grid grid-cols-1 gap-3">
+                        <!-- Options generated by JS -->
+                    </div>
+
+                    <!-- Write Input -->
+                    <div id="quizWriteInputBox" class="hidden space-y-3">
+                        <input type="text" id="quizAnswerInput" placeholder="พิมพ์คำแปล เช่น 'มี, เป็น' หรือ 'ย่อมมี'" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button onclick="checkWriteAnswer()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow transition">ส่งคำตอบ</button>
+                    </div>
+
+                    <!-- Result Feedback -->
+                    <div id="quizFeedback" class="hidden p-4 rounded-xl text-center text-sm font-semibold"></div>
+
+                    <!-- Next Question Button -->
+                    <button id="btnNextQuiz" onclick="generateQuiz()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl shadow transition">
+                        ข้อถัดไป <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center mt-auto border-t border-slate-800">
+        <p>สื่อการเรียนรู้ไวยากรณ์บาลี - หมวดธาตุและปัจจัย © 2026</p>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // ข้อมูลคำศัพท์ภาษาบาลีสกัดจากไฟล์ Excel ครบถ้วน 46 รายการ
+        const defaultVocabData = [
+          {
+            "id": 1,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "ภู",
+            "suffix": "อ",
+            "form": "ภว",
+            "meaning": "มี, เป็น",
+            "example": "ภวติ ย่อมมี, ย่อมเป็น",
+            "note": "ภวติ (ภู อ ติ) ย่อมมี, เป็น พฤทธิ์ อู เป็น โอ แปลง โอ เป็น อว"
+          },
+          {
+            "id": 2,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "หุ",
+            "suffix": "อ",
+            "form": "โห",
+            "meaning": "มี, เป็น",
+            "example": "โหติ ย่อมมี, ย่อมเป็น",
+            "note": "โหติ (หุ อ ติ) ย่อมมี, เป็น พฤทธิ์ อุ เป็น โอ"
+          },
+          {
+            "id": 3,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "สี",
+            "suffix": "อ",
+            "form": "เส, สย",
+            "meaning": "นอน",
+            "example": "เสติ สยติ ย่อมนอน",
+            "note": "เสติ (สี อ ติ) ย่อมนอน พฤทธิ์ อี เป็น เอ"
+          },
+          {
+            "id": 4,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "ชิ",
+            "suffix": "อ",
+            "form": "เช, ชย",
+            "meaning": "ชนะ",
+            "example": "เชติ ชยติ ย่อมชนะ",
+            "note": "สยติ (สี อ ติ) ย่อมนอน พฤทธิ์ อี เป็น เอ แปลง เอ เป็น อย"
+          },
+          {
+            "id": 5,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "มร",
+            "suffix": "อ",
+            "form": "มร",
+            "meaning": "ตาย",
+            "example": "มรติ ย่อมตาย",
+            "note": "มรติ (มร อ ติ) ย่อมตาย"
+          },
+          {
+            "id": 6,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "ปจ",
+            "suffix": "อ",
+            "form": "ปจ",
+            "meaning": "หุงต้ม, เผา",
+            "example": "ปจติ ย่อมหุงต้ม, ย่อมเผา",
+            "note": "ปจติ (ปจ อ ติ) ย่อมหุง"
+          },
+          {
+            "id": 7,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "อิกฺข",
+            "suffix": "อ",
+            "form": "อิกฺข",
+            "meaning": "เห็น",
+            "example": "อิกฺขติ ย่อมเห็น",
+            "note": "อิกฺขติ (อิกฺข อ ติ) ย่อมเห็น"
+          },
+          {
+            "id": 8,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "ลภ",
+            "suffix": "อ",
+            "form": "ลภ",
+            "meaning": "ได้",
+            "example": "ลภติ ย่อมได้",
+            "note": "ลภติ (ลภ อ ติ) ย่อมได้"
+          },
+          {
+            "id": 9,
+            "category": "หมวด ภู ธาตุ ลง อ ปัจจัย",
+            "root": "คม",
+            "suffix": "อ",
+            "form": "คจฺฉ",
+            "meaning": "ไป, ถึง",
+            "example": "คจฺฉติ ย่อมไป, ย่อมถึง",
+            "note": "คจฺฉติ (คม อ ติ) ย่อมไป แปลง คม เป็น คจฺฉ"
+          },
+          {
+            "id": 10,
+            "category": "หมวด รุธ ธาตุ ลง อ, เอ ปัจจัย และนิคคหิตอาคม",
+            "root": "รุธ",
+            "suffix": "อ เอ นิคคหิตอาคม",
+            "form": "รุนฺธ รุนฺเธ",
+            "meaning": "ปิด, กั้น",
+            "example": "รุนฺธติ รุนฺเธติ ย่อมปิด, ย่อมกั้น",
+            "note": "รุนฺธติ (รุธ ํอ ติ) ย่อมปิด, กั้น แปลงนิคคหิต เป็น นฺ | รุนฺเธติ (รุธ ํเอ ติ) ย่อมปิด, กั้น แปลงนิคคหิต เป็น นฺ"
+          },
+          {
+            "id": 11,
+            "category": "หมวด รุธ ธาตุ ลง อ, เอ ปัจจัย และนิคคหิตอาคม",
+            "root": "ภุช",
+            "suffix": "อ นิคคหิตอาคม",
+            "form": "ภุญฺช",
+            "meaning": "กิน",
+            "example": "ภุญฺชติ ย่อมกิน",
+            "note": "ภุญฺชติ (ภุช ํอ ติ) ย่อมกิน แปลงนิคคหิต เป็น ญฺ"
+          },
+          {
+            "id": 12,
+            "category": "หมวด รุธ ธาตุ ลง อ, เอ ปัจจัย และนิคคหิตอาคม",
+            "root": "ลิป",
+            "suffix": "อ นิคคหิตอาคม",
+            "form": "ลิมฺป",
+            "meaning": "ฉาบ",
+            "example": "ลิมฺปติ ย่อมฉาบ",
+            "note": "ลิมฺปติ (ลิป ํอ ติ) ย่อมฉาบ แปลงนิคคหิต เป็น มฺ"
+          },
+          {
+            "id": 13,
+            "category": "หมวด รุธ ธาตุ ลง อ, เอ ปัจจัย และนิคคหิตอาคม",
+            "root": "มุจ",
+            "suffix": "อ นิคคหิตอาคม",
+            "form": "มุญฺจ",
+            "meaning": "ปล่อย",
+            "example": "มุญฺจติ ย่อมปล่อย",
+            "note": "มุญฺจติ (มุจ ํอ ติ) ย่อมปล่อย แปลงนิคคหิต เป็น ญฺ"
+          },
+          {
+            "id": 14,
+            "category": "หมวด รุธ ธาตุ ลง อ, เอ ปัจจัย และนิคคหิตอาคม",
+            "root": "ภิท",
+            "suffix": "อ นิคคหิตอาคม",
+            "form": "ภินฺท",
+            "meaning": "ทำลาย, ต่อย",
+            "example": "ภินฺทติ ย่อมทำลาย, ย่อมต่อย",
+            "note": "ภินฺทติ (ภิท ํอ ติ) ย่อมทำลาย, ต่อย แปลงนิคคหิต เป็น นฺ"
+          },
+          {
+            "id": 15,
+            "category": "หมวด รุธ ธาตุ ลง อ, เอ ปัจจัย และนิคคหิตอาคม",
+            "root": "ฉิท",
+            "suffix": "อ นิคคหิตอาคม",
+            "form": "ฉินฺท",
+            "meaning": "ตัด, ผ่า",
+            "example": "ฉินฺทติ ย่อมตัด, ย่อมผ่า",
+            "note": "ฉินฺทติ (ฉิท ํอ ติ) ย่อมตัด, ผ่า แปลงนิคคหิต เป็น นฺ"
+          },
+          {
+            "id": 16,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "ทิว",
+            "suffix": "ย",
+            "form": "ทิพฺพ",
+            "meaning": "เล่น",
+            "example": "ทิพฺพติ ย่อมเล่น",
+            "note": "ทิพฺพติ (ทิว ย ติ) ย่อมเล่น แปลง ย กับ วฺ เป็น พฺพ"
+          },
+          {
+            "id": 17,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "สิว",
+            "suffix": "ย",
+            "form": "สิพฺพ",
+            "meaning": "เย็บ",
+            "example": "สิพฺพติ ย่อมเย็บ",
+            "note": "สิพฺพติ (สิว ย ติ) ย่อมเย็บ แปลง ย กับ วฺ เป็น พฺพ"
+          },
+          {
+            "id": 18,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "ขี",
+            "suffix": "ย",
+            "form": "ขีย",
+            "meaning": "สิ้น",
+            "example": "ขียติ ย่อมสิ้น",
+            "note": "ขียติ (ขี ย ติ) ย่อมสิ้น"
+          },
+          {
+            "id": 19,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "พุธ",
+            "suffix": "ย",
+            "form": "พุชฺฌ",
+            "meaning": "รู้, ตรัสรู้",
+            "example": "พุชฺฌติ ย่อมรู้, ย่อมตรัสรู้",
+            "note": "พุชฺฌติ (พุธ ย ติ) ย่อมรู้, ตรัสรู้ แปลง ย กับ ธฺ เป็น ชฺฌ"
+          },
+          {
+            "id": 20,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "มุห",
+            "suffix": "ย",
+            "form": "มุยฺห",
+            "meaning": "หลง",
+            "example": "มุยฺหติ ย่อมหลง",
+            "note": "มุยฺหติ (มุห ย ติ) ย่อมหลง แปลง ย กับ หฺ เป็น ยฺห"
+          },
+          {
+            "id": 21,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "มุส",
+            "suffix": "ย",
+            "form": "มุสฺส",
+            "meaning": "ลืม",
+            "example": "มุสฺสติ ย่อมลืม",
+            "note": "มุสฺสติ (มุส ย ติ) ย่อมลืม แปลง ย กับ สฺ เป็น สฺส"
+          },
+          {
+            "id": 22,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "รช",
+            "suffix": "ย",
+            "form": "รชฺช",
+            "meaning": "ย้อม",
+            "example": "รชฺชติ ย่อมย้อม",
+            "note": "รชฺชติ (รช ย ติ) ย่อมย้อม แปลง ย กับ ชฺ เป็น ชฺช"
+          },
+          {
+            "id": 23,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "ปจ",
+            "suffix": "ย",
+            "form": "ปจฺจ",
+            "meaning": "สุก, ไหม้",
+            "example": "ปจฺจติ ย่อมสุก, ย่อมไหม้",
+            "note": "ปจฺจติ (ปจ ย ติ) ย่อมสุก, ไหม้ แปลง ย กับ จฺ เป็น จฺจ"
+          },
+          {
+            "id": 24,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "มุจ",
+            "suffix": "ย",
+            "form": "มุจฺจ",
+            "meaning": "หลุด, พ้น",
+            "example": "มุญฺจติ ย่อมหลุด, ย่อมพ้น",
+            "note": "มุจฺจติ (มุจ ย ติ) ย่อมหลุด, พ้น แปลง ย กับ จฺ เป็น จฺจ"
+          },
+          {
+            "id": 25,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "ภิท",
+            "suffix": "ย",
+            "form": "ภิชฺช",
+            "meaning": "แตก",
+            "example": "ภินฺทติ ย่อมแตก",
+            "note": "ภิชฺชติ (ภิท ย ติ) ย่อมแตก แปลง ย กับ ชฺ เป็น ชฺช"
+          },
+          {
+            "id": 26,
+            "category": "หมวด ทิว ธาตุ ลง ย ปัจจัย",
+            "root": "ฉิท",
+            "suffix": "ย",
+            "form": "ฉิชฺช",
+            "meaning": "ขาด, ทะลุ",
+            "example": "ฉินฺทติ ย่อมขาด, ย่อมทะลุ",
+            "note": "ฉิชฺชติ (ฉิท ย ติ) ย่อมขาด แปลง ย กับ ชฺ เป็น ชฺช"
+          },
+          {
+            "id": 27,
+            "category": "หมวด สุ ธาตุ ลง ณุ ณา ปัจจัย",
+            "root": "สุ",
+            "suffix": "ณุ ณา",
+            "form": "สุโณ สุณา",
+            "meaning": "ฟัง",
+            "example": "สุโณติ สุณาติ ย่อมฟัง",
+            "note": "สุณาติ (สุ ณา ติ) ย่อมฟัง | สุโณติ (สุ ณุ ติ) ย่อมฟัง แปลง อุ ที่ ณุ เป็น โอ"
+          },
+          {
+            "id": 28,
+            "category": "หมวด สุ ธาตุ ลง ณุ ณา ปัจจัย",
+            "root": "วุ",
+            "suffix": "ณา",
+            "form": "วุณา",
+            "meaning": "ร้อย",
+            "example": "วุณาติ ย่อมร้อย",
+            "note": "วุณาติ (วุ ณา ติ) ย่อมร้อย"
+          },
+          {
+            "id": 29,
+            "category": "หมวด สุ ธาตุ ลง ณุ ณา ปัจจัย",
+            "root": "สิ",
+            "suffix": "ณุ",
+            "form": "สิโณ",
+            "meaning": "ผูก",
+            "example": "สิโณติ ย่อมผูก",
+            "note": "สิโณติ (สิ ณุ ติ) ย่อมผูก แปลง อุ เป็น โอ"
+          },
+          {
+            "id": 30,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "กี",
+            "suffix": "นา",
+            "form": "กีณา",
+            "meaning": "ซื้อ",
+            "example": "กีณาติ ย่อมซื้อ",
+            "note": "กีณาติ (กี นา ติ) ย่อมซื้อ แปลง นา เป็น ณา"
+          },
+          {
+            "id": 31,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "ชิ",
+            "suffix": "นา",
+            "form": "ชินา",
+            "meaning": "ชนะ",
+            "example": "ชินาติ ย่อมชนะ",
+            "note": "ชินาติ (ชิ นา ติ) ย่อมชนะ"
+          },
+          {
+            "id": 32,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "จิ",
+            "suffix": "นา",
+            "form": "จินา",
+            "meaning": "ก่อ, สั่งสม",
+            "example": "จินาติ ย่อมก่อ, ย่อมสั่งสม",
+            "note": "จินาติ (จิ นา ติ) ย่อมก่อ, สั่งสม"
+          },
+          {
+            "id": 33,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "ญา",
+            "suffix": "นา",
+            "form": "ชานา",
+            "meaning": "รู้",
+            "example": "ชานาติ ย่อมรู้",
+            "note": "ชานาติ (ญา นา ติ) ย่อมรู้"
+          },
+          {
+            "id": 34,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "ธุ",
+            "suffix": "นา",
+            "form": "ธุนา",
+            "meaning": "กำจัด, ทำลาย",
+            "example": "ชานาติ ย่อมกำจัด, ย่อมทำลาย",
+            "note": "ธุนาติ (ธุ นา ติ) ย่อมกำจัด, ทำลาย"
+          },
+          {
+            "id": 35,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "ลุ",
+            "suffix": "นา",
+            "form": "ลุนา",
+            "meaning": "เกี่ยว, ตัด",
+            "example": "ลุนาติ ย่อมเกี่ยว, ย่อมตัด",
+            "note": "ลุนาติ (ลุ นา ติ) ย่อมเกี่ยว, ตัด"
+          },
+          {
+            "id": 36,
+            "category": "หมวด กี ธาตุ ลง นา ปัจจัย",
+            "root": "ผุ",
+            "suffix": "นา",
+            "form": "ผุนา",
+            "meaning": "ฝัด, โปรย",
+            "example": "ผุนาติ ย่อมฝัด, ย่อมโปรย",
+            "note": "ผุนาติ (ผุ นา ติ) ย่อมฝัด, โปรย"
+          },
+          {
+            "id": 37,
+            "category": "หมวด คห ธาตุ ลง ณฺหา ปัจจัย",
+            "root": "คห",
+            "suffix": "ณฺหา",
+            "form": "คณฺหา",
+            "meaning": "ถือเอา, จับ, รับ",
+            "example": "คณฺหาติ ย่อมถือเอา, ย่อมจับ, ย่อมรับ",
+            "note": "คณฺหาติ (คห ณฺหา ติ) ย่อมถือเอา, จับ, รับ"
+          },
+          {
+            "id": 38,
+            "category": "หมวด ตน ธาตุ ลง โอ ปัจจัย",
+            "root": "ตน",
+            "suffix": "โอ",
+            "form": "ตโน",
+            "meaning": "แผ่ไป",
+            "example": "ตโนติ ย่อมแผ่ไป",
+            "note": "ตโนติ (ตน โอ ติ) ย่อมแผ่ไป"
+          },
+          {
+            "id": 39,
+            "category": "หมวด ตน ธาตุ ลง โอ ปัจจัย",
+            "root": "กร",
+            "suffix": "โอ",
+            "form": "กโร",
+            "meaning": "ทำ",
+            "example": "กโรติ ย่อมทำ",
+            "note": "กโรติ (กร โอ ติ) ย่อมทำ"
+          },
+          {
+            "id": 40,
+            "category": "หมวด ตน ธาตุ ลง โอ ปัจจัย",
+            "root": "สกฺก",
+            "suffix": "โอ",
+            "form": "สกฺโก",
+            "meaning": "อาจ",
+            "example": "สกฺโกติ ย่อมอาจ",
+            "note": "สกฺโกติ (สกฺก โอ ติ) ย่อมอาจ"
+          },
+          {
+            "id": 41,
+            "category": "หมวด ตน ธาตุ ลง โอ ปัจจัย",
+            "root": "ชาคร",
+            "suffix": "โอ",
+            "form": "ชาคโร",
+            "meaning": "ตื่น",
+            "example": "ชาคโรติ ย่อมตื่น",
+            "note": "ชาคโรติ (ชาคร โอ ติ) ย่อมตื่น"
+          },
+          {
+            "id": 42,
+            "category": "หมวด จุร ธาตุ ลง เณ ณย ปัจจัย",
+            "root": "จุร",
+            "suffix": "เณ ณย",
+            "form": "โจเร โจรย",
+            "meaning": "ลัก, ขโมย",
+            "example": "โจเรติ โจรยติ ย่อมลัก, ย่อมขโมย",
+            "note": "โจเรติ โจรยติ (จุร เณ/ณย ติ) ย่อมลัก, ขโมย"
+          },
+          {
+            "id": 43,
+            "category": "หมวด จุร ธาตุ ลง เณ ณย ปัจจัย",
+            "root": "ตกฺก",
+            "suffix": "เณ ณย",
+            "form": "ตกฺเก ตกฺกย",
+            "meaning": "ตรึก",
+            "example": "ตกฺเกติ ตกฺกยติ ย่อมตรึก",
+            "note": "ตกฺเกติ ตกฺกยติ (ตกฺก เณ/ณย ติ) ย่อมตรึก"
+          },
+          {
+            "id": 44,
+            "category": "หมวด จุร ธาตุ ลง เณ ณย ปัจจัย",
+            "root": "ลกฺข",
+            "suffix": "เณ ณย",
+            "form": "ลกฺเข ลกฺขย",
+            "meaning": "กำหนด",
+            "example": "ลกฺเขติ ลกฺขยติ ย่อมกำหนด",
+            "note": "ลกฺเขติ ลกฺขยติ (ลกฺข เณ/ณย ติ) ย่อมกำหนด"
+          },
+          {
+            "id": 45,
+            "category": "หมวด จุร ธาตุ ลง เณ ณย ปัจจัย",
+            "root": "มนฺต",
+            "suffix": "เณ ณย",
+            "form": "มนฺเต มนฺตย",
+            "meaning": "ปรึกษา",
+            "example": "มนฺเตติ มนฺตยติ ย่อมปรึกษา",
+            "note": "มนฺเตติ มนฺตยติ (มนฺต เณ/ณย ติ) ย่อมปรึกษา"
+          },
+          {
+            "id": 46,
+            "category": "หมวด จุร ธาตุ ลง เณ ณย ปัจจัย",
+            "root": "จินฺต",
+            "suffix": "เณ ณย",
+            "form": "จินฺเต จินฺตย",
+            "meaning": "คิด",
+            "example": "จินฺเตติ จินฺตยติ ย่อมคิด",
+            "note": "จินฺเตติ จินฺตยติ (จินฺต เณ/ณย ติ) ย่อมคิด"
+          }
+        ];
+
+        let vocabData = [...defaultVocabData];
+        let filteredVocab = [...vocabData];
+        let currentCardIndex = 0;
+        let isCardFlipped = false;
+
+        // Quiz States
+        let currentQuizItem = null;
+        let quizMode = 'mcq';
+        let score = 0;
+        let totalAnswered = 0;
+
+        // Initialize App
+        window.onload = function() {
+            initCategories();
+            renderTable();
+            updateFlashcard();
+            generateQuiz();
+        };
+
+        // Populate Category Filter
+        function initCategories() {
+            const categories = [...new Set(vocabData.map(item => item.category))];
+            const filter = document.getElementById('categoryFilter');
+            filter.innerHTML = '<option value="ALL">-- ทุกหมวดธาตุ --</option>';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                filter.appendChild(opt);
+            });
+        }
+
+        // Filter Category
+        function filterCategory() {
+            const selectedCat = document.getElementById('categoryFilter').value;
+            if (selectedCat === 'ALL') {
+                filteredVocab = [...vocabData];
+            } else {
+                filteredVocab = vocabData.filter(item => item.category === selectedCat);
+            }
+            currentCardIndex = 0;
+            renderTable();
+            updateFlashcard();
+            generateQuiz();
+        }
+
+        // Search Vocab
+        function searchVocab() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const selectedCat = document.getElementById('categoryFilter').value;
+            
+            filteredVocab = vocabData.filter(item => {
+                const matchCat = (selectedCat === 'ALL' || item.category === selectedCat);
+                const matchKey = item.root.toLowerCase().includes(keyword) ||
+                                 item.meaning.toLowerCase().includes(keyword) ||
+                                 item.form.toLowerCase().includes(keyword) ||
+                                 item.example.toLowerCase().includes(keyword);
+                return matchCat && matchKey;
+            });
+
+            renderTable();
+        }
+
+        // Render Table
+        function renderTable() {
+            const tbody = document.getElementById('vocabTableBody');
+            tbody.innerHTML = '';
+
+            document.getElementById('listCount').textContent = `กำลังแสดง ${filteredVocab.length} รายการ`;
+
+            if (filteredVocab.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">ไม่พบข้อมูลคำศัพท์</td></tr>`;
+                return;
+            }
+
+            filteredVocab.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-3 text-center text-xs font-semibold text-slate-400">${index + 1}</td>
+                    <td class="p-3 text-xs text-indigo-700 font-medium">${item.category}</td>
+                    <td class="p-3 font-bold text-indigo-950">${item.root} <span class="text-xs text-slate-500 font-normal">+ ${item.suffix}</span></td>
+                    <td class="p-3 text-amber-700 font-semibold">${item.form}</td>
+                    <td class="p-3 font-medium text-slate-800">${item.meaning}</td>
+                    <td class="p-3 text-xs text-slate-600 italic">${item.example}</td>
+                    <td class="p-3 text-xs text-slate-500 max-w-xs truncate" title="${item.note}">${item.note}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Switch Tabs
+        function switchTab(tabName) {
+            document.getElementById('sec-learn').classList.add('hidden');
+            document.getElementById('sec-flashcard').classList.add('hidden');
+            document.getElementById('sec-quiz').classList.add('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                btn.classList.add('text-slate-500');
+            });
+
+            document.getElementById(`sec-${tabName}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            activeTab.classList.remove('text-slate-500');
+            activeTab.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+        }
+
+        // FLASHCARD LOGIC
+        function updateFlashcard() {
+            if (filteredVocab.length === 0) return;
+            if (currentCardIndex >= filteredVocab.length) currentCardIndex = 0;
+
+            const item = filteredVocab[currentCardIndex];
+            document.getElementById('cardProgress').textContent = `การ์ดใบที่ ${currentCardIndex + 1} / ${filteredVocab.length}`;
+            document.getElementById('cardCategory').textContent = item.category;
+
+            document.getElementById('cardFrontRoot').textContent = `${item.root} ธาตุ`;
+            document.getElementById('cardFrontSuffix').textContent = `+ ${item.suffix} ปัจจัย`;
+
+            document.getElementById('cardBackForm').textContent = `เป็น ${item.form}`;
+            document.getElementById('cardBackMeaning').textContent = `แปลว่า ${item.meaning}`;
+            document.getElementById('cardBackExample').textContent = `เช่น ${item.example}`;
+            document.getElementById('cardBackNote').textContent = `ข้อสังเกต: ${item.note}`;
+
+            // Reset Flip State
+            if (isCardFlipped) flipCard();
+        }
+
+        function flipCard() {
+            const inner = document.getElementById('cardInner');
+            isCardFlipped = !isCardFlipped;
+            if (isCardFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            if (filteredVocab.length === 0) return;
+            currentCardIndex = (currentCardIndex + 1) % filteredVocab.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            if (filteredVocab.length === 0) return;
+            currentCardIndex = (currentCardIndex - 1 + filteredVocab.length) % filteredVocab.length;
+            updateFlashcard();
+        }
+
+        // QUIZ LOGIC
+        function setQuizMode(mode) {
+            quizMode = mode;
+            document.getElementById('btn-mode-mcq').className = mode === 'mcq' ? 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow' : 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600';
+            document.getElementById('btn-mode-write').className = mode === 'write' ? 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow' : 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600';
+            
+            document.getElementById('quizOptions').classList.toggle('hidden', mode !== 'mcq');
+            document.getElementById('quizWriteInputBox').classList.toggle('hidden', mode !== 'write');
+            generateQuiz();
+        }
+
+        function generateQuiz() {
+            if (filteredVocab.length === 0) return;
+
+            document.getElementById('quizFeedback').classList.add('hidden');
+            document.getElementById('btnNextQuiz').classList.add('hidden');
+            document.getElementById('quizAnswerInput').value = '';
+
+            // Pick Random Question
+            currentQuizItem = filteredVocab[Math.floor(Math.random() * filteredVocab.length)];
+
+            document.getElementById('quizQuestionCategory').textContent = currentQuizItem.category;
+            document.getElementById('quizQuestionText').textContent = `ธาตุ "${currentQuizItem.root}" (ลง ${currentQuizItem.suffix} ปัจจัย) แปลว่าอะไร?`;
+
+            if (quizMode === 'mcq') {
+                // Generate Options
+                const options = [currentQuizItem];
+                while (options.length < Math.min(4, vocabData.length)) {
+                    const rand = vocabData[Math.floor(Math.random() * vocabData.length)];
+                    if (!options.some(o => o.id === rand.id)) {
+                        options.push(rand);
+                    }
+                }
+                // Shuffle Options
+                options.sort(() => Math.random() - 0.5);
+
+                const optsContainer = document.getElementById('quizOptions');
+                optsContainer.innerHTML = '';
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'w-full p-3 text-left text-sm font-semibold rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 transition text-slate-700 flex justify-between items-center';
+                    btn.innerHTML = `<span>${opt.meaning} <span class="text-xs font-normal text-slate-400">(${opt.example})</span></span> <i class="fa-regular fa-circle text-slate-300"></i>`;
+                    btn.onclick = () => checkMcqAnswer(opt, btn);
+                    optsContainer.appendChild(btn);
+                });
+            }
+        }
+
+        function checkMcqAnswer(selected, btnEl) {
+            totalAnswered++;
+            const isCorrect = selected.id === currentQuizItem.id;
+            const feedback = document.getElementById('quizFeedback');
+
+            // Disable all option buttons
+            const buttons = document.getElementById('quizOptions').querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                score++;
+                btnEl.className = 'w-full p-3 text-left text-sm font-semibold rounded-xl border border-green-500 bg-green-50 text-green-800 flex justify-between items-center';
+                feedback.className = 'p-4 rounded-xl text-center text-sm font-semibold bg-green-100 text-green-800';
+                feedback.textContent = 'ถูกต้องครับ! 🎉';
+            } else {
+                btnEl.className = 'w-full p-3 text-left text-sm font-semibold rounded-xl border border-red-500 bg-red-50 text-red-800 flex justify-between items-center';
+                feedback.className = 'p-4 rounded-xl text-center text-sm font-semibold bg-red-100 text-red-800';
+                feedback.textContent = `ผิดครับ! คำตอบที่ถูกต้องคือ: ${currentQuizItem.meaning}`;
+            }
+
+            document.getElementById('quizScore').textContent = `คะแนน: ${score} / ${totalAnswered}`;
+            feedback.classList.remove('hidden');
+            document.getElementById('btnNextQuiz').classList.remove('hidden');
+        }
+
+        function checkWriteAnswer() {
+            const input = document.getElementById('quizAnswerInput').value.trim();
+            if (!input) return;
+
+            totalAnswered++;
+            const feedback = document.getElementById('quizFeedback');
+            const isCorrect = currentQuizItem.meaning.includes(input) || input.includes(currentQuizItem.meaning);
+
+            if (isCorrect) {
+                score++;
+                feedback.className = 'p-4 rounded-xl text-center text-sm font-semibold bg-green-100 text-green-800';
+                feedback.textContent = 'ถูกต้องครับ! 🎉';
+            } else {
+                feedback.className = 'p-4 rounded-xl text-center text-sm font-semibold bg-red-100 text-red-800';
+                feedback.textContent = `ยังไม่ถูกต้อง! คำตอบคือ: ${currentQuizItem.meaning} (${currentQuizItem.example})`;
+            }
+
+            document.getElementById('quizScore').textContent = `คะแนน: ${score} / ${totalAnswered}`;
+            feedback.classList.remove('hidden');
+            document.getElementById('btnNextQuiz').classList.remove('hidden');
+        }
+
+        // IMPORT EXCEL FILE DYNAMICALLY
+        function importExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+                let imported = [];
+                let currCat = "ทั่วไป";
+                let idCounter = 1;
+
+                json.forEach((row) => {
+                    const cA = row[0] ? String(row[0]).trim() : '';
+                    const cB = row[1] ? String(row[1]).trim() : '';
+                    const cC = row[2] ? String(row[2]).trim() : '';
+                    const cD = row[3] ? String(row[3]).trim() : '';
+                    const cE = row[4] ? String(row[4]).trim() : '';
+                    const cF = row[5] ? String(row[5]).trim() : '';
+
+                    if (cA.startsWith("หมวด") && !cB) {
+                        currCat = cA;
+                    } else if (cA || cB || cC || cD) {
+                        imported.push({
+                            id: idCounter++,
+                            category: currCat,
+                            root: cA.replace(" ธาตุ", ""),
+                            suffix: cB.replace(" ปัจจัย", ""),
+                            form: cC.replace("เป็น ", ""),
+                            meaning: cD.replace("แปลว่า ", ""),
+                            example: cE.replace("เช่น ", ""),
+                            note: cF
+                        });
+                    }
+                });
+
+                if (imported.length > 0) {
+                    vocabData = imported;
+                    filteredVocab = [...vocabData];
+                    initCategories();
+                    renderTable();
+                    updateFlashcard();
+                    generateQuiz();
+                    alert(`นำเข้าคำศัพท์สำเร็จทั้งหมด ${imported.length} รายการ!`);
+                } else {
+                    alert('ไม่สามารถอ่านข้อมูลจากไฟล์ Excel ได้');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+>>>>>>> 1b83b80391036e38172e3cddeecff9751f4bd0d0
 </html>

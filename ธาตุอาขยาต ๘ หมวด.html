@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -930,4 +931,938 @@
         initApp();
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฝึกหัดธาตุอาขยาต ๘ หมวด & จับคู่คำแปล - Pali Grammar Practice</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                        kanit: ['Kanit', 'sans-serif'],
+                    },
+                    colors: {
+                        pali: {
+                            gold: '#D4AF37',
+                            darkGold: '#B8860B',
+                            brown: '#5C3A21',
+                            lightBg: '#FDFBF7',
+                            cardBg: '#FFFDF9',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f7f3eb;
+            background-image: radial-gradient(#e2d7c5 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1ebd9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2b293;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9e8c6b;
+        }
+        .drag-ghost {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans text-gray-800 flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-amber-950 text-amber-100 shadow-lg border-b-4 border-amber-600 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-600 flex items-center justify-center text-amber-100 font-bold font-kanit text-xl shadow-inner border border-amber-400">
+                    ภ
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold font-kanit tracking-wide text-amber-200">แบบฝึกหัดธาตุอาขยาตบาลี</h1>
+                    <p class="text-xs text-amber-300">สื่อเรียนรู้บาลีไวยากรณ์ (Pāḷi Grammar Practice)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button id="study-mode-btn" class="px-3 py-1.5 bg-amber-800 hover:bg-amber-700 text-amber-100 rounded-lg text-sm font-medium transition flex items-center gap-1.5 border border-amber-600 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    ตารางสรุปธาตุ
+                </button>
+                <button id="reset-btn" class="px-3 py-1.5 bg-red-800 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    เริ่มใหม่
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex-1 w-full flex flex-col gap-4">
+
+        <!-- Mode Switcher Tabs -->
+        <div class="bg-amber-100/80 p-1.5 rounded-2xl border border-amber-300 flex flex-col sm:flex-row gap-2 shadow-inner">
+            <button id="mode-category-btn" class="flex-1 py-2.5 px-4 rounded-xl font-bold font-kanit text-sm sm:text-base transition-all flex items-center justify-center gap-2 bg-amber-800 text-white shadow-md">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                โหมด ๑: ลากเข้าหมวดธาตุ (8 หมวด)
+            </button>
+            <button id="mode-matching-btn" class="flex-1 py-2.5 px-4 rounded-xl font-bold font-kanit text-sm sm:text-base transition-all flex items-center justify-center gap-2 text-amber-900 hover:bg-amber-200/60">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                โหมด ๒: จับคู่บาลี-แปลไทย
+            </button>
+        </div>
+
+        <!-- MODE 1: DRAG TO CATEGORY -->
+        <div id="view-mode-category" class="flex flex-col gap-4">
+            <!-- Instruction Alert -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-3.5 rounded-r-lg shadow-sm flex items-start gap-3 text-sm text-amber-900">
+                <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <span class="font-bold">วิธีเล่น:</span> ลากคำศัพท์ธาตุไปวางลงในหมวดธาตุที่ถูกต้อง หรือ <span class="font-semibold underline">คลิกเลือกคำศัพท์</span> แล้ว <span class="font-semibold underline">คลิกหมวดธาตุ</span> ที่ต้องการจัดเก็บ (รองรับมือถือ)
+                </div>
+            </div>
+
+            <!-- Dashboard Bar -->
+            <div class="bg-white p-3 rounded-xl shadow-md border border-amber-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">ความคืบหน้า:</span>
+                        <span id="progress-text" class="font-bold text-amber-800 text-sm">0 / 47 ศัพท์</span>
+                    </div>
+                    <div class="w-32 sm:w-48 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="progress-bar" class="bg-amber-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="score-badge" class="hidden items-center gap-2 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
+                    <span class="text-xs font-semibold text-amber-800">คะแนนเฉลย:</span>
+                    <span id="score-text" class="font-bold text-amber-900">0 / 47</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="check-answers-btn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-bold shadow transition flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        ตรวจคำตอบ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Drag & Drop Interactive Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                
+                <!-- Source Item Box -->
+                <div class="lg:col-span-4 bg-white rounded-xl shadow-md border border-amber-200 p-4 sticky top-20 z-10 max-h-[80vh] flex flex-col">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-amber-100">
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 bg-amber-100 text-amber-800 rounded-lg">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </span>
+                            <h2 class="font-bold font-kanit text-gray-800 text-lg">รายการคำศัพท์ธาตุ</h2>
+                        </div>
+                        <span id="remaining-count" class="px-2.5 py-0.5 bg-amber-100 text-amber-800 font-bold text-xs rounded-full border border-amber-300">47 ข้อ</span>
+                    </div>
+
+                    <div id="source-container" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1 min-h-[180px] max-h-[60vh]">
+                        <!-- Dynamic Verb Cards inserted here -->
+                    </div>
+
+                    <div class="mt-3 pt-2 border-t border-gray-100 text-xs text-gray-400 text-center flex justify-between items-center">
+                        <span>* ลาก หรือ แตะเพื่อเลือกการ์ด</span>
+                        <button id="shuffle-btn" class="text-amber-700 hover:text-amber-900 underline font-medium">สลับโจทย์</button>
+                    </div>
+                </div>
+
+                <!-- Target Categories Grid -->
+                <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Category 1: ภู -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="1">
+                        <div class="bg-amber-800 text-amber-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๑. หมวด ภู ธาตุ</h3>
+                                <p class="text-xs text-amber-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">อ</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-amber-900 text-amber-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-amber-50/30 flex-1 transition-colors border-2 border-dashed border-amber-200 rounded-b-xl m-2" data-cat="1"></div>
+                    </div>
+
+                    <!-- Category 2: รุธ -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="2">
+                        <div class="bg-amber-700 text-amber-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๒. หมวด รุธ ธาตุ</h3>
+                                <p class="text-xs text-amber-200">ปัจจัย: <span class="font-bold underline text-white">อ, เอ</span> (และนิคคหิตอาคม)</p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-amber-800 text-amber-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-amber-50/30 flex-1 transition-colors border-2 border-dashed border-amber-200 rounded-b-xl m-2" data-cat="2"></div>
+                    </div>
+
+                    <!-- Category 3: ทิว -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="3">
+                        <div class="bg-amber-600 text-amber-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๓. หมวด ทิว ธาตุ</h3>
+                                <p class="text-xs text-amber-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">ย</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-amber-700 text-amber-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-amber-50/30 flex-1 transition-colors border-2 border-dashed border-amber-200 rounded-b-xl m-2" data-cat="3"></div>
+                    </div>
+
+                    <!-- Category 4: สุ -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="4">
+                        <div class="bg-yellow-700 text-yellow-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๔. หมวด สุ ธาตุ</h3>
+                                <p class="text-xs text-yellow-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">ณุ, ณา</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-yellow-800 text-yellow-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-yellow-50/30 flex-1 transition-colors border-2 border-dashed border-yellow-200 rounded-b-xl m-2" data-cat="4"></div>
+                    </div>
+
+                    <!-- Category 5: กี -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="5">
+                        <div class="bg-amber-900 text-amber-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๕. หมวด กี ธาตุ</h3>
+                                <p class="text-xs text-amber-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">นา</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-amber-950 text-amber-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-amber-50/30 flex-1 transition-colors border-2 border-dashed border-amber-200 rounded-b-xl m-2" data-cat="5"></div>
+                    </div>
+
+                    <!-- Category 6: คห -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="6">
+                        <div class="bg-stone-700 text-stone-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๖. หมวด คห ธาตุ</h3>
+                                <p class="text-xs text-stone-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">ณหา</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-stone-800 text-stone-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-stone-50/30 flex-1 transition-colors border-2 border-dashed border-stone-200 rounded-b-xl m-2" data-cat="6"></div>
+                    </div>
+
+                    <!-- Category 7: ตน -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="7">
+                        <div class="bg-orange-800 text-orange-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๗. หมวด ตน ธาตุ</h3>
+                                <p class="text-xs text-orange-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">โอ</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-orange-900 text-orange-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-orange-50/30 flex-1 transition-colors border-2 border-dashed border-orange-200 rounded-b-xl m-2" data-cat="7"></div>
+                    </div>
+
+                    <!-- Category 8: จุร -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden flex flex-col transition border-2 border-transparent hover:border-amber-300" data-cat="8">
+                        <div class="bg-red-900 text-red-50 px-4 py-2.5 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold font-kanit text-base">๘. หมวด จุร ธาตุ</h3>
+                                <p class="text-xs text-red-200">ปัจจัยประจำหมวด: <span class="font-bold underline text-white">เณ, ณย</span></p>
+                            </div>
+                            <span class="cat-count px-2 py-0.5 bg-red-950 text-red-200 text-xs rounded-full font-bold">0 ข้อ</span>
+                        </div>
+                        <div class="drop-zone p-3 min-h-[140px] max-h-[300px] overflow-y-auto custom-scrollbar space-y-2 bg-red-50/30 flex-1 transition-colors border-2 border-dashed border-red-200 rounded-b-xl m-2" data-cat="8"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MODE 2: BALI & THAI TRANSLATION MATCHING -->
+        <div id="view-mode-matching" class="hidden flex-col gap-4">
+            <!-- Instruction Alert -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-3.5 rounded-r-lg shadow-sm flex items-start gap-3 text-sm text-amber-900">
+                <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <span class="font-bold">วิธีเล่นโหมดจับคู่:</span> คลิกเลือก <span class="font-semibold text-amber-800">"ศัพท์บาลี/ฐาน"</span> ฝั่งซ้าย แล้วคลิกเลือก <span class="font-semibold text-amber-800">"คำแปลภาษาไทย"</span> ฝั่งขวาให้ตรงกัน <span class="text-emerald-700 font-semibold">(เมื่อจับคู่ถูกต้อง คำนั้นจะย้ายขึ้นไปอยู่บรรทัดเดียวกันด้านบน)</span>
+                </div>
+            </div>
+
+            <!-- Matching Dashboard & Options -->
+            <div class="bg-white p-3.5 rounded-xl shadow-md border border-amber-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">จับคู่สำเร็จ:</span>
+                        <span id="match-score-text" class="font-bold text-emerald-700 text-base">0 / 8 คู่</span>
+                    </div>
+                </div>
+
+                <!-- Match Mode Selector Buttons -->
+                <div class="flex items-center gap-2 bg-amber-50 p-1 rounded-xl border border-amber-200">
+                    <button id="match-opt-8" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-800 text-white shadow-sm">
+                        สุ่มทีละ ๘ คู่
+                    </button>
+                    <button id="match-opt-all" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-amber-900 hover:bg-amber-200/60">
+                        จับคู่ทั้งหมด (๔๗ คู่)
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="next-match-set-btn" class="px-4 py-2 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-sm font-bold shadow transition flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span id="reset-match-btn-label">สุ่มคำศัพท์ชุดใหม่</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Matching Board Container -->
+            <div class="flex flex-col gap-6 bg-white p-6 rounded-2xl border border-amber-200 shadow-sm">
+                
+                <!-- TOP SECTION: Matched Items (Combined in single line) -->
+                <div id="matched-container-wrapper" class="hidden border-b-2 border-emerald-200 pb-5">
+                    <h3 class="font-bold font-kanit text-emerald-800 text-sm mb-3 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                        <span>คู่ที่จับถูกต้องแล้ว (รวมบรรทัดเดียวกัน)</span>
+                    </h3>
+                    <div id="matched-cards-container" class="space-y-2">
+                        <!-- Successfully matched cards move here -->
+                    </div>
+                </div>
+
+                <!-- BOTTOM SECTION: Remaining Unmatched Items -->
+                <div>
+                    <h3 id="unmatched-header" class="font-bold font-kanit text-amber-900 text-base mb-3 pb-2 border-b border-amber-200 flex items-center justify-between">
+                        <span>รายการคำศัพท์ที่ต้องจับคู่</span>
+                        <span class="text-xs text-amber-600 font-normal">คลิกบาลีฝั่งซ้าย + คำแปลฝั่งขวา</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Left Column: Pali Cards -->
+                        <div>
+                            <div class="text-xs font-bold text-amber-800 mb-2 uppercase tracking-wider">๑. ศัพท์บาลี / ธาตุ (ฐาน)</div>
+                            <div id="pali-cards-container" class="space-y-2.5">
+                                <!-- Pali Cards Inserted Dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Thai Cards -->
+                        <div>
+                            <div class="text-xs font-bold text-amber-800 mb-2 uppercase tracking-wider">๒. คำแปลภาษาไทย</div>
+                            <div id="thai-cards-container" class="space-y-2.5">
+                                <!-- Thai Cards Inserted Dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-amber-950 text-amber-300 text-center py-3 text-xs border-t border-amber-800 mt-6">
+        <p>สื่อการเรียนรู้ภาษาบาลี - แบบฝึกหัดหมวดธาตุอาขยาต ๘ หมวดตามหลักไวยากรณ์</p>
+    </footer>
+
+    <!-- Study Modal -->
+    <div id="study-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-amber-300">
+            <div class="bg-amber-900 text-amber-100 p-4 flex justify-between items-center border-b border-amber-700">
+                <div class="flex items-center gap-2">
+                    <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <h2 class="font-bold font-kanit text-lg">ตารางสรุปธาตุอาขยาต ๘ หมวด</h2>
+                </div>
+                <button id="close-modal-btn" class="p-1 hover:bg-amber-800 rounded-lg text-amber-300 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 overflow-y-auto custom-scrollbar space-y-4 text-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse border border-amber-200">
+                        <thead>
+                            <tr class="bg-amber-100 text-amber-900 font-kanit">
+                                <th class="p-2 border border-amber-200">หมวดธาตุ</th>
+                                <th class="p-2 border border-amber-200">ปัจจัยประจำหมวด</th>
+                                <th class="p-2 border border-amber-200">ตัวอย่างธาตุ + ปัจจัย = ฐาน</th>
+                                <th class="p-2 border border-amber-200">คำแปล / หมายเหตุ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-table-body" class="divide-y divide-amber-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-amber-50 p-3 border-t border-amber-200 text-right">
+                <button id="close-modal-bottom-btn" class="px-4 py-2 bg-amber-800 hover:bg-amber-700 text-white rounded-lg font-medium text-sm">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Script Logic -->
+    <script>
+        const verbData = [
+            // 1. หมวด ภู ธาตุ
+            { id: 1, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'ภู', factor: 'อ', base: 'ภว', meaning: 'มี, เป็น', note: 'พฤทธิ์ อู>โอ แปลง โอ>อว' },
+            { id: 2, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'หุ', factor: 'อ', base: 'โห', meaning: 'มี, เป็น', note: 'พฤทธิ์ อุ>โอ' },
+            { id: 3, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'สี', factor: 'อ', base: 'เส, สย', meaning: 'นอน', note: 'พฤทธิ์ อี>เอ (แปลง เอ>อย)' },
+            { id: 4, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'ชิ', factor: 'อ', base: 'เช, ชย', meaning: 'ชนะ', note: 'พฤทธิ์ อิ>เอ (แปลง เอ>อย)' },
+            { id: 5, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'มร', factor: 'อ', base: 'มร', meaning: 'ตาย', note: 'อกัมมธาตุ' },
+            { id: 6, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'ปจ', factor: 'อ', base: 'ปจ', meaning: 'หุงต้ม; เผา', note: 'สกัมมธาตุ' },
+            { id: 7, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'อิกข', factor: 'อ', base: 'อิกข', meaning: 'เห็น', note: 'สกัมมธาตุ' },
+            { id: 8, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'ลภ', factor: 'อ', base: 'ลภ', meaning: 'ได้', note: 'สกัมมธาตุ' },
+            { id: 9, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'คม', factor: 'อ', base: 'คจฉ', meaning: 'ไป, ถึง', note: 'แปลง คม>คจฉ' },
+            { id: 10, cat: 1, catName: 'หมวด ภู ธาตุ', verb: 'วนฺท', factor: 'อ', base: 'วนฺท', meaning: 'ไหว้', note: 'สกัมมธาตุ' },
+
+            // 2. หมวด รุธ ธาตุ
+            { id: 11, cat: 2, catName: 'หมวด รุธ ธาตุ', verb: 'รุธ', factor: 'อ, เอ', base: 'รุนธ, รุนเธ', meaning: 'ปิด, กัน', note: 'แปลงนิคคหิต>น' },
+            { id: 12, cat: 2, catName: 'หมวด รุธ ธาตุ', verb: 'ภุช', factor: 'อ', base: 'ภุญช', meaning: 'กิน', note: 'แปลงนิคคหิต>ญ' },
+            { id: 13, cat: 2, catName: 'หมวด รุธ ธาตุ', verb: 'ลิป', factor: 'อ', base: 'ลิมป', meaning: 'ฉาบ', note: 'แปลงนิคคหิต>ม' },
+            { id: 14, cat: 2, catName: 'หมวด รุธ ธาตุ', verb: 'มุจ', factor: 'อ', base: 'มุญจ', meaning: 'ปล่อย', note: 'แปลงนิคคหิต>ญ' },
+            { id: 15, cat: 2, catName: 'หมวด รุธ ธาตุ', verb: 'ภิท', factor: 'อ', base: 'ภินท', meaning: 'ทำลาย, ต่อย', note: 'แปลงนิคคหิต>น' },
+            { id: 16, cat: 2, catName: 'หมวด รุธ ธาตุ', verb: 'ฉิท', factor: 'อ', base: 'ฉินท', meaning: 'ตัด, ผ่า', note: 'แปลงนิคคหิต>น' },
+
+            // 3. หมวด ทิว ธาตุ
+            { id: 17, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'ทิว', factor: 'ย', base: 'ทิพพ', meaning: 'เล่น', note: 'แปลง ย กับ ว >พพ' },
+            { id: 18, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'สิว', factor: 'ย', base: 'สิพพ', meaning: 'เย็บ', note: 'แปลง ย กับ ว >พพ' },
+            { id: 19, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'ขี', factor: 'ย', base: 'ขีย', meaning: 'สิ้น', note: 'ลง ย ปัจจัย' },
+            { id: 20, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'พุธ', factor: 'ย', base: 'พุชฌ', meaning: 'รู้, ตรัสรู้', note: 'แปลง ย กับ ธ >ชฌ' },
+            { id: 21, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'มุห', factor: 'ย', base: 'มุยห', meaning: 'หลง', note: 'แปลง ย กับ ห >ยห' },
+            { id: 22, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'มุส', factor: 'ย', base: 'มุสส', meaning: 'ลืม', note: 'แปลง ย กับ ส >สส' },
+            { id: 23, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'รช', factor: 'ย', base: 'รชช', meaning: 'ย้อม', note: 'แปลง ย กับ ช >ชช' },
+            { id: 24, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'ปจ', factor: 'ย', base: 'ปจจ', meaning: 'สุก, ไหม้', note: 'แปลง ย กับ จ >จจ' },
+            { id: 25, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'มุจ', factor: 'ย', base: 'มุจจ', meaning: 'หลุด, พ้น', note: 'แปลง ย กับ จ >จจ' },
+            { id: 26, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'ภิท', factor: 'ย', base: 'ภิชช', meaning: 'แตก', note: 'แปลง ย กับ ท >ชช' },
+            { id: 27, cat: 3, catName: 'หมวด ทิว ธาตุ', verb: 'ฉิท', factor: 'ย', base: 'ฉิชช', meaning: 'ขาด, ทะลุ', note: 'แปลง ย กับ ท >ชช' },
+
+            // 4. หมวด สุ ธาตุ
+            { id: 28, cat: 4, catName: 'หมวด สุ ธาตุ', verb: 'สุ', factor: 'ณา', base: 'สุโณ, สุณา', meaning: 'ฟัง', note: 'แปลง อุ ที่ สุ >โอ' },
+            { id: 29, cat: 4, catName: 'หมวด สุ ธาตุ', verb: 'วุ', factor: 'ณา', base: 'วุณา', meaning: 'ร้อย', note: 'ลง ณา ปัจจัย' },
+            { id: 30, cat: 4, catName: 'หมวด สุ ธาตุ', verb: 'สิ', factor: 'ณุ', base: 'สิโณ', meaning: 'ผูก', note: 'แปลง อุ>โอ' },
+
+            // 5. หมวด กี ธาตุ
+            { id: 31, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'กี', factor: 'นา', base: 'กีณา', meaning: 'ซื้อ', note: 'แปลง นา>ณา' },
+            { id: 32, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'ชิ', factor: 'นา', base: 'ชินา', meaning: 'ชนะ', note: 'ลง นา ปัจจัย' },
+            { id: 33, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'จิ', factor: 'นา', base: 'จินา', meaning: 'ก่อ, สั่งสม', note: 'ลง นา ปัจจัย' },
+            { id: 34, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'ญา', factor: 'นา', base: 'ชานา', meaning: 'รู้', note: 'แปลง ญา>ชา' },
+            { id: 35, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'ธุ', factor: 'นา', base: 'ธุนา', meaning: 'กำจัด, ทำลาย', note: 'ลง นา ปัจจัย' },
+            { id: 36, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'ลุ', factor: 'นา', base: 'ลุนา', meaning: 'เกี่ยว, ตัด', note: 'ลง นา ปัจจัย' },
+            { id: 37, cat: 5, catName: 'หมวด กี ธาตุ', verb: 'ผุ', factor: 'นา', base: 'ผุนา', meaning: 'ฝัด, โปรย', note: 'ลง นา ปัจจัย' },
+
+            // 6. หมวด คห ธาตุ
+            { id: 38, cat: 6, catName: 'หมวด คห ธาตุ', verb: 'คห', factor: 'ณหา', base: 'คณหา', meaning: 'ถือเอา, จับ, รับ', note: 'ลบ ห ที่สุดธาตุ' },
+
+            // 7. หมวด ตน ธาตุ
+            { id: 39, cat: 7, catName: 'หมวด ตน ธาตุ', verb: 'ตน', factor: 'โอ', base: 'ตโน', meaning: 'แผ่ไป', note: 'ลง โอ ปัจจัย' },
+            { id: 40, cat: 7, catName: 'หมวด ตน ธาตุ', verb: 'กร', factor: 'โอ', base: 'กโร', meaning: 'ทำ', note: 'ลง โอ ปัจจัย' },
+            { id: 41, cat: 7, catName: 'หมวด ตน ธาตุ', verb: 'สกฺก', factor: 'โอ', base: 'สกฺโก', meaning: 'อาจ', note: 'ลง โอ ปัจจัย' },
+            { id: 42, cat: 7, catName: 'หมวด ตน ธาตุ', verb: 'ชาคร', factor: 'โอ', base: 'ชาคโร', meaning: 'ตื่น', note: 'ลง โอ ปัจจัย' },
+
+            // 8. หมวด จุร ธาตุ
+            { id: 43, cat: 8, catName: 'หมวด จุร ธาตุ', verb: 'จุร', factor: 'เณ, ณย', base: 'โจเร, โจรย', meaning: 'ลัก, ขโมย', note: 'พฤทธิ์ อุ>โอ ลบ ณ' },
+            { id: 44, cat: 8, catName: 'หมวด จุร ธาตุ', verb: 'ตกฺก', factor: 'เณ, ณย', base: 'ตกฺเก, ตกฺกย', meaning: 'ตรึก', note: 'ลบ ณ' },
+            { id: 45, cat: 8, catName: 'หมวด จุร ธาตุ', verb: 'ลกฺข', factor: 'เณ, ณย', base: 'ลกฺเข, ลกฺขย', meaning: 'กำหนด', note: 'ลบ ณ' },
+            { id: 46, cat: 8, catName: 'หมวด จุร ธาตุ', verb: 'มนฺต', factor: 'เณ, ณย', base: 'มนฺเต, มนฺตย', meaning: 'ปรึกษา', note: 'ลบ ณ' },
+            { id: 47, cat: 8, catName: 'หมวด จุร ธาตุ', verb: 'จินฺต', factor: 'เณ, ณย', base: 'จินฺเต, จินฺตย', meaning: 'คิด', note: 'ลบ ณ' }
+        ];
+
+        // Global Mode State
+        let currentMode = 1; // 1: Category, 2: Matching
+
+        // Mode 1 State
+        let currentCards = [];
+        let placedCards = {}; 
+        let selectedCardId = null;
+        let isChecked = false;
+
+        // Mode 2 State
+        let matchModeType = '8'; // '8' or 'all'
+        let matchSet = [];
+        let matchPaliSelected = null;
+        let matchThaiSelected = null;
+        let matchedPairs = []; // array of item IDs
+
+        // DOM Elements
+        const modeCategoryBtn = document.getElementById('mode-category-btn');
+        const modeMatchingBtn = document.getElementById('mode-matching-btn');
+        const viewModeCategory = document.getElementById('view-mode-category');
+        const viewModeMatching = document.getElementById('view-mode-matching');
+
+        const sourceContainer = document.getElementById('source-container');
+        const remainingCountEl = document.getElementById('remaining-count');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const checkAnswersBtn = document.getElementById('check-answers-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const scoreBadge = document.getElementById('score-badge');
+        const scoreText = document.getElementById('score-text');
+
+        const matchScoreText = document.getElementById('match-score-text');
+        const nextMatchSetBtn = document.getElementById('next-match-set-btn');
+        const resetMatchBtnLabel = document.getElementById('reset-match-btn-label');
+        const matchOpt8 = document.getElementById('match-opt-8');
+        const matchOptAll = document.getElementById('match-opt-all');
+        
+        const matchedContainerWrapper = document.getElementById('matched-container-wrapper');
+        const matchedCardsContainer = document.getElementById('matched-cards-container');
+        const paliCardsContainer = document.getElementById('pali-cards-container');
+        const thaiCardsContainer = document.getElementById('thai-cards-container');
+        
+        const studyModeBtn = document.getElementById('study-mode-btn');
+        const studyModal = document.getElementById('study-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const closeModalBottomBtn = document.getElementById('close-modal-bottom-btn');
+        const modalTableBody = document.getElementById('modal-table-body');
+
+        // Mode Switching
+        modeCategoryBtn.addEventListener('click', () => switchMode(1));
+        modeMatchingBtn.addEventListener('click', () => switchMode(2));
+
+        function switchMode(mode) {
+            currentMode = mode;
+            if (mode === 1) {
+                viewModeCategory.classList.remove('hidden');
+                viewModeMatching.classList.add('hidden');
+                modeCategoryBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-bold font-kanit text-sm sm:text-base transition-all flex items-center justify-center gap-2 bg-amber-800 text-white shadow-md";
+                modeMatchingBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-bold font-kanit text-sm sm:text-base transition-all flex items-center justify-center gap-2 text-amber-900 hover:bg-amber-200/60";
+            } else {
+                viewModeCategory.classList.add('hidden');
+                viewModeMatching.classList.remove('hidden');
+                modeMatchingBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-bold font-kanit text-sm sm:text-base transition-all flex items-center justify-center gap-2 bg-amber-800 text-white shadow-md";
+                modeCategoryBtn.className = "flex-1 py-2.5 px-4 rounded-xl font-bold font-kanit text-sm sm:text-base transition-all flex items-center justify-center gap-2 text-amber-900 hover:bg-amber-200/60";
+                if (matchSet.length === 0) initMatchingGame();
+            }
+        }
+
+        // Initialize App
+        function initApp() {
+            initCategoryGame();
+            initMatchingGame();
+            renderStudyModalTable();
+        }
+
+        function initCategoryGame() {
+            currentCards = [...verbData];
+            shuffleArray(currentCards);
+            placedCards = {};
+            selectedCardId = null;
+            isChecked = false;
+
+            scoreBadge.classList.add('hidden');
+            checkAnswersBtn.disabled = true;
+            checkAnswersBtn.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                ตรวจคำตอบ
+            `;
+
+            document.querySelectorAll('.drop-zone').forEach(zone => zone.innerHTML = '');
+            updateProgress();
+            renderSourceCards();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- MODE 1 LOGIC ---
+        function renderSourceCards() {
+            sourceContainer.innerHTML = '';
+            const unplaced = currentCards.filter(c => !placedCards[c.id]);
+
+            if (unplaced.length === 0) {
+                sourceContainer.innerHTML = `
+                    <div class="p-6 text-center text-amber-700 bg-amber-50 rounded-xl border border-dashed border-amber-300">
+                        <svg class="w-10 h-10 mx-auto text-amber-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="font-bold font-kanit">จัดหมวดหมู่ครบทุกข้อแล้ว!</p>
+                        <p class="text-xs text-amber-600 mt-1">กดปุ่ม "ตรวจคำตอบ" เพื่อเช็กผลลัพธ์</p>
+                    </div>
+                `;
+            } else {
+                unplaced.forEach(item => {
+                    const card = createCardElement(item);
+                    sourceContainer.appendChild(card);
+                });
+            }
+            remainingCountEl.textContent = `${unplaced.length} ข้อ`;
+        }
+
+        function createCardElement(item, isPlaced = false) {
+            const card = document.createElement('div');
+            card.className = `verb-card bg-amber-50/80 hover:bg-white p-2.5 rounded-lg border border-amber-200 shadow-sm cursor-pointer transition-all select-none relative group ${selectedCardId === item.id ? 'ring-2 ring-amber-500 border-amber-500 bg-amber-100' : ''}`;
+            card.setAttribute('draggable', 'true');
+            card.dataset.id = item.id;
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-baseline gap-1.5">
+                        <span class="font-bold text-sm text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">${item.verb} ธาตุ</span>
+                        <span class="font-bold text-base text-amber-950 font-kanit">${item.base}</span>
+                        <span class="text-xs text-amber-700 font-mono">(${item.verb} + ${item.factor})</span>
+                    </div>
+                    ${isPlaced ? `<button class="remove-btn text-xs text-gray-400 hover:text-red-500 p-0.5 rounded" data-id="${item.id}">✕</button>` : ''}
+                </div>
+                <div class="text-xs text-gray-600 mt-1 flex justify-between items-center">
+                    <span>แปลว่า: <span class="font-medium text-gray-800">${item.meaning}</span></span>
+                    ${item.note ? `<span class="text-[10px] text-amber-800 italic bg-amber-50 px-1 rounded">${item.note}</span>` : ''}
+                </div>
+            `;
+
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-btn')) {
+                    e.stopPropagation();
+                    unplaceCard(item.id);
+                    return;
+                }
+                if (isChecked) return;
+                
+                selectedCardId = selectedCardId === item.id ? null : item.id;
+                renderSourceCards();
+            });
+
+            return card;
+        }
+
+        let draggedCardId = null;
+        function handleDragStart(e) {
+            if (isChecked) { e.preventDefault(); return; }
+            draggedCardId = parseInt(this.dataset.id);
+            this.classList.add('drag-ghost');
+            e.dataTransfer.setData('text/plain', draggedCardId);
+        }
+        function handleDragEnd() { this.classList.remove('drag-ghost'); }
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (!isChecked) zone.classList.add('bg-amber-100/70', 'border-amber-400');
+            });
+            zone.addEventListener('dragleave', () => zone.classList.remove('bg-amber-100/70', 'border-amber-400'));
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('bg-amber-100/70', 'border-amber-400');
+                if (isChecked) return;
+                const cardId = parseInt(e.dataTransfer.getData('text/plain') || draggedCardId);
+                const targetCat = parseInt(zone.dataset.cat);
+                if (cardId && targetCat) placeCard(cardId, targetCat);
+            });
+            zone.addEventListener('click', () => {
+                if (isChecked) return;
+                if (selectedCardId !== null) {
+                    placeCard(selectedCardId, parseInt(zone.dataset.cat));
+                    selectedCardId = null;
+                }
+            });
+        });
+
+        function placeCard(cardId, categoryId) {
+            placedCards[cardId] = categoryId;
+            renderPlacedCards();
+            renderSourceCards();
+            updateProgress();
+        }
+
+        function unplaceCard(cardId) {
+            delete placedCards[cardId];
+            renderPlacedCards();
+            renderSourceCards();
+            updateProgress();
+        }
+
+        function renderPlacedCards() {
+            document.querySelectorAll('.drop-zone').forEach(zone => zone.innerHTML = '');
+
+            Object.keys(placedCards).forEach(cardIdStr => {
+                const cardId = parseInt(cardIdStr);
+                const catId = placedCards[cardId];
+                const item = verbData.find(v => v.id === cardId);
+                const zone = document.querySelector(`.drop-zone[data-cat="${catId}"]`);
+
+                if (zone && item) {
+                    const cardEl = createCardElement(item, true);
+                    if (isChecked) {
+                        const isCorrect = (item.cat === catId);
+                        cardEl.classList.remove('bg-amber-50/80', 'hover:bg-white', 'border-amber-200');
+                        if (isCorrect) {
+                            cardEl.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+                            cardEl.innerHTML += `<div class="text-[11px] font-bold text-emerald-700 mt-1 flex items-center gap-1">✓ ถูกต้อง</div>`;
+                        } else {
+                            cardEl.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-900');
+                            cardEl.innerHTML += `<div class="text-[11px] font-bold text-rose-700 mt-1">✕ ผิด (เฉลย: ${item.catName})</div>`;
+                        }
+                    }
+                    zone.appendChild(cardEl);
+                }
+            });
+
+            document.querySelectorAll('.category-card').forEach(card => {
+                const catId = parseInt(card.dataset.cat);
+                const count = Object.values(placedCards).filter(c => c === catId).length;
+                const badge = card.querySelector('.cat-count');
+                if (badge) badge.textContent = `${count} ข้อ`;
+            });
+        }
+
+        function updateProgress() {
+            const placedCount = Object.keys(placedCards).length;
+            const totalCount = currentCards.length;
+            const percentage = Math.round((placedCount / totalCount) * 100);
+
+            progressText.textContent = `${placedCount} / ${totalCount} ศัพท์`;
+            progressBar.style.width = `${percentage}%`;
+            checkAnswersBtn.disabled = placedCount === 0 || isChecked;
+        }
+
+        checkAnswersBtn.addEventListener('click', () => {
+            if (isChecked) return;
+            isChecked = true;
+            let correctCount = 0;
+
+            Object.keys(placedCards).forEach(cardIdStr => {
+                const cardId = parseInt(cardIdStr);
+                const item = verbData.find(v => v.id === cardId);
+                if (item && item.cat === placedCards[cardId]) correctCount++;
+            });
+
+            scoreBadge.classList.remove('hidden');
+            scoreBadge.classList.add('flex');
+            scoreText.textContent = `${correctCount} / ${Object.keys(placedCards).length}`;
+
+            renderPlacedCards();
+            checkAnswersBtn.disabled = true;
+        });
+
+        shuffleBtn.addEventListener('click', () => {
+            shuffleArray(currentCards);
+            renderSourceCards();
+        });
+
+
+        // --- MODE 2 LOGIC (MATCHING WITH TOP-SLIDE REORDERING) ---
+        let matchPaliList = [];
+        let matchThaiList = [];
+
+        matchOpt8.addEventListener('click', () => {
+            matchModeType = '8';
+            matchOpt8.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-800 text-white shadow-sm";
+            matchOptAll.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-amber-900 hover:bg-amber-200/60";
+            resetMatchBtnLabel.textContent = "สุ่มคำศัพท์ชุดใหม่";
+            initMatchingGame();
+        });
+
+        matchOptAll.addEventListener('click', () => {
+            matchModeType = 'all';
+            matchOptAll.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-800 text-white shadow-sm";
+            matchOpt8.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-amber-900 hover:bg-amber-200/60";
+            resetMatchBtnLabel.textContent = "สลับตำแหน่งทั้งหมด";
+            initMatchingGame();
+        });
+
+        function initMatchingGame() {
+            const shuffledAll = [...verbData];
+            shuffleArray(shuffledAll);
+
+            if (matchModeType === '8') {
+                matchSet = shuffledAll.slice(0, 8);
+            } else {
+                matchSet = shuffledAll;
+            }
+
+            matchedPairs = [];
+            matchPaliSelected = null;
+            matchThaiSelected = null;
+
+            matchPaliList = [...matchSet];
+            matchThaiList = [...matchSet];
+            shuffleArray(matchPaliList);
+            shuffleArray(matchThaiList);
+
+            renderMatchingBoard();
+        }
+
+        function renderMatchingBoard() {
+            matchScoreText.textContent = `${matchedPairs.length} / ${matchSet.length} คู่`;
+
+            // 1. Render Matched Items (Top Section - Combined Line)
+            if (matchedPairs.length > 0) {
+                matchedContainerWrapper.classList.remove('hidden');
+                matchedCardsContainer.innerHTML = '';
+                
+                matchedPairs.forEach(id => {
+                    const item = matchSet.find(v => v.id === id);
+                    if (item) {
+                        const card = document.createElement('div');
+                        card.className = 'p-3 rounded-xl bg-emerald-50 border border-emerald-300 shadow-sm flex items-center justify-between gap-3 text-emerald-950 font-sans animate-fade-in';
+                        card.innerHTML = `
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="bg-emerald-200 text-emerald-800 text-xs px-2 py-0.5 rounded font-bold whitespace-nowrap">${item.verb} ธาตุ</span>
+                                <span class="font-bold font-kanit text-base whitespace-nowrap">${item.base}</span>
+                                <span class="text-xs text-emerald-700 whitespace-nowrap">(${item.verb} + ${item.factor})</span>
+                                <span class="text-xs text-emerald-400">|</span>
+                                <span class="text-xs text-emerald-800 font-bold whitespace-nowrap">${item.meaning}</span>
+                                ${item.note ? `<span class="text-xs text-emerald-600 italic truncate font-normal">(${item.note})</span>` : ''}
+                            </div>
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full whitespace-nowrap shrink-0">✓ ถูกต้อง</span>
+                        `;
+                        matchedCardsContainer.appendChild(card);
+                    }
+                });
+            } else {
+                matchedContainerWrapper.classList.add('hidden');
+            }
+
+            // 2. Filter out unmatched items
+            const remainingPali = matchPaliList.filter(item => !matchedPairs.includes(item.id));
+            const remainingThai = matchThaiList.filter(item => !matchedPairs.includes(item.id));
+
+            // Render Unmatched Pali List (Bottom Left)
+            paliCardsContainer.innerHTML = '';
+            remainingPali.forEach(item => {
+                const isSelected = matchPaliSelected === item.id;
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between min-h-[52px] ${
+                    isSelected 
+                        ? 'bg-amber-100 border-amber-600 shadow-md ring-2 ring-amber-500' 
+                        : 'bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50/50 shadow-sm'
+                }`;
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 truncate">
+                        <span class="font-bold text-xs text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded whitespace-nowrap">${item.verb} ธาตุ</span>
+                        <span class="font-bold text-base font-kanit text-amber-950 whitespace-nowrap">${item.base}</span>
+                        <span class="text-xs text-amber-800 font-medium whitespace-nowrap">(${item.verb} + ${item.factor})</span>
+                        <span class="text-xs text-gray-300">|</span>
+                        <span class="text-xs text-gray-500 truncate">${item.catName}</span>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => {
+                    matchPaliSelected = isSelected ? null : item.id;
+                    checkPairMatching();
+                });
+                paliCardsContainer.appendChild(card);
+            });
+
+            // Render Unmatched Thai List (Bottom Right)
+            thaiCardsContainer.innerHTML = '';
+            remainingThai.forEach(item => {
+                const isSelected = matchThaiSelected === item.id;
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between min-h-[52px] ${
+                    isSelected 
+                        ? 'bg-amber-100 border-amber-600 shadow-md ring-2 ring-amber-500' 
+                        : 'bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50/50 shadow-sm'
+                }`;
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 truncate">
+                        <span class="font-bold text-base text-gray-800 font-kanit whitespace-nowrap">${item.meaning}</span>
+                        ${item.note ? `<span class="text-xs text-amber-800 italic truncate font-sans">(${item.note})</span>` : ''}
+                    </div>
+                `;
+
+                card.addEventListener('click', () => {
+                    matchThaiSelected = isSelected ? null : item.id;
+                    checkPairMatching();
+                });
+                thaiCardsContainer.appendChild(card);
+            });
+        }
+
+        function checkPairMatching() {
+            renderMatchingBoard();
+
+            if (matchPaliSelected !== null && matchThaiSelected !== null) {
+                if (matchPaliSelected === matchThaiSelected) {
+                    // Match Correct! Move to matchedPairs array
+                    matchedPairs.push(matchPaliSelected);
+                    matchPaliSelected = null;
+                    matchThaiSelected = null;
+                    setTimeout(() => {
+                        renderMatchingBoard();
+                    }, 150);
+                } else {
+                    // Match Incorrect!
+                    paliCardsContainer.classList.add('animate-shake');
+                    thaiCardsContainer.classList.add('animate-shake');
+                    
+                    setTimeout(() => {
+                        paliCardsContainer.classList.remove('animate-shake');
+                        thaiCardsContainer.classList.remove('animate-shake');
+                        matchPaliSelected = null;
+                        matchThaiSelected = null;
+                        renderMatchingBoard();
+                    }, 400);
+                }
+            }
+        }
+
+        nextMatchSetBtn.addEventListener('click', initMatchingGame);
+
+
+        // --- COMMON LOGIC ---
+        resetBtn.addEventListener('click', () => {
+            if (currentMode === 1) initCategoryGame();
+            else initMatchingGame();
+        });
+
+        function renderStudyModalTable() {
+            modalTableBody.innerHTML = '';
+            verbData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-amber-50/40';
+                tr.innerHTML = `
+                    <td class="p-2 border border-amber-200 font-semibold text-amber-900">${item.catName}</td>
+                    <td class="p-2 border border-amber-200 text-center font-mono">${item.factor}</td>
+                    <td class="p-2 border border-amber-200"><span class="font-bold text-amber-900">${item.verb} ธาตุ</span> • <span class="font-bold text-amber-950">${item.verb}</span> + ${item.factor} = <span class="font-bold text-amber-800">${item.base}</span></td>
+                    <td class="p-2 border border-amber-200 text-gray-700">${item.meaning} ${item.note ? `<span class="text-xs text-amber-700">(${item.note})</span>` : ''}</td>
+                `;
+                modalTableBody.appendChild(tr);
+            });
+        }
+
+        studyModeBtn.addEventListener('click', () => studyModal.classList.remove('hidden'));
+        closeModalBtn.addEventListener('click', () => studyModal.classList.add('hidden'));
+        closeModalBottomBtn.addEventListener('click', () => studyModal.classList.add('hidden'));
+
+        // Start App on load
+        initApp();
+    </script>
+</body>
+>>>>>>> 1b83b80391036e38172e3cddeecff9751f4bd0d0
 </html>
