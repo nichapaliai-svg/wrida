@@ -37,7 +37,7 @@ body{padding:18px 20px;background:#fff8ed}
 #learnerProfile{max-width:1400px;margin:0 auto 18px;border:1px solid #edc9a5;background:#fffaf2;box-shadow:none;padding:12px 15px;border-radius:11px;gap:9px;color:#8b4513}
 #learnerProfile label{font-weight:600;color:#8b4513}
 #learnerProfile input,#learnerProfile select{padding:9px 10px;min-width:105px;border-color:#e4c5a7;background:#fff}
-#learnerName{width:238px}
+#learnerStatus{width:238px}
 #learnerAge{width:115px}
 #learnerProfile button{background:#75400f;font-weight:600}
 #profileStatus{font-size:.85rem;color:#6e5b49}
@@ -101,8 +101,13 @@ body > .toolbar:not(#learnerProfile),body > .stats,body > .progress-wrap{display
 </head>
 <body>
 <section class="toolbar" id="learnerProfile">
-<label for="learnerName">ชื่อ-นามสกุล</label>
-<input id="learnerName" autocomplete="name" placeholder="กรอกชื่อและนามสกุล" required>
+<label for="learnerStatus">สถานภาพ</label>
+<select id="learnerStatus" required>
+<option value="">เลือกสถานภาพ</option>
+<option value="นักเรียน">1. นักเรียน</option>
+<option value="พระเณร">2. พระเณร</option>
+<option value="คนทั่วไป">3. คนทั่วไป</option>
+</select>
 <label for="learnerGender">เพศ</label>
 <select id="learnerGender" required>
 <option value="">เลือกเพศ</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="ไม่ระบุ">ไม่ประสงค์ระบุ</option><option value="อื่น ๆ">อื่น ๆ</option>
@@ -134,7 +139,7 @@ body > .toolbar:not(#learnerProfile),body > .stats,body > .progress-wrap{display
  <small>เลือกได้หลายช่วงวัยตามความเหมาะสม เช่น ผู้เรียนและผู้ปกครอง หรือผู้ทำงานที่กำลังเตรียมเกษียณ</small>
 </fieldset>
 <button onclick="saveProfile()">บันทึกข้อมูลผู้เรียน</button>
-<span id="profileStatus" role="status" aria-live="polite">กรอกข้อมูลผู้เรียนและเลือกช่วงวัยหรือสถานการณ์ชีวิตได้หลายข้อ</span>
+<span id="profileStatus" role="status" aria-live="polite">เลือกสถานภาพ กรอกข้อมูลที่จำเป็น และเลือกช่วงวัยหรือสถานการณ์ชีวิตได้หลายข้อ</span>
 </section>
 <header class="header">
 <h1>🪷 ธรรมกับ AI — 15 หมวดการเรียนรู้</h1>
@@ -189,10 +194,10 @@ function getStableProfileId(){
 }
 async function saveLearnerProfileCloud(profile){
  if(!sbClient || !profile) return false;
- const {error}=await sbClient.rpc('save_learner_profile',{p_id:profile.profileId||getStableProfileId(),p_full_name:profile.name,p_gender:profile.gender,p_age:Number(profile.age),p_age_groups:profile.ageGroups||[]});
+ const {error}=await sbClient.rpc('save_learner_profile',{p_id:profile.profileId||getStableProfileId(),p_status:profile.status,p_gender:profile.gender,p_age:Number(profile.age),p_age_groups:profile.ageGroups||[]});
  const status=document.getElementById('profileStatus');
  if(error){console.error('บันทึกข้อมูลผู้เรียนลง Supabase ไม่สำเร็จ:',error.message);if(status)status.textContent='บันทึกในเครื่องแล้ว แต่ Supabase ยังไม่สำเร็จ: '+error.message+' (ตรวจว่ารัน SQL ฟังก์ชัน save_learner_profile แล้ว)';return false;}
- if(status)status.textContent='บันทึกข้อมูลผู้เรียนในเครื่องและ Supabase แล้ว: '+profile.name;
+ if(status)status.textContent='บันทึกข้อมูลผู้เรียนในเครื่องและ Supabase แล้ว ('+profile.status+');
  return true;
 }
 function connectSupabase(){
@@ -209,7 +214,7 @@ async function saveCategoryResult(cat, s){
  await saveLearnerProfileCloud(profile);
  const score=cat.qs.filter((q,i)=>s.answers[i]===q[2]).length;
  const row={
-  full_name:profile.name,
+  status:profile.status,
   gender:["ชาย","หญิง","ไม่ระบุ"].includes(profile.gender) ? profile.gender : "ไม่ระบุ",
   age:profile.age,
   game_id:Number(cat.id),
@@ -695,24 +700,34 @@ function resetAgeQuiz(){if(!confirm('ต้องการล้างคะแ�
 let state={}, mode="general";
 const PROFILE_KEY="dhammaAI_learner_profile_v1";
 function saveProfile(){
- const name=document.getElementById('learnerName').value.trim();
- const gender=document.getElementById('learnerGender').value;
- const age=Number(document.getElementById('learnerAge').value);
- const status=document.getElementById('profileStatus');
- const ageGroups=[...document.querySelectorAll('input[name="ageGroup"]:checked')].map(el=>el.value);
- if(!name || !gender || !Number.isInteger(age) || age<1 || age>120){
-   status.textContent="กรุณากรอกชื่อ-นามสกุล เลือกเพศ และใส่อายุ 1–120 ปีให้ครบ";
-   return false;
- }
- const profile={name,gender,age,ageGroups,profileId:getStableProfileId(),savedAt:new Date().toISOString()};
- try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));status.textContent="บันทึกข้อมูลผู้เรียนในเครื่องแล้ว กำลังบันทึก Supabase…";saveLearnerProfileCloud(profile);queueSync();return true;}
- catch(e){status.textContent="บันทึกในอุปกรณ์ไม่สำเร็จ กรุณาตรวจการตั้งค่าเบราว์เซอร์";return false;}
+  const statusValue=document.getElementById('learnerStatus').value;
+  const gender=document.getElementById('learnerGender').value;
+  const age=Number(document.getElementById('learnerAge').value);
+  const status=document.getElementById('profileStatus');
+  const ageGroups=[...document.querySelectorAll('input[name="ageGroup"]:checked')].map(el=>el.value);
+  if(!["นักเรียน","พระเณร","คนทั่วไป"].includes(statusValue) || !gender || !Number.isInteger(age) || age<1 || age>120){
+    status.textContent="กรุณาเลือกสถานภาพ เลือกเพศ และใส่อายุ 1–120 ปีให้ครบ";
+    return false;
+  }
+  const profile={status:statusValue,gender,age,ageGroups,profileId:getStableProfileId(),savedAt:new Date().toISOString()};
+  try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));status.textContent="บันทึกข้อมูลผู้ใช้ในเครื่องแล้ว กำลังบันทึก Supabase…";saveLearnerProfileCloud(profile);queueSync();return true;}
+  catch(e){status.textContent="บันทึกในอุปกรณ์ไม่สำเร็จ กรุณาตรวจการตั้งค่าเบราว์เซอร์";return false;}
 }
 function loadProfile(){
- try{
-  const p=JSON.parse(localStorage.getItem(PROFILE_KEY)||"null");
-  if(p){if(!p.profileId)p.profileId=getStableProfileId();document.getElementById('learnerName').value=p.name||"";document.getElementById('learnerGender').value=p.gender||"";document.getElementById('learnerAge').value=p.age||"";const groups=Array.isArray(p.ageGroups)?p.ageGroups:[];document.querySelectorAll('input[name="ageGroup"]').forEach(el=>{el.checked=groups.includes(el.value)});document.getElementById('profileStatus').textContent="พบข้อมูลผู้เรียนที่บันทึกไว้: "+(p.name||"");localStorage.setItem(PROFILE_KEY,JSON.stringify(p));}
- }catch(e){}
+  try{
+    const p=JSON.parse(localStorage.getItem(PROFILE_KEY)||"null");
+    if(p){
+      if(!p.profileId)p.profileId=getStableProfileId();
+      p.status=["นักเรียน","พระเณร","คนทั่วไป"].includes(p.status)?p.status:"คนทั่วไป";
+      document.getElementById('learnerStatus').value=p.status;
+      document.getElementById('learnerGender').value=p.gender||"";
+      document.getElementById('learnerAge').value=p.age||"";
+      const groups=Array.isArray(p.ageGroups)?p.ageGroups:[];
+      document.querySelectorAll('input[name="ageGroup"]').forEach(el=>{el.checked=groups.includes(el.value)});
+      document.getElementById('profileStatus').textContent="พบข้อมูลผู้ใช้ที่บันทึกไว้: "+p.status;
+      localStorage.setItem(PROFILE_KEY,JSON.stringify(p));
+    }
+  }catch(e){}
 }
 
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -803,15 +818,15 @@ function renderGames(){
 }
 function answer(catId,idx){if(!saveProfileIfValid())return;const cat=categories.find(c=>c.id===catId);const s=state[catId]||{i:0,answers:{}};if(s.answers[s.i]!==undefined)return;s.answers[s.i]=idx;state[catId]=s;renderGames();queueSync();}
 function saveProfileIfValid(){
- const name=document.getElementById('learnerName').value.trim();
- const gender=document.getElementById('learnerGender').value;
- const age=Number(document.getElementById('learnerAge').value);
- if(!name || !gender || !Number.isInteger(age) || age<1 || age>120){
-  document.getElementById('profileStatus').textContent="กรุณากรอกชื่อ-นามสกุล เลือกเพศ และอายุให้ครบก่อนตอบ";
-  document.getElementById('learnerProfile').scrollIntoView({behavior:"smooth",block:"center"});
-  return false;
- }
- return saveProfile();
+  const statusValue=document.getElementById('learnerStatus').value;
+  const gender=document.getElementById('learnerGender').value;
+  const age=Number(document.getElementById('learnerAge').value);
+  if(!["นักเรียน","พระเณร","คนทั่วไป"].includes(statusValue) || !gender || !Number.isInteger(age) || age<1 || age>120){
+    document.getElementById('profileStatus').textContent="กรุณาเลือกสถานภาพ เลือกเพศ และอายุให้ครบก่อนตอบ";
+    document.getElementById('learnerProfile').scrollIntoView({behavior:"smooth",block:"center"});
+    return false;
+  }
+  return saveProfile();
 }
 function updateStats(){
  let answered=0,correct=0;
