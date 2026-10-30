@@ -133,7 +133,7 @@
         .profile-left,.profile-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
         .profile-bar label{font-size:.9rem;color:var(--primary);font-weight:700}
         .profile-bar input,.profile-bar select{border:1px solid #d7b99a;border-radius:6px;padding:8px;font:inherit;max-width:100%;background:#fff}
-        .profile-bar input[name="fullName"]{min-width:220px}
+        .profile-bar select[name="status"]{min-width:220px}
         .admin-btn{background:#704214;padding:9px 13px;white-space:nowrap}
         .notice{max-width:1400px;margin:0 auto 12px;color:#72512d;font-size:.9rem}
         .overlay{position:fixed;inset:0;background:rgba(30,20,10,.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}
@@ -147,7 +147,7 @@
         .admin-table th,.admin-table td{padding:8px;border:1px solid #eadbc9;text-align:left;white-space:nowrap}
         .admin-table th{background:#f6e4cc;color:#704214}
         .status-msg{margin:8px 0;color:#704214;white-space:pre-wrap}
-        @media(max-width:650px){body{padding:10px}.profile-bar{grid-template-columns:1fr}.profile-left,.profile-right{align-items:stretch}.profile-left input[name="fullName"]{min-width:0;width:100%}.profile-right{justify-content:space-between}.header h1{font-size:1.35rem}.game-grid{grid-template-columns:1fr;gap:14px}}
+        @media(max-width:650px){body{padding:10px}.profile-bar{grid-template-columns:1fr}.profile-left,.profile-right{align-items:stretch}.profile-left select[name="status"]{min-width:0;width:100%}.profile-right{justify-content:space-between}.header h1{font-size:1.35rem}.game-grid{grid-template-columns:1fr;gap:14px}}
 
     </style>
 </head>
@@ -155,8 +155,13 @@
 
     <section class="profile-bar" aria-label="ข้อมูลผู้เรียน">
       <div class="profile-left">
-        <label for="fullName">ชื่อ-นามสกุล</label>
-        <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="กรอกชื่อ-นามสกุล">
+        <label for="learnerStatus">สถานภาพ</label>
+        <select id="learnerStatus" name="status" required>
+          <option value="">เลือกสถานภาพ</option>
+          <option value="นักเรียน">นักเรียน</option>
+          <option value="พระเณร">พระเณร</option>
+          <option value="คนทั่วไป">คนทั่วไป</option>
+        </select>
       </div>
       <div class="profile-right">
         <label for="gender">เพศ</label>
@@ -170,7 +175,7 @@
         <h1>เกมบาลีไวยากรณ์ 15 in 1 (75 คำถาม)</h1>
         <p>ฝึกฝนบาลีไวยากรณ์ครบทุกหมวด เกมละ 5 ข้อ</p>
     </div>
-    <div id="cloud-status" class="notice">กรอกชื่อ-นามสกุล เพศ และอายุก่อนเริ่มทำข้อสอบ ระบบจะบันทึกคะแนนออนไลน์เมื่อเชื่อมต่อ Supabase แล้ว</div>
+    <div id="cloud-status" class="notice">เลือกสถานภาพ เพศ และอายุก่อนเริ่มทำข้อสอบ ระบบจะบันทึกคะแนนออนไลน์เมื่อเชื่อมต่อ Supabase แล้ว</div>
     <div class="game-grid" id="main-grid"></div>
 
     <div class="overlay" id="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-title">
@@ -187,7 +192,7 @@
         <div id="admin-report" style="display:none">
           <div class="actions"><button onclick="loadAdminResults()">รีเฟรชข้อมูล</button><button class="secondary" onclick="adminLogout()">ออกจากระบบ</button><button class="secondary" onclick="closeAdmin()">ปิด</button></div>
           <p id="admin-message" class="status-msg"></p>
-          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>วันเวลา</th><th>ชื่อ-นามสกุล</th><th>เพศ</th><th>อายุ</th><th>หมวดเกม</th><th>คะแนน</th></tr></thead><tbody id="admin-results"></tbody></table></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>วันเวลา</th><th>สถานภาพ</th><th>เพศ</th><th>อายุ</th><th>หมวดเกม</th><th>คะแนน</th></tr></thead><tbody id="admin-results"></tbody></table></div>
         </div>
         <p id="login-status" class="status-msg"></p>
       </section>
@@ -370,14 +375,14 @@ const configured =
             }
         }
         function learnerProfile() {
-            const fullName = document.getElementById("fullName").value.trim();
+            const status = document.getElementById("learnerStatus").value;
             const gender = document.getElementById("gender").value;
             const age = Number(document.getElementById("age").value);
-            if (!fullName || !gender || !Number.isInteger(age) || age < 1 || age > 120) {
-                alert("กรุณากรอกชื่อ-นามสกุล เลือกเพศ และกรอกอายุให้ถูกต้องก่อนตอบข้อสอบ");
+            if (!["นักเรียน", "พระเณร", "คนทั่วไป"].includes(status) || !gender || !Number.isInteger(age) || age < 1 || age > 120) {
+                alert("กรุณาเลือกสถานภาพ เลือกเพศ และกรอกอายุให้ถูกต้องก่อนตอบข้อสอบ");
                 return null;
             }
-            return { full_name: fullName, gender, age };
+            return { status, gender, age };
         }
         async function saveGameResult(game, state) {
             const profile = learnerProfile();
@@ -443,7 +448,7 @@ const password = document.getElementById("admin-password").value;
             if (!activeAdminSession || !supabaseClient) { message.textContent = "กรุณาเข้าสู่ระบบผู้ดูแล"; return; }
             message.textContent = "กำลังโหลดข้อมูล...";
             const { data, error } = await supabaseClient.from("pali_quiz_results")
-                .select("full_name,gender,age,game_title,score,total_questions,completed_at")
+                .select("status,gender,age,game_title,score,total_questions,completed_at")
                 .order("completed_at", { ascending: false }).limit(1000);
             if (error) {
                 message.textContent = "อ่านข้อมูลไม่สำเร็จ: " + error.message + " (ตรวจสอบนโยบาย RLS และอีเมลผู้ดูแล)";
@@ -454,7 +459,7 @@ const password = document.getElementById("admin-password").value;
                 const tr = document.createElement("tr");
                 const values = [
                     row.completed_at ? new Date(row.completed_at).toLocaleString("th-TH") : "",
-                    row.full_name, row.gender, row.age, row.game_title,
+                    row.status, row.gender, row.age, row.game_title,
                     `${row.score}/${row.total_questions}`
                 ];
                 values.forEach(value => {
