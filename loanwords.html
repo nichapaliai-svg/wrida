@@ -3,26 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>คำยืมภาษาบาลี</title>
 <style>
 :root{--ink:#243047;--muted:#667085;--bg:#f4f7fb;--card:#fff;--brand:#3659a8;--brand2:#eaf0ff;--good:#16794b;--bad:#b42318;--line:#e3e8f0}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,"Noto Sans Thai",sans-serif;line-height:1.65}
 header{background:linear-gradient(120deg,#203d79,#5278c8);color:white;padding:28px 18px}
-.wrap{max-width:900px;margin:auto;padding:0 16px}header h1{margin:0 0 6px;font-size:clamp(23px,4vw,32px)}header p{margin:0;opacity:.94}
+.wrap{max-width:1200px;margin:auto;padding:0 16px}header h1{margin:0 0 6px;font-size:clamp(23px,4vw,32px)}header p{margin:0;opacity:.94}
 main{padding:22px 0 50px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:0 0 16px;box-shadow:0 4px 16px #2030500a}
 h2{font-size:21px;margin:0 0 12px}h3{font-size:17px;margin:0 0 6px}.muted{color:var(--muted)}.pill{display:inline-block;background:var(--brand2);color:var(--brand);padding:3px 10px;border-radius:20px;font-size:13px;margin-bottom:8px}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.point{background:#f8faff;border:1px solid var(--line);border-radius:12px;padding:13px}
+.summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.point{background:#f8faff;border:1px solid var(--line);border-radius:12px;padding:13px}
 button{border:0;border-radius:10px;padding:11px 17px;font-size:16px;font-weight:600;cursor:pointer;background:var(--brand);color:white}
 button.secondary{background:#edf1f7;color:var(--ink)}button:disabled{opacity:.45;cursor:not-allowed}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.question{padding:15px 0;border-bottom:1px solid var(--line)}.question:last-child{border:0}
-.qtitle{font-weight:700;margin-bottom:9px}.choice{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:10px;margin:7px 0;cursor:pointer}
+#questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;align-items:start}.question{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;min-width:0}
+.qtitle{font-weight:700;margin-bottom:7px;line-height:1.5}.choice{display:flex;gap:8px;align-items:flex-start;padding:7px 9px;border:1px solid var(--line);border-radius:9px;margin:5px 0;cursor:pointer;font-size:15px;line-height:1.45}
 .choice:has(input:checked){border-color:var(--brand);background:var(--brand2)}.choice input{margin-top:5px;accent-color:var(--brand)}
 .hidden{display:none!important}.result{padding:14px;border-radius:12px;background:#f1f8f4;border:1px solid #cce8d6;margin-top:14px}
 .result strong{color:var(--good)}.progress{height:8px;background:#e9edf4;border-radius:20px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;background:var(--brand);width:0}
 input[type=text]{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:5px 0 12px}
 footer{text-align:center;color:var(--muted);font-size:13px;padding:10px}
-@media(max-width:560px){.card{padding:15px}button{width:100%}.actions{flex-direction:column}}
+
+@media(max-width:1050px){
+ .summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #questions{grid-template-columns:1fr}
+}
+@media(max-width:420px){
+ .summary{grid-template-columns:1fr}
+}
+
+@media(max-width:560px){.card{padding:15px}#questions{gap:8px}.question{padding:10px}button{width:100%}.actions{flex-direction:column}}
+
+.learner-fields{display:grid;grid-template-columns:minmax(220px,1.5fr) minmax(180px,1fr) minmax(110px,.65fr);gap:14px;align-items:end;margin:12px 0 4px}
+.field-group{min-width:0}
+.field-group label{display:block;margin-bottom:2px}
+@media(max-width:620px){.learner-fields{grid-template-columns:1fr 1fr;gap:10px}.age-group{grid-column:1 / -1;max-width:180px}}
+@media(max-width:380px){.learner-fields{grid-template-columns:1fr}.age-group{grid-column:auto;max-width:none}}
+
 </style>
 </head>
 <body>
@@ -50,21 +68,29 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px}
  <span class="pill">ส่วนที่ 2 · ก่อนเรียน</span>
  <h2>ปุพฺพสิกฺขาปริกฺขา (ทดสอบก่อนเรียน)</h2>
  <p>มี 10 ข้อ ข้อละ 1 คะแนน เลือกคำตอบที่ถูกต้องที่สุด ระบบจะยังไม่เฉลยจนกว่าจะส่งคำตอบ</p>
- <label for="learnerStatus">สถานภาพผู้เรียน</label>
- <select id="learnerStatus" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:5px 0 12px;background:white;color:var(--ink)">
-  <option value="นักเรียน">นักเรียน</option>
-  <option value="ภิกษุสามเณร">ภิกษุสามเณร</option>
-  <option value="คนทั่วไป">คนทั่วไป</option>
- </select>
- <label for="learnerGender">เพศ</label>
- <select id="learnerGender" required style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:5px 0 12px;background:white;color:var(--ink)">
-  <option value="">เลือกเพศ</option>
-  <option value="ชาย">ชาย</option>
-  <option value="หญิง">หญิง</option>
-  <option value="ไม่ประสงค์ระบุ">ไม่ประสงค์ระบุ</option>
- </select>
- <label for="learnerAge">อายุ (ปี)</label>
- <input id="learnerAge" type="number" min="1" max="120" step="1" required placeholder="กรอกอายุเป็นจำนวนปี">
+<div class="learner-fields">
+ <div class="field-group">
+  <label for="learnerStatus">สถานภาพผู้เรียน</label>
+  <select id="learnerStatus" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:5px 0 0;background:white;color:var(--ink)">
+   <option value="นักเรียน">นักเรียน</option>
+   <option value="พระเณร">พระเณร</option>
+   <option value="คนทั่วไป">คนทั่วไป</option>
+  </select>
+ </div>
+ <div class="field-group">
+  <label for="learnerGender">เพศ</label>
+  <select id="learnerGender" required style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:5px 0 0;background:white;color:var(--ink)">
+   <option value="">เลือกเพศ</option>
+   <option value="ชาย">ชาย</option>
+   <option value="หญิง">หญิง</option>
+   <option value="ไม่ประสงค์ระบุ">ไม่ประสงค์ระบุ</option>
+  </select>
+ </div>
+ <div class="field-group age-group">
+  <label for="learnerAge">อายุ (ปี)</label>
+  <input id="learnerAge" type="number" min="1" max="120" step="1" required placeholder="อายุ" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:5px 0 0">
+ </div>
+</div>
  <button onclick="begin('pre')">เริ่มทำปุพฺพสิกฺขาปริกฺขา (ทดสอบก่อนเรียน)</button>
 </section>
 
@@ -89,7 +115,13 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px}
 </section>
 </main>
 <footer>สื่อการเรียนรู้ภาษาไทย ม.๒ · คำยืมภาษาบาลี</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ตั้งค่า Supabase: ใช้ Project URL และ anon/publishable key เท่านั้น
+const SUPABASE_URL = "https://jyiwohexhmertqvfummt.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_qPPtC5amEHiicevhlmaBaQ_n-YA-5gq";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const bank = {
  pre:[
  {q:"คำยืมภาษาบาลีหมายถึงข้อใด",o:["คำที่ภาษาไทยสร้างขึ้นใหม่ทั้งหมด","คำจากภาษาบาลีที่ภาษาไทยรับมาใช้","คำที่มาจากภาษาอังกฤษเท่านั้น","คำเลียนเสียงธรรมชาติ"],a:1,e:"คำยืมคือคำจากภาษาอื่นที่ภาษาไทยรับมาใช้"},
@@ -116,13 +148,18 @@ const bank = {
  {q:"หากต้องการใช้คำบาลีให้ถูกต้อง ควรทำอย่างไร",o:["เดาความหมายเอง","ดูเฉพาะจำนวนพยางค์","ตรวจความหมายและการใช้จากพจนานุกรมหรือแหล่งอ้างอิง","เปลี่ยนตัวสะกดตามใจ"],a:2,e:"ควรตรวจความหมาย รูปคำ และบริบทการใช้จากแหล่งที่เชื่อถือได้"}
  ]
 };
-let mode="",answers=[],preScore=null,postScore=null,learnerStatus="นักเรียน",learnerGender="",learnerAge="";
+let mode="",answers=[],preScore=null,postScore=null,learnerName="",learnerStatus="นักเรียน",learnerGender="",learnerAge="";
+let savedPre=false,savedPost=false;
+
 function begin(which){
- mode=which;answers=Array(10).fill(null);learnerStatus=document.getElementById('learnerStatus').value;
+ mode=which;answers=Array(10).fill(null);
+ learnerName="";
+ learnerStatus=document.getElementById('learnerStatus').value;
  learnerGender=document.getElementById('learnerGender').value;
  learnerAge=document.getElementById('learnerAge').value;
  if(!learnerGender){alert('กรุณาเลือกเพศ');return}
  if(!learnerAge || Number(learnerAge)<1 || Number(learnerAge)>120){alert('กรุณากรอกอายุ 1–120 ปี');return}
+ if(which==="post" && preScore===null){alert('กรุณาทำแบบทดสอบก่อนเรียนก่อน');return}
  document.getElementById('start').classList.add('hidden');document.getElementById('afterLesson').classList.add('hidden');
  document.getElementById('finalReport').classList.add('hidden');document.getElementById('quizCard').classList.remove('hidden');
  document.getElementById('quizLabel').textContent=which==="pre"?"ปุพฺพสิกฺขาปริกฺขา (ทดสอบก่อนเรียน)":"ปจฺฉาสิกฺขาปริกฺขา (ทดสอบหลังเรียน)";
@@ -136,9 +173,49 @@ function renderQuestions(){
 }
 function pick(i,j){answers[i]=j;updateProgress()}
 function updateProgress(){let n=answers.filter(x=>x!==null).length;document.getElementById('progressBar').style.width=(n*10)+'%';}
-function submitQuiz(){
+async function saveQuizResult(score){
+ const alreadySaved = mode==="pre" ? savedPre : savedPost;
+ if(alreadySaved) return true;
+
+ if(!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY==="วาง_SUPABASE_ANON_KEY_ที่นี่"){
+   alert("ยังไม่ได้ตั้งค่า Supabase Anon/Publishable Key กรุณาตั้งค่ากุญแจก่อนบันทึกคะแนน");
+   return false;
+ }
+
+ const row = {
+   app_id: "pali_loanwords_m2",
+   full_name: null,
+   gender: learnerGender,
+   age: Number(learnerAge),
+   status: learnerStatus,
+   test_type: mode==="pre" ? "ก่อนเรียน" : "หลังเรียน",
+   score: score,
+   total_questions: 10
+ };
+
+ const { error } = await supabaseClient
+   .from("pali_loanwords_results")
+   .insert([row]);
+
+ if(error){
+   console.error("Supabase insert error:", error);
+   alert("บันทึกคะแนนไม่สำเร็จ: " + error.message + "\\nกรุณาตรวจสอบการตั้งค่า Supabase และลองส่งคำตอบอีกครั้ง");
+   return false;
+ }
+
+ if(mode==="pre") savedPre=true; else savedPost=true;
+ return true;
+}
+
+async function submitQuiz(){
  const unanswered=answers.filter(x=>x===null).length;if(unanswered){alert(`ยังไม่ได้ตอบ ${unanswered} ข้อ กรุณาตอบให้ครบก่อนส่ง`);return}
  const qs=bank[mode];let score=0;qs.forEach((q,i)=>{if(answers[i]===q.a)score++});
+ const submitButton=document.getElementById('submitBtn');
+ submitButton.disabled=true;
+ submitButton.textContent="กำลังบันทึกคะแนน...";
+ const saved=await saveQuizResult(score);
+ submitButton.textContent="ส่งคำตอบและดูผลคะแนน";
+ if(!saved){submitButton.disabled=false;return}
  if(mode==="pre")preScore=score;else postScore=score;
  const result=document.getElementById('quizResult');result.classList.remove('hidden');
  result.innerHTML=`<strong>ได้ ${score} / 10 คะแนน</strong><p>${score>=8?"ยอดเยี่ยม":score>=5?"ทำได้ดี ควรทบทวนเพิ่มเติม":"ควรอ่านสรุปความรู้อีกครั้ง"}</p><h3>เฉลยและคำอธิบาย</h3>${qs.map((q,i)=>`<p><b>${i+1}. ${"กขคง"[q.a]}. ${q.o[q.a]}</b><br><span class="muted">${answers[i]===q.a?"ตอบถูก":"คำตอบของคุณ: "+ "กขคง"[answers[i]]} · ${q.e}</span></p>`).join('')}`;
@@ -150,10 +227,10 @@ function submitQuiz(){
 function showReport(){
  document.getElementById('quizCard').classList.add('hidden');document.getElementById('finalReport').classList.remove('hidden');
  const diff=postScore-preScore;const diffText=diff>0?`คะแนนเพิ่มขึ้น ${diff} คะแนน`:diff<0?`คะแนนลดลง ${Math.abs(diff)} คะแนน`:"คะแนนเท่าเดิม";
- document.getElementById('report').innerHTML=`<p>สถานภาพผู้เรียน: <b>${escapeHtml(learnerStatus)}</b></p><p>เพศ: <b>${escapeHtml(learnerGender)}</b> · อายุ: <b>${escapeHtml(learnerAge)} ปี</b></p><div class="summary"><div class="point"><h3>ก่อนเรียน</h3><div style="font-size:30px;font-weight:700">${preScore}/10</div></div><div class="point"><h3>หลังเรียน</h3><div style="font-size:30px;font-weight:700">${postScore}/10</div></div><div class="point"><h3>ผลต่างคะแนน</h3><div style="font-size:22px;font-weight:700">${diff>0?"+":""}${diff}</div>${diffText}</div></div><p class="muted">ข้อเสนอแนะ: ${postScore>=8?"มีความเข้าใจเนื้อหาในระดับดี":postScore>=5?"ทบทวนตัวอย่างคำบาลีและความหมายเพิ่มเติม":"ควรอ่านสรุปทั้ง 10 ประเด็นและฝึกทำแบบทดสอบอีกครั้ง"}</p><p class="muted">เกณฑ์แปลผลเบื้องต้น: 8–10 ดี · 5–7 พอใช้ · 0–4 ควรพัฒนา</p>`;
+ document.getElementById('report').innerHTML=`<p>ชื่อ-นามสกุล: <b>${escapeHtml(learnerName)}</b></p><p>สถานภาพผู้เรียน: <b>${escapeHtml(learnerStatus)}</b></p><p>เพศ: <b>${escapeHtml(learnerGender)}</b> · อายุ: <b>${escapeHtml(learnerAge)} ปี</b></p><div class="summary"><div class="point"><h3>ก่อนเรียน</h3><div style="font-size:30px;font-weight:700">${preScore}/10</div></div><div class="point"><h3>หลังเรียน</h3><div style="font-size:30px;font-weight:700">${postScore}/10</div></div><div class="point"><h3>ผลต่างคะแนน</h3><div style="font-size:22px;font-weight:700">${diff>0?"+":""}${diff}</div>${diffText}</div></div><p class="muted">ข้อเสนอแนะ: ${postScore>=8?"มีความเข้าใจเนื้อหาในระดับดี":postScore>=5?"ทบทวนตัวอย่างคำบาลีและความหมายเพิ่มเติม":"ควรอ่านสรุปทั้ง 10 ประเด็นและฝึกทำแบบทดสอบอีกครั้ง"}</p><p class="muted">เกณฑ์แปลผลเบื้องต้น: 8–10 ดี · 5–7 พอใช้ · 0–4 ควรพัฒนา</p>`;
  window.scrollTo({top:document.getElementById('finalReport').offsetTop-10,behavior:'smooth'});
 }
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function resetApp(){preScore=null;postScore=null;answers=[];document.getElementById('quizCard').classList.add('hidden');document.getElementById('afterLesson').classList.add('hidden');document.getElementById('finalReport').classList.add('hidden');document.getElementById('start').classList.remove('hidden');document.getElementById('learnerStatus').value='นักเรียน';document.getElementById('learnerGender').value='';document.getElementById('learnerAge').value='';window.scrollTo({top:0,behavior:'smooth'});}
+function resetApp(){preScore=null;postScore=null;answers=[];savedPre=false;savedPost=false;learnerName="";document.getElementById('quizCard').classList.add('hidden');document.getElementById('afterLesson').classList.add('hidden');document.getElementById('finalReport').classList.add('hidden');document.getElementById('start').classList.remove('hidden');document.getElementById('learnerStatus').value='นักเรียน';document.getElementById('learnerGender').value='';document.getElementById('learnerAge').value='';window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 </body></html>
